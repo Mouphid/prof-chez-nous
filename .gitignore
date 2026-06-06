@@ -1,0 +1,43 @@
+# Logs
+logs/
+*.log
+
+# Uploads
+uploads/*
+!uploads/images/.gitkeep
+!uploads/docs/.gitkeep
+!uploads/pdf/.gitkeep
+!uploads/video/.gitkeep
+!uploads/audio/.gitkeep
+
+# Vendor
+vendor/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Environment
+.env
+.env.local
+
+# Cache
+cache/
+temp/
+tmp/
+
+# Debug files (sensitive)
+public/check_*.php
+public/test_*.php
+public/debug_*.php
+public/fix_*.php
+public/diag.php
+public/check_data.php
+public/check_db.php
+public/check_files.php
+public/check_pass.php
