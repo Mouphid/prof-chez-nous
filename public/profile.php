@@ -34,12 +34,12 @@ $posts->execute([$user_id]);
 $user_posts = $posts->fetchAll();
 
 $downloads = $pdo->prepare("
-    SELECT f.*, p.title as post_title, ud.downloaded_at
+    SELECT f.*, p.title as post_title, ud.created_at as downloaded_at
     FROM user_downloads ud
     JOIN files f ON ud.id_file = f.id_file
     LEFT JOIN posts p ON f.id_post = p.id_post
     WHERE ud.id_user = ?
-    ORDER BY ud.downloaded_at DESC
+    ORDER BY ud.created_at DESC
 ");
 $downloads->execute([$user_id]);
 $user_downloads = $downloads->fetchAll();
@@ -125,13 +125,13 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
     <main class="max-w-4xl mx-auto px-4 -mt-24">
         <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sm:p-10">
             <?php if ($flash_success): ?>
-            <div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-2"><i class="fas fa-check-circle"></i> <?= $flash_success ?></div>
+            <div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-2"><i class="fas fa-check-circle"></i> <?= htmlspecialchars($flash_success) ?></div>
             <?php endif; ?>
             <?php if ($success): ?>
-            <div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-2"><i class="fas fa-check-circle"></i> <?= $success ?></div>
+            <div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-2"><i class="fas fa-check-circle"></i> <?= htmlspecialchars($success) ?></div>
             <?php endif; ?>
             <?php if ($error): ?>
-            <div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-2"><i class="fas fa-exclamation-circle"></i> <?= $error ?></div>
+            <div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-2"><i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
 
             <div class="text-center -mt-20 mb-6">

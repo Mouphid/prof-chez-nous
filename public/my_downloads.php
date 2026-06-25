@@ -11,12 +11,12 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 $downloads = $pdo->prepare("
-    SELECT f.*, p.title as post_title, ud.downloaded_at
+    SELECT f.*, p.title as post_title, ud.created_at as downloaded_at
     FROM user_downloads ud
     JOIN files f ON ud.id_file = f.id_file
     LEFT JOIN posts p ON f.id_post = p.id_post
     WHERE ud.id_user = ?
-    ORDER BY ud.downloaded_at DESC
+    ORDER BY ud.created_at DESC
 ");
 $downloads->execute([$user_id]);
 $rows = $downloads->fetchAll();

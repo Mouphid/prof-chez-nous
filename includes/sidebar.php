@@ -38,7 +38,7 @@
             $stmt_recent = $pdo->query("SELECT id_post, title FROM posts WHERE status IN ('published', 'draft') ORDER BY created_at DESC LIMIT 5");
             while ($post = $stmt_recent->fetch()): 
             ?>
-            <li><a href="post.php?id=<?= $post['id_post'] ?>"><?= truncate($post['title'], 40) ?></a></li>
+            <li><a href="post.php?id=<?= $post['id_post'] ?>"><?= htmlspecialchars(truncate($post['title'], 40)) ?></a></li>
             <?php endwhile; ?>
         </ul>
     </div>

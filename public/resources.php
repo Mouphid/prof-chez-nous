@@ -132,7 +132,7 @@ foreach ($all_files as $file) {
                     <h3 class="font-semibold text-gray-900 truncate"><?= htmlspecialchars($file['file_name']) ?></h3>
                     <p class="text-sm text-gray-500">
                         <?php if ($file['id_post'] && $file['post_title']): ?>
-                        Article: <a href="post.php?id=<?= $file['id_post'] ?>" class="text-primary hover:underline"><?= truncate($file['post_title'], 40) ?></a>
+                        Article: <a href="post.php?id=<?= $file['id_post'] ?>" class="text-primary hover:underline"><?= htmlspecialchars(truncate($file['post_title'], 40)) ?></a>
                         <?php else: ?>
                         Ressource générale
                         <?php endif; ?>

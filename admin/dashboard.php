@@ -22,11 +22,16 @@ $can_publish = has_permission('publish_articles');
 $admin_role_label = $admin_role === 'admin' ? 'Super Admin' : ($admin_role === 'auteur' ? 'Auteur' : 'Étudiant');
 
 if($_SESSION['admin_role'] === 'auteur'){
-    $stats['posts'] = $pdo->query("SELECT COUNT(*) FROM posts WHERE id_user = {$_SESSION['admin_id']}")->fetchColumn();
-    $stats['comments'] = $pdo->query("SELECT COUNT(*) FROM comments WHERE id_post IN (SELECT id_post FROM posts WHERE id_user = {$_SESSION['admin_id']})")->fetchColumn();
-    $stats['views'] = $pdo->query("SELECT COALESCE(SUM(views),0) FROM posts WHERE id_user = {$_SESSION['admin_id']}")->fetchColumn();
-    $stats['posts_published'] = $pdo->query("SELECT COUNT(*) FROM posts WHERE id_user = {$_SESSION['admin_id']} AND status = 'published'")->fetchColumn();
-    $stats['posts_draft'] = $pdo->query("SELECT COUNT(*) FROM posts WHERE id_user = {$_SESSION['admin_id']} AND status = 'draft'")->fetchColumn();
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM posts WHERE id_user = ?");
+    $stmt->execute([$_SESSION['admin_id']]); $stats['posts'] = $stmt->fetchColumn();
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM comments WHERE id_post IN (SELECT id_post FROM posts WHERE id_user = ?)");
+    $stmt->execute([$_SESSION['admin_id']]); $stats['comments'] = $stmt->fetchColumn();
+    $stmt = $pdo->prepare("SELECT COALESCE(SUM(views),0) FROM posts WHERE id_user = ?");
+    $stmt->execute([$_SESSION['admin_id']]); $stats['views'] = $stmt->fetchColumn();
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM posts WHERE id_user = ? AND status = 'published'");
+    $stmt->execute([$_SESSION['admin_id']]); $stats['posts_published'] = $stmt->fetchColumn();
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM posts WHERE id_user = ? AND status = 'draft'");
+    $stmt->execute([$_SESSION['admin_id']]); $stats['posts_draft'] = $stmt->fetchColumn();
 } else {
     $stats['posts'] = $pdo->query("SELECT COUNT(*) FROM posts")->fetchColumn();
     $stats['posts_published'] = $pdo->query("SELECT COUNT(*) FROM posts WHERE status = 'published'")->fetchColumn();
@@ -181,7 +186,7 @@ $latest_posts = $pdo->query("SELECT p.*, c.name as category_name, u.name as auth
                         <tbody>
                             <?php foreach($latest_posts as $post): ?>
                             <tr class="border-b border-gray-50 hover:bg-gray-50">
-                                <td class="p-3"><a href="../public/post.php?id=<?= $post['id_post'] ?>" target="_blank" class="text-primary hover:underline"><?= truncate($post['title'], 40) ?></a></td>
+                                <td class="p-3"><a href="../public/post.php?id=<?= $post['id_post'] ?>" target="_blank" class="text-primary hover:underline"><?= htmlspecialchars(truncate($post['title'], 40)) ?></a></td>
                                 <td class="p-3 text-gray-600"><?= $post['category_name'] ?? '-' ?></td>
                                 <td class="p-3"><span class="text-xs font-semibold px-2 py-1 rounded-full <?= $post['status']==='published'?'bg-green-100 text-green-700':'bg-red-100 text-red-700' ?>"><?= $post['status'] ?></span></td>
                                 <td class="p-3 text-gray-500 text-sm"><?= format_date($post['created_at']) ?></td>
@@ -212,7 +217,7 @@ $latest_posts = $pdo->query("SELECT p.*, c.name as category_name, u.name as auth
                             <?php foreach($recent_comments as $c): ?>
                             <tr class="border-b border-gray-50">
                                 <td class="p-3 text-gray-600"><?= $c['post_title'] ?? '-' ?></td>
-                                <td class="p-3 text-gray-600"><?= truncate($c['content'], 60) ?></td>
+                                <td class="p-3 text-gray-600"><?= htmlspecialchars(truncate($c['content'], 60)) ?></td>
                                 <td class="p-3 text-gray-500 text-sm"><?= format_date($c['created_at']) ?></td>
                             </tr>
                             <?php endforeach; ?>

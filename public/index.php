@@ -200,7 +200,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                         while ($r = $recent->fetch()):
                         ?>
                         <li>
-                            <a href="post.php?id=<?= $r['id_post'] ?>" class="text-sm text-gray-500 hover:text-primary transition block py-1.5"><?= truncate($r['title'], 40) ?></a>
+                            <a href="post.php?id=<?= $r['id_post'] ?>" class="text-sm text-gray-500 hover:text-primary transition block py-1.5"><?= htmlspecialchars(truncate($r['title'], 40)) ?></a>
                         </li>
                         <?php endwhile; ?>
                     </ul>

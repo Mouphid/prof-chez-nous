@@ -46,5 +46,6 @@ try {
         echo "❌ Commentaire introuvable.";
     }
 } catch (Exception $e) {
-    echo "❌ Erreur : " . $e->getMessage();
+    error_log("delete_comment.php: " . $e->getMessage());
+    echo "❌ Erreur lors de la suppression.";
 }

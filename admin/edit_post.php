@@ -134,10 +134,10 @@ $can_view_users = has_permission('manage_users');
             <h1 class="text-2xl font-bold text-gray-800 mb-8"><i class="fas fa-edit text-primary mr-2"></i> Modifier l'article</h1>
 
             <?php if($error): ?>
-            <div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2"><i class="fas fa-exclamation-circle"></i> <?= $error ?></div>
+            <div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2"><i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
             <?php if($success): ?>
-            <div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2"><i class="fas fa-check-circle"></i> <?= $success ?></div>
+            <div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2"><i class="fas fa-check-circle"></i> <?= htmlspecialchars($success) ?></div>
             <?php endif; ?>
 
             <div class="bg-white rounded-xl shadow-sm p-6">

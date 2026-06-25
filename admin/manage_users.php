@@ -133,8 +133,8 @@ $can_view_categories = has_permission('manage_categories');
         <main class="flex-1 ml-64 p-8">
             <h1 class="text-2xl font-bold text-gray-800 mb-8"><i class="fas fa-users text-primary mr-2"></i> Gestion des utilisateurs</h1>
 
-            <?php if($error): ?><div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2"><i class="fas fa-exclamation-circle"></i> <?= $error ?></div><?php endif; ?>
-            <?php if($success): ?><div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2"><i class="fas fa-check-circle"></i> <?= $success ?></div><?php endif; ?>
+            <?php if($error): ?><div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2"><i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($error) ?></div><?php endif; ?>
+            <?php if($success): ?><div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2"><i class="fas fa-check-circle"></i> <?= htmlspecialchars($success) ?></div><?php endif; ?>
             <?php if(isset($_GET['msg'])):
                 $msgs = ['no_permission'=>'Action non autorisée.', 'cannot_delete_self'=>'Vous ne pouvez pas vous supprimer.', 'invalid_token'=>'Token invalide.'];
             ?>

@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <?php if ($success): ?>
-        <div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-6"><?= $success ?></div>
+        <div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-6"><?= htmlspecialchars($success) ?></div>
         <?php else: ?>
 
         <form method="post" class="space-y-4">
