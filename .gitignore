@@ -41,3 +41,11 @@ public/check_data.php
 public/check_db.php
 public/check_files.php
 public/check_pass.php
+
+# Install / setup
+install.php
+professeur_page.php
+skills-lock.json
+
+# Backup folder
+_debug_backup/
