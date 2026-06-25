@@ -50,7 +50,7 @@ $page_title = "Publications - " . ($admin['name'] ?? 'Prof. Professeur');
         <section class="section">
             <div class="container">
                 <div class="filters">
-                    <button class="filter-btn active" data-filter="all">Tous (<?= $pdo->query("SELECT COUNT(*) FROM posts")->fetchColumn() ?>)</button>
+                    <button class="filter-btn active" data-filter="all">Tous (<?= $pdo->query("SELECT COUNT(*) FROM posts WHERE status = 'published'")->fetchColumn() ?>)</button>
                     <?php
                     $categories = $pdo->query("SELECT * FROM categories ORDER BY name");
                     while ($cat = $categories->fetch()):
@@ -70,6 +70,7 @@ $page_title = "Publications - " . ($admin['name'] ?? 'Prof. Professeur');
                             SELECT p.*, c.name as category_name, c.id_category
                             FROM posts p
                             LEFT JOIN categories c ON p.id_category = c.id_category
+                            WHERE p.status = 'published'
                             ORDER BY p.created_at DESC
                         ");
                         while ($post = $stmt->fetch()):

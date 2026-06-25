@@ -55,6 +55,9 @@ if ($flash_success) unset($_SESSION['flash_success']);
 $success = '';
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
+    if (!verify_csrf($_POST['csrf_token'] ?? '')) {
+        $error = "Session invalide, veuillez réessayer.";
+    } else {
     $name = trim($_POST['name'] ?? '');
     $bio = trim($_POST['bio'] ?? '');
     if (empty($name)) {
@@ -75,6 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
         $stmt = $pdo->prepare("SELECT * FROM users WHERE id_user = ?");
         $stmt->execute([$user_id]);
         $user = $stmt->fetch();
+    }
     }
 }
 
@@ -194,6 +198,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
             <div class="mb-8">
                 <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2"><i class="fas fa-edit text-primary"></i> Modifier le profil</h3>
                 <form method="post" enctype="multipart/form-data" class="max-w-lg space-y-4">
+                    <?= csrf_field() ?>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1">Photo de profil</label>
                         <input type="file" name="avatar" accept="image/*" class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary file:text-white file:font-medium hover:file:bg-indigo-700 focus:outline-none">

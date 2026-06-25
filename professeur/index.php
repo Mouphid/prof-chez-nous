@@ -2,7 +2,9 @@
 require_once "../config/config.php";
 require_once "../includes/functions.php";
 
-$page_title = "Accueil - Prof. [Nom du Professeur]";
+$admin = $pdo->query("SELECT * FROM users WHERE role = 'admin' LIMIT 1")->fetch();
+$admin_name = htmlspecialchars($admin['name'] ?? 'Professeur');
+$page_title = "Accueil - Prof. $admin_name";
 ?>
 
 <!DOCTYPE html>
@@ -22,7 +24,7 @@ $page_title = "Accueil - Prof. [Nom du Professeur]";
             <div class="logo">
                 <div class="avatar"><i class="fas fa-user"></i></div>
                 <div class="logo-text">
-                    <h1>Prof. [Nom du Professeur]</h1>
+                    <h1>Prof. <?= $admin_name ?></h1>
                     <p>Département de Littérature | Université de Cotonou</p>
                 </div>
             </div>
@@ -103,7 +105,7 @@ $page_title = "Accueil - Prof. [Nom du Professeur]";
                         SELECT p.*, c.name as category_name
                         FROM posts p
                         LEFT JOIN categories c ON p.id_category = c.id_category
-                        WHERE p.status = 'published' OR p.status = 'draft'
+                        WHERE p.status = 'published'
                         ORDER BY p.created_at DESC
                         LIMIT 3
                     ");
@@ -163,7 +165,7 @@ $page_title = "Accueil - Prof. [Nom du Professeur]";
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h4>Prof. [Nom]</h4>
+                    <h4>Prof. <?= $admin_name ?></h4>
                     <p>Département de Littérature<br>Université de Cotonou</p>
                 </div>
                 <div class="footer-section">
@@ -185,7 +187,7 @@ $page_title = "Accueil - Prof. [Nom du Professeur]";
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; <?= date('Y') ?> Prof. [Nom] - Tous droits réservés</p>
+                <p>&copy; <?= date('Y') ?> Prof. <?= $admin_name ?> - Tous droits réservés</p>
             </div>
         </div>
     </footer>

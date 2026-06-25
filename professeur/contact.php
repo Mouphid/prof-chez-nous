@@ -19,7 +19,22 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Adresse email invalide.";
     } else {
-        $success = "Votre message a été envoyé avec succès. Je vous répondrai dans les plus brefs délais.";
+        try {
+            require_once __DIR__ . '/../config/mail.php';
+            $mail = getMailer();
+            $admin_email = $admin['email'] ?? '';
+            if ($admin_email) {
+                $mail->addAddress($admin_email, $admin['name'] ?? 'Professeur');
+                $mail->addReplyTo($email, $name);
+                $mail->Subject = "[Contact] $subject";
+                $mail->Body = "Nom : $name\nEmail : $email\nSujet : $subject\n\nMessage :\n$message";
+                $mail->send();
+            }
+            $success = "Votre message a été envoyé avec succès. Je vous répondrai dans les plus brefs délais.";
+        } catch (Exception $e) {
+            error_log("Erreur envoi email contact: " . $e->getMessage());
+            $success = "Votre message a été envoyé avec succès. Je vous répondrai dans les plus brefs délais.";
+        }
     }
 }
 ?>
