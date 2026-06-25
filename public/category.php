@@ -52,7 +52,8 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
             <nav class="hidden md:flex items-center gap-1">
                 <a href="index.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="fas fa-home"></i> Accueil</a>
                 <a href="category.php" class="px-3 py-2 rounded-lg text-sm font-medium bg-indigo-50 text-primary"><i class="fas fa-folder"></i> Catégories</a>
-                <a href="resources.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="fas fa-folder-open"></i> Ressources</a>
+                <a href="about.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="fas fa-info-circle"></i> À propos</a>
+                <a href="contact.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="fas fa-envelope"></i> Contact</a>
                 <a href="search.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="fas fa-search"></i> Recherche</a>
                 <?php if (isset($_SESSION['user_id'])): ?>
                 <div class="relative group">
@@ -77,7 +78,8 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
         <div class="hidden md:hidden bg-white border-t px-4 py-3 space-y-1" id="mobileNav">
             <a href="index.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-home"></i> Accueil</a>
             <a href="category.php" class="block px-3 py-2 rounded-lg text-sm font-medium bg-indigo-50 text-primary"><i class="fas fa-folder"></i> Catégories</a>
-            <a href="resources.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-folder-open"></i> Ressources</a>
+            <a href="about.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-info-circle"></i> À propos</a>
+            <a href="contact.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-envelope"></i> Contact</a>
             <a href="search.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-search"></i> Recherche</a>
             <?php if (isset($_SESSION['user_id'])): ?>
             <a href="profile.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-user-cog"></i> Mon profil</a>

@@ -11,7 +11,8 @@
                 <ul class="space-y-2 text-sm">
                     <li><a href="../public/index.php" class="hover:text-white transition"><i class="fas fa-home mr-2"></i> Accueil</a></li>
                     <li><a href="../public/category.php?slug=cours" class="hover:text-white transition"><i class="fas fa-book mr-2"></i> Cours</a></li>
-                    <li><a href="../public/resources.php" class="hover:text-white transition"><i class="fas fa-folder-open mr-2"></i> Ressources</a></li>
+                    <li><a href="../public/about.php" class="hover:text-white transition"><i class="fas fa-info-circle mr-2"></i> À propos</a></li>
+                    <li><a href="../public/contact.php" class="hover:text-white transition"><i class="fas fa-envelope mr-2"></i> Contact</a></li>
                 </ul>
             </div>
             <div>

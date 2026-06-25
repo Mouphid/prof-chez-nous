@@ -24,8 +24,8 @@
                 <a href="../public/category.php?slug=cours" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="fas fa-book"></i> Cours</a>
                 <a href="../public/category.php?slug=exercices" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="fas fa-pencil-alt"></i> Exercices</a>
                 <a href="../public/category.php?slug=examens" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="fas fa-file-alt"></i> Examens</a>
-                <a href="../public/resources.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="fas fa-folder-open"></i> Ressources</a>
-                <a href="../public/search.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="fas fa-search"></i> Recherche</a>
+                <a href="../public/about.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="fas fa-info-circle"></i> À propos</a>
+                <a href="../public/contact.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="fas fa-envelope"></i> Contact</a>
             </nav>
 
             <div class="flex items-center gap-3">
@@ -51,8 +51,8 @@
             <a href="../public/category.php?slug=cours" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-book"></i> Cours</a>
             <a href="../public/category.php?slug=exercices" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-pencil-alt"></i> Exercices</a>
             <a href="../public/category.php?slug=examens" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-file-alt"></i> Examens</a>
-            <a href="../public/resources.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-folder-open"></i> Ressources</a>
-            <a href="../public/search.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-search"></i> Recherche</a>
+            <a href="../public/about.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-info-circle"></i> À propos</a>
+            <a href="../public/contact.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-envelope"></i> Contact</a>
             <?php if (is_admin()): ?>
             <a href="../admin/dashboard.php" class="block px-3 py-2 rounded-lg text-sm font-medium bg-primary text-white"><i class="fas fa-cog"></i> Admin</a>
             <?php endif; ?>

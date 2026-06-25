@@ -43,8 +43,8 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
             <a href="index.php" class="flex items-center gap-2 text-xl font-extrabold text-primary hover:text-indigo-700 transition"><i class="fas fa-graduation-cap"></i> Joie Enseignante</a>
             <nav class="hidden md:flex items-center gap-1" aria-label="Navigation principale">
                 <a href="index.php" class="px-3 py-2 rounded-lg text-sm font-medium bg-indigo-50 text-primary ring-1 ring-indigo-200"><i class="fas fa-home"></i> Accueil</a>
-                <a href="resources.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="fas fa-folder-open"></i> Ressources</a>
-                <a href="search.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="fas fa-search"></i> Recherche</a>
+                <a href="about.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="fas fa-info-circle"></i> À propos</a>
+                <a href="contact.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="fas fa-envelope"></i> Contact</a>
                 <?php if (isset($_SESSION['user_id'])): ?>
                 <div class="relative group">
                     <button class="flex items-center gap-2 bg-emerald-500 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-emerald-600 transition shadow-sm" aria-haspopup="true" aria-expanded="false">
@@ -67,8 +67,8 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
         </div>
         <div class="hidden md:hidden bg-white border-t px-4 py-3 space-y-1" id="mobileNav" role="navigation">
             <a href="index.php" class="block px-3 py-2 rounded-lg text-sm font-medium bg-indigo-50 text-primary"><i class="fas fa-home"></i> Accueil</a>
-            <a href="resources.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-folder-open"></i> Ressources</a>
-            <a href="search.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-search"></i> Recherche</a>
+            <a href="about.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-info-circle"></i> À propos</a>
+            <a href="contact.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-envelope"></i> Contact</a>
             <?php if (isset($_SESSION['user_id'])): ?>
             <a href="profile.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-user-cog"></i> Mon profil</a>
             <a href="my_downloads.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-download"></i> Mes téléchargements</a>
@@ -219,8 +219,8 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                 <h4 class="text-white font-semibold mb-3">Navigation</h4>
                 <ul class="space-y-2">
                     <li><a href="index.php" class="hover:text-white transition">Accueil</a></li>
-                    <li><a href="resources.php" class="hover:text-white transition">Ressources</a></li>
-                    <li><a href="search.php" class="hover:text-white transition">Recherche</a></li>
+                    <li><a href="about.php" class="hover:text-white transition">À propos</a></li>
+                    <li><a href="contact.php" class="hover:text-white transition">Contact</a></li>
                 </ul>
             </div>
             <div>

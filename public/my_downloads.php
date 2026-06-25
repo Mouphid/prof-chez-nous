@@ -104,8 +104,8 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
         <div class="text-center py-20 bg-white rounded-xl shadow-sm border border-gray-100">
             <i class="fas fa-download text-5xl text-gray-300 mb-4"></i>
             <p class="text-gray-500 text-lg mb-4">Vous n'avez pas encore téléchargé de ressources.</p>
-            <a href="resources.php" class="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 transition inline-flex items-center gap-2">
-                <i class="fas fa-folder-open"></i> Voir les ressources
+            <a href="index.php" class="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 transition inline-flex items-center gap-2">
+                <i class="fas fa-book-open"></i> Parcourir les articles
             </a>
         </div>
         <?php endif; ?>
