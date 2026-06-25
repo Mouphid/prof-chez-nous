@@ -21,9 +21,6 @@
                 <a href="../public/index.php" class="px-3 py-2 rounded-lg text-sm font-medium <?= (htmlspecialchars($_GET['page'] ?? '') === '') ? 'bg-indigo-50 text-primary' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' ?> transition">
                     <i class="fas fa-home"></i> Accueil
                 </a>
-                <a href="../public/category.php?slug=cours" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="fas fa-book"></i> Cours</a>
-                <a href="../public/category.php?slug=exercices" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="fas fa-pencil-alt"></i> Exercices</a>
-                <a href="../public/category.php?slug=examens" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="fas fa-file-alt"></i> Examens</a>
                 <a href="../public/about.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="fas fa-info-circle"></i> À propos</a>
                 <a href="../public/contact.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="fas fa-envelope"></i> Contact</a>
             </nav>
@@ -48,9 +45,6 @@
         <!-- Mobile nav -->
         <div class="hidden md:hidden bg-white border-t px-4 py-3 space-y-1" id="mobileNav">
             <a href="../public/index.php" class="block px-3 py-2 rounded-lg text-sm font-medium <?= (htmlspecialchars($_GET['page'] ?? '') === '') ? 'bg-indigo-50 text-primary' : 'text-gray-600 hover:bg-gray-100' ?>"><i class="fas fa-home"></i> Accueil</a>
-            <a href="../public/category.php?slug=cours" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-book"></i> Cours</a>
-            <a href="../public/category.php?slug=exercices" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-pencil-alt"></i> Exercices</a>
-            <a href="../public/category.php?slug=examens" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-file-alt"></i> Examens</a>
             <a href="../public/about.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-info-circle"></i> À propos</a>
             <a href="../public/contact.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-envelope"></i> Contact</a>
             <?php if (is_admin()): ?>
