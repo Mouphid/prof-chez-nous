@@ -7,6 +7,9 @@ $error = '';
 $success = '';
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
+    if (!check_rate_limit('login_admin')) {
+        $error = "Trop de tentatives. Réessayez dans 5 minutes.";
+    } else {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
 
@@ -18,6 +21,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         $admin = $stmt->fetch();
 
         if($admin && password_verify($password, $admin['password'])){
+                $_SESSION['rate_login_admin'] = ['count' => 0, 'first' => 0];
                 session_regenerate_id(true);
                 $_SESSION['is_admin'] = true;
                 $_SESSION['admin_name'] = $admin['name'];
@@ -30,7 +34,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             } else {
                 $error = "Email ou mot de passe incorrect";
                 logger("Échec connexion admin: $email", 'warning');
+                increment_rate_limit('login_admin');
             }
+    }
     }
 }
 
