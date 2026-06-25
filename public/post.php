@@ -60,7 +60,7 @@ if ($user_id) {
     $has_liked = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE id_post = ? AND id_user = ?");
     $has_liked->execute([$id_post, $user_id]);
 } else {
-    $has_liked = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE id_post = ? AND user_ip = ? AND id_user IS NULL");
+    $has_liked = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE id_post = ? AND ip_address = ? AND id_user IS NULL");
     $has_liked->execute([$id_post, $user_ip]);
 }
 $user_liked = $has_liked->fetchColumn() > 0;

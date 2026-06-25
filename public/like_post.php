@@ -22,7 +22,7 @@ if ($user_id) {
     $stmt = $pdo->prepare("SELECT id_like FROM likes WHERE id_post = ? AND id_user = ?");
     $stmt->execute([$id_post, $user_id]);
 } else {
-    $stmt = $pdo->prepare("SELECT id_like FROM likes WHERE id_post = ? AND user_ip = ? AND id_user IS NULL");
+    $stmt = $pdo->prepare("SELECT id_like FROM likes WHERE id_post = ? AND ip_address = ? AND id_user IS NULL");
     $stmt->execute([$id_post, $user_ip]);
 }
 $existing = $stmt->fetch();
@@ -31,11 +31,11 @@ if ($existing) {
     if ($user_id) {
         $pdo->prepare("DELETE FROM likes WHERE id_post = ? AND id_user = ?")->execute([$id_post, $user_id]);
     } else {
-        $pdo->prepare("DELETE FROM likes WHERE id_post = ? AND user_ip = ? AND id_user IS NULL")->execute([$id_post, $user_ip]);
+        $pdo->prepare("DELETE FROM likes WHERE id_post = ? AND ip_address = ? AND id_user IS NULL")->execute([$id_post, $user_ip]);
     }
     $action = 'unliked';
 } else {
-    $pdo->prepare("INSERT INTO likes (id_post, id_user, user_ip, created_at) VALUES (?, ?, ?, NOW())")->execute([$id_post, $user_id, $user_ip]);
+    $pdo->prepare("INSERT INTO likes (id_post, id_user, ip_address, created_at) VALUES (?, ?, ?, NOW())")->execute([$id_post, $user_id, $user_ip]);
     $action = 'liked';
 }
 
