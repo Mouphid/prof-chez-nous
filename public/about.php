@@ -6,10 +6,6 @@ $page_title = "À propos - Joie Enseignante";
 
 $admin = $pdo->query("SELECT * FROM users WHERE role = 'admin' LIMIT 1")->fetch();
 
-$post_count = $pdo->query("SELECT COUNT(*) FROM posts WHERE status = 'published'")->fetchColumn();
-$user_count = $pdo->query("SELECT COUNT(*) FROM users WHERE is_active = 1")->fetchColumn();
-$file_count = $pdo->query("SELECT COUNT(*) FROM files")->fetchColumn();
-
 include "../includes/header.php";
 ?>
 
@@ -17,29 +13,6 @@ include "../includes/header.php";
     <div class="text-center mb-12">
         <h1 class="text-3xl font-bold text-gray-900"><i class="fas fa-info-circle text-primary"></i> À propos</h1>
         <p class="text-gray-500 mt-2">Découvrez notre mission et ceux qui font vivre cette plateforme</p>
-    </div>
-
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12 max-w-3xl mx-auto">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 text-center">
-            <i class="fas fa-book-open text-2xl text-primary mb-2"></i>
-            <div class="text-2xl font-bold text-gray-900"><?= $post_count ?></div>
-            <div class="text-sm text-gray-500">Articles</div>
-        </div>
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 text-center">
-            <i class="fas fa-users text-2xl text-emerald-500 mb-2"></i>
-            <div class="text-2xl font-bold text-gray-900"><?= $user_count ?></div>
-            <div class="text-sm text-gray-500">Membres</div>
-        </div>
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 text-center">
-            <i class="fas fa-download text-2xl text-purple-500 mb-2"></i>
-            <div class="text-2xl font-bold text-gray-900"><?= $file_count ?></div>
-            <div class="text-sm text-gray-500">Ressources</div>
-        </div>
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 text-center">
-            <i class="fas fa-heart text-2xl text-red-400 mb-2"></i>
-            <div class="text-2xl font-bold text-gray-900"><?= date('Y') - 2024 ?></div>
-            <div class="text-sm text-gray-500">Années</div>
-        </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto mb-12">
