@@ -57,37 +57,6 @@ include "../includes/header.php";
         </div>
     </div>
 
-    <div class="max-w-3xl mx-auto">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-            <div class="flex flex-col sm:flex-row items-start gap-6">
-                <div class="w-24 h-24 bg-indigo-50 rounded-xl flex items-center justify-center text-primary text-4xl flex-shrink-0">
-                    <i class="ph ph-user-tie"></i>
-                </div>
-                <div>
-                    <h2 class="text-xl font-bold text-gray-900 mb-2">Biographie</h2>
-                    <h3 class="text-lg font-semibold text-primary mb-3"><?= htmlspecialchars($admin['name'] ?? 'Professeur') ?></h3>
-                    <p class="text-gray-600 leading-relaxed mb-4">
-                        Fondateur de <strong class="text-primary">Joie Enseignante</strong>, 
-                        passionné par l'éducation et la transmission du savoir. 
-                        Avec plusieurs années d'expérience dans l'enseignement, j'ai créé cette plateforme 
-                        pour offrir un espace d'apprentissage moderne et accessible à tous.
-                    </p>
-                    <p class="text-gray-600 leading-relaxed mb-4">
-                        Ma vision est de bâtir une communauté éducative dynamique où enseignants et étudiants 
-                        peuvent échanger, collaborer et grandir ensemble. Chaque ressource partagée est une 
-                        opportunité d'apprendre et de s'améliorer.
-                    </p>
-                    <p class="text-gray-600 leading-relaxed">
-                        Rejoignez-nous dans cette aventure éducative et contribuez à faire de l'éducation 
-                        un levier de développement pour tous.
-                    </p>
-                    <?php if ($admin && $admin['email']): ?>
-                    <p class="mt-4 text-sm text-gray-400"><i class="ph ph-envelope"></i> <?= htmlspecialchars($admin['email']) ?></p>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <?php include "../includes/footer.php"; ?>

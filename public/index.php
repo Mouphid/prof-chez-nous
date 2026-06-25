@@ -44,6 +44,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
             <nav class="hidden md:flex items-center gap-1" aria-label="Navigation principale">
                 <a href="index.php" class="px-3 py-2 rounded-lg text-sm font-medium bg-indigo-50 text-primary ring-1 ring-indigo-200"><i class="ph ph-house"></i> Accueil</a>
                 <a href="about.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="ph ph-info"></i> À propos</a>
+                <a href="biography.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="ph ph-user-tie"></i> Biographie</a>
                 <a href="contact.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="ph ph-envelope"></i> Contact</a>
                 <?php if (isset($_SESSION['user_id'])): ?>
                 <div class="relative group">
@@ -68,6 +69,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
         <div class="hidden md:hidden bg-white border-t px-4 py-3 space-y-1" id="mobileNav" role="navigation">
             <a href="index.php" class="block px-3 py-2 rounded-lg text-sm font-medium bg-indigo-50 text-primary"><i class="ph ph-house"></i> Accueil</a>
             <a href="about.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-info"></i> À propos</a>
+            <a href="biography.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-user-tie"></i> Biographie</a>
             <a href="contact.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-envelope"></i> Contact</a>
             <?php if (isset($_SESSION['user_id'])): ?>
             <a href="profile.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-user-cog"></i> Mon profil</a>
@@ -220,6 +222,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                 <ul class="space-y-2">
                     <li><a href="index.php" class="hover:text-white transition">Accueil</a></li>
                     <li><a href="about.php" class="hover:text-white transition">À propos</a></li>
+                    <li><a href="biography.php" class="hover:text-white transition">Biographie</a></li>
                     <li><a href="contact.php" class="hover:text-white transition">Contact</a></li>
                 </ul>
             </div>

@@ -11,6 +11,7 @@
                 <ul class="space-y-2 text-sm">
                     <li><a href="../public/index.php" class="hover:text-white transition"><i class="ph ph-house mr-2"></i> Accueil</a></li>
                     <li><a href="../public/about.php" class="hover:text-white transition"><i class="ph ph-info mr-2"></i> À propos</a></li>
+                    <li><a href="../public/biography.php" class="hover:text-white transition"><i class="ph ph-user-tie mr-2"></i> Biographie</a></li>
                     <li><a href="../public/contact.php" class="hover:text-white transition"><i class="ph ph-envelope mr-2"></i> Contact</a></li>
                 </ul>
             </div>
