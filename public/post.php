@@ -392,9 +392,16 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                            '<button class="text-xs text-gray-500 hover:underline" onclick="cancelEdit(' + idComment + ', \'' + currentContent.replace(/'/g, "\\'") + '\')"><i class="ph ph-x"></i> Annuler</button>';
     };
 
+    function getCommentToken(id) {
+        const t = localStorage.getItem('comment_token_' + id);
+        if (t) return t;
+        const el = document.getElementById('comment-' + id);
+        return el ? el.dataset.token : null;
+    }
+
     window.saveComment = function(idComment) {
         const newContent = document.getElementById('edit-content-' + idComment).value;
-        const token = localStorage.getItem('comment_token_' + idComment);
+        const token = getCommentToken(idComment);
         const formData = new FormData();
         formData.append('id_comment', idComment);
         formData.append('content', newContent);
@@ -414,7 +421,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
 
     window.deleteComment = function(idComment) {
         if (!confirm('Voulez-vous vraiment supprimer ce commentaire?')) return;
-        const token = localStorage.getItem('comment_token_' + idComment);
+        const token = getCommentToken(idComment);
         const formData = new FormData();
         formData.append('id_comment', idComment);
         if (token) formData.append('token', token);
