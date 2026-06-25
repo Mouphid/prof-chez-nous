@@ -35,48 +35,48 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
     <title><?= $page_title ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>tailwind.config={theme:{extend:{colors:{primary:'#4F46E5',amber:'#F59E0B'}}}}</script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
 </head>
 <body class="bg-[#F8FAFC] font-sans text-gray-800 antialiased">
     <header class="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
-            <a href="index.php" class="flex items-center gap-2 text-xl font-extrabold text-primary hover:text-indigo-700 transition"><i class="fas fa-graduation-cap"></i> Joie Enseignante</a>
+            <a href="index.php" class="flex items-center gap-2 text-xl font-extrabold text-primary hover:text-indigo-700 transition"><i class="ph ph-graduation-cap"></i> Joie Enseignante</a>
             <nav class="hidden md:flex items-center gap-1" aria-label="Navigation principale">
-                <a href="index.php" class="px-3 py-2 rounded-lg text-sm font-medium bg-indigo-50 text-primary ring-1 ring-indigo-200"><i class="fas fa-home"></i> Accueil</a>
-                <a href="about.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="fas fa-info-circle"></i> À propos</a>
-                <a href="contact.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="fas fa-envelope"></i> Contact</a>
+                <a href="index.php" class="px-3 py-2 rounded-lg text-sm font-medium bg-indigo-50 text-primary ring-1 ring-indigo-200"><i class="ph ph-house"></i> Accueil</a>
+                <a href="about.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="ph ph-info"></i> À propos</a>
+                <a href="contact.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"><i class="ph ph-envelope"></i> Contact</a>
                 <?php if (isset($_SESSION['user_id'])): ?>
                 <div class="relative group">
                     <button class="flex items-center gap-2 bg-emerald-500 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-emerald-600 transition shadow-sm" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-user"></i> <?= htmlspecialchars($_SESSION['user_name'] ?? 'Profil') ?> <i class="fas fa-chevron-down text-xs"></i>
+                        <i class="ph ph-user"></i> <?= htmlspecialchars($_SESSION['user_name'] ?? 'Profil') ?> <i class="ph ph-caret-down text-xs"></i>
                     </button>
                     <div class="absolute right-0 top-full mt-1 w-48 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50" role="menu">
-                        <a href="profile.php" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-primary rounded-t-xl" role="menuitem"><i class="fas fa-user-cog w-5"></i> Mon profil</a>
-                        <a href="my_downloads.php" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-primary" role="menuitem"><i class="fas fa-download w-5"></i> Mes téléchargements</a>
-                        <a href="my_comments.php" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-primary" role="menuitem"><i class="fas fa-comments w-5"></i> Mes commentaires</a>
+                        <a href="profile.php" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-primary rounded-t-xl" role="menuitem"><i class="ph ph-user-cog w-5"></i> Mon profil</a>
+                        <a href="my_downloads.php" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-primary" role="menuitem"><i class="ph ph-download w-5"></i> Mes téléchargements</a>
+                        <a href="my_comments.php" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-primary" role="menuitem"><i class="ph ph-chats w-5"></i> Mes commentaires</a>
                         <hr class="border-gray-100">
-                        <a href="logout.php" class="block px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-b-xl" role="menuitem"><i class="fas fa-sign-out-alt w-5"></i> Déconnexion</a>
+                        <a href="logout.php" class="block px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-b-xl" role="menuitem"><i class="ph ph-sign-out w-5"></i> Déconnexion</a>
                     </div>
                 </div>
                 <?php else: ?>
-                <a href="register.php" class="px-3 py-2 rounded-lg text-sm font-medium text-primary hover:bg-indigo-50 transition"><i class="fas fa-user-plus"></i> Inscription</a>
-                <a href="login.php" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition shadow-sm"><i class="fas fa-sign-in-alt"></i> Connexion</a>
+                <a href="register.php" class="px-3 py-2 rounded-lg text-sm font-medium text-primary hover:bg-indigo-50 transition"><i class="ph ph-user-plus"></i> Inscription</a>
+                <a href="login.php" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition shadow-sm"><i class="ph ph-sign-in"></i> Connexion</a>
                 <?php endif; ?>
             </nav>
-            <button class="md:hidden text-gray-600 p-2 hover:bg-gray-100 rounded-lg transition" onclick="document.getElementById('mobileNav').classList.toggle('hidden')" aria-label="Menu" aria-expanded="false"><i class="fas fa-bars text-xl"></i></button>
+            <button class="md:hidden text-gray-600 p-2 hover:bg-gray-100 rounded-lg transition" onclick="document.getElementById('mobileNav').classList.toggle('hidden')" aria-label="Menu" aria-expanded="false"><i class="ph ph-list text-xl"></i></button>
         </div>
         <div class="hidden md:hidden bg-white border-t px-4 py-3 space-y-1" id="mobileNav" role="navigation">
-            <a href="index.php" class="block px-3 py-2 rounded-lg text-sm font-medium bg-indigo-50 text-primary"><i class="fas fa-home"></i> Accueil</a>
-            <a href="about.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-info-circle"></i> À propos</a>
-            <a href="contact.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-envelope"></i> Contact</a>
+            <a href="index.php" class="block px-3 py-2 rounded-lg text-sm font-medium bg-indigo-50 text-primary"><i class="ph ph-house"></i> Accueil</a>
+            <a href="about.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-info"></i> À propos</a>
+            <a href="contact.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-envelope"></i> Contact</a>
             <?php if (isset($_SESSION['user_id'])): ?>
-            <a href="profile.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-user-cog"></i> Mon profil</a>
-            <a href="my_downloads.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-download"></i> Mes téléchargements</a>
-            <a href="my_comments.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-comments"></i> Mes commentaires</a>
-            <a href="logout.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-red-600"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+            <a href="profile.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-user-cog"></i> Mon profil</a>
+            <a href="my_downloads.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-download"></i> Mes téléchargements</a>
+            <a href="my_comments.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-chats"></i> Mes commentaires</a>
+            <a href="logout.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-red-600"><i class="ph ph-sign-out"></i> Déconnexion</a>
             <?php else: ?>
-            <a href="login.php" class="block px-3 py-2 rounded-lg text-sm font-medium bg-primary text-white text-center"><i class="fas fa-sign-in-alt"></i> Connexion</a>
-            <a href="register.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-primary text-center"><i class="fas fa-user-plus"></i> Inscription</a>
+            <a href="login.php" class="block px-3 py-2 rounded-lg text-sm font-medium bg-primary text-white text-center"><i class="ph ph-sign-in"></i> Connexion</a>
+            <a href="register.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-primary text-center"><i class="ph ph-user-plus"></i> Inscription</a>
             <?php endif; ?>
         </div>
     </header>
@@ -95,10 +95,10 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                 <p class="text-lg sm:text-xl text-indigo-100 leading-relaxed mb-8 max-w-2xl mx-auto">Une plateforme collaborative pour partager, découvrir et échanger des ressources pédagogiques de qualité.</p>
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
                     <a href="#articles" class="bg-white text-primary font-bold px-8 py-3.5 rounded-xl hover:bg-indigo-50 transition-all shadow-lg hover:shadow-xl hover:shadow-white/25 active:scale-[0.97] transform hover:-translate-y-0.5 inline-flex items-center gap-2">
-                        <i class="fas fa-book-open"></i> Découvrir les articles
+                        <i class="ph ph-book-open"></i> Découvrir les articles
                     </a>
                     <a href="register.php" class="bg-amber-400 text-amber-900 font-bold px-8 py-3.5 rounded-xl hover:bg-amber-300 transition-all shadow-lg hover:shadow-xl hover:shadow-amber-400/25 active:scale-[0.97] transform hover:-translate-y-0.5 inline-flex items-center gap-2">
-                        <i class="fas fa-user-plus"></i> Rejoindre la communauté
+                        <i class="ph ph-user-plus"></i> Rejoindre la communauté
                     </a>
                 </div>
             </div>
@@ -137,12 +137,12 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                                     <p class="text-sm text-gray-500 leading-relaxed mb-3 flex-1"><?= truncate(strip_tags($post['content']), 180) ?></p>
                                     <div class="flex items-center justify-between pt-3 border-t border-gray-50">
                                         <div class="flex items-center gap-3 text-xs text-gray-400">
-                                            <span><i class="fas fa-user mr-1"></i> <?= htmlspecialchars($post['author_name'] ?? 'Anonyme') ?></span>
-                                            <span><i class="fas fa-heart mr-1"></i> <?= $post['likes_count'] ?? 0 ?></span>
-                                            <span><i class="fas fa-comment mr-1"></i> <?= $post['comments_count'] ?? 0 ?></span>
+                                            <span><i class="ph ph-user mr-1"></i> <?= htmlspecialchars($post['author_name'] ?? 'Anonyme') ?></span>
+                                            <span><i class="ph ph-heart mr-1"></i> <?= $post['likes_count'] ?? 0 ?></span>
+                                            <span><i class="ph ph-chat mr-1"></i> <?= $post['comments_count'] ?? 0 ?></span>
                                         </div>
                                         <a href="post.php?id=<?= $post['id_post'] ?>" class="text-xs font-medium text-primary hover:text-indigo-700 transition inline-flex items-center gap-1">
-                                            Lire <i class="fas fa-arrow-right text-xs"></i>
+                                            Lire <i class="ph ph-arrow-right text-xs"></i>
                                         </a>
                                     </div>
                                 </div>
@@ -154,19 +154,19 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                     <?php if ($total_pages > 1): ?>
                     <nav class="flex justify-center items-center gap-1.5 mt-8" aria-label="Pagination">
                         <?php if ($page > 1): ?>
-                        <a href="?page=<?= $page - 1 ?>" class="px-3 py-1.5 rounded-lg text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition"><i class="fas fa-chevron-left mr-1"></i> Précédent</a>
+                        <a href="?page=<?= $page - 1 ?>" class="px-3 py-1.5 rounded-lg text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition"><i class="ph ph-caret-left mr-1"></i> Précédent</a>
                         <?php endif; ?>
                         <?php for ($i = 1; $i <= $total_pages; $i++): ?>
                         <a href="?page=<?= $i ?>" class="w-8 h-8 flex items-center justify-center rounded-lg text-sm transition <?= $i === $page ? 'bg-primary text-white' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100' ?>" aria-current="<?= $i === $page ? 'page' : 'false' ?>"><?= $i ?></a>
                         <?php endfor; ?>
                         <?php if ($page < $total_pages): ?>
-                        <a href="?page=<?= $page + 1 ?>" class="px-3 py-1.5 rounded-lg text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition">Suivant <i class="fas fa-chevron-right ml-1"></i></a>
+                        <a href="?page=<?= $page + 1 ?>" class="px-3 py-1.5 rounded-lg text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition">Suivant <i class="ph ph-caret-right ml-1"></i></a>
                         <?php endif; ?>
                     </nav>
                     <?php endif; ?>
                 <?php else: ?>
                 <div class="text-center py-24 bg-white rounded-2xl border border-gray-100">
-                    <div class="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-book-open text-3xl text-gray-400"></i></div>
+                    <div class="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4"><i class="ph ph-book-open text-3xl text-gray-400"></i></div>
                     <p class="text-lg font-medium text-gray-600">Aucun article disponible pour le moment.</p>
                     <p class="text-sm text-gray-400 mt-1">Revenez bientôt pour découvrir les nouveautés !</p>
                 </div>

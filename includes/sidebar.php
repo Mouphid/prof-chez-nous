@@ -1,6 +1,6 @@
 <aside class="sidebar">
     <div class="widget">
-        <h3><i class="fas fa-folder"></i> Catégories</h3>
+        <h3><i class="ph ph-folder"></i> Catégories</h3>
         <ul class="category-list">
             <?php 
             $stmt_cat = $pdo->query("SELECT c.*, (SELECT COUNT(*) FROM posts WHERE id_category = c.id_category AND status IN ('published', 'draft')) as post_count FROM categories c ORDER BY name");
@@ -32,7 +32,7 @@
     </div>
 
     <div class="widget">
-        <h3><i class="fas fa-clock"></i> Articles récents</h3>
+        <h3><i class="ph ph-clock"></i> Articles récents</h3>
         <ul class="recent-posts">
             <?php 
             $stmt_recent = $pdo->query("SELECT id_post, title FROM posts WHERE status IN ('published', 'draft') ORDER BY created_at DESC LIMIT 5");
@@ -44,7 +44,7 @@
     </div>
 
     <div class="widget">
-        <h3><i class="fas fa-archive"></i> Archives</h3>
+        <h3><i class="ph ph-archive"></i> Archives</h3>
         <ul class="archives">
             <?php 
             try {

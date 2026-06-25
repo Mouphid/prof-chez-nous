@@ -41,7 +41,7 @@ $comments = $stmt_comments->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?></title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -49,7 +49,7 @@ $comments = $stmt_comments->fetchAll();
     <header class="prof-header">
         <div class="header-container">
             <div class="logo">
-                <div class="avatar"><i class="fas fa-user"></i></div>
+                <div class="avatar"><i class="ph ph-user"></i></div>
                 <div class="logo-text">
                     <h1>Prof. [Nom]</h1>
                     <p>Département de Littérature | Université de Cotonou</p>
@@ -57,14 +57,14 @@ $comments = $stmt_comments->fetchAll();
             </div>
             <nav class="main-nav" id="mainNav">
                 <ul>
-                    <li><a href="index.php"><i class="fas fa-home"></i> Accueil</a></li>
-                    <li><a href="profil.php"><i class="fas fa-user"></i> Profil</a></li>
-                    <li><a href="publications.php"><i class="fas fa-book"></i> Publications</a></li>
-                    <li><a href="cours.php"><i class="fas fa-graduation-cap"></i> Cours</a></li>
-                    <li><a href="contact.php"><i class="fas fa-envelope"></i> Contact</a></li>
+                    <li><a href="index.php"><i class="ph ph-house"></i> Accueil</a></li>
+                    <li><a href="profil.php"><i class="ph ph-user"></i> Profil</a></li>
+                    <li><a href="publications.php"><i class="ph ph-book"></i> Publications</a></li>
+                    <li><a href="cours.php"><i class="ph ph-graduation-cap"></i> Cours</a></li>
+                    <li><a href="contact.php"><i class="ph ph-envelope"></i> Contact</a></li>
                 </ul>
             </nav>
-            <button class="menu-toggle" onclick="document.getElementById('mainNav').classList.toggle('active')"><i class="fas fa-bars"></i></button>
+            <button class="menu-toggle" onclick="document.getElementById('mainNav').classList.toggle('active')"><i class="ph ph-list"></i></button>
         </div>
     </header>
 
@@ -82,9 +82,9 @@ $comments = $stmt_comments->fetchAll();
                         <span class="article-category"><?= htmlspecialchars($post['category_name'] ?? 'Article') ?></span>
                         <h1><?= htmlspecialchars($post['title']) ?></h1>
                         <div class="article-meta">
-                            <span><i class="fas fa-user"></i> <?= htmlspecialchars($post['author_name'] ?? 'Auteur') ?></span>
-                            <span><i class="fas fa-calendar"></i> <?= format_date($post['created_at']) ?></span>
-                            <span><i class="fas fa-eye"></i> <?= $post['views'] ?? 0 ?> vues</span>
+                            <span><i class="ph ph-user"></i> <?= htmlspecialchars($post['author_name'] ?? 'Auteur') ?></span>
+                            <span><i class="ph ph-calendar"></i> <?= format_date($post['created_at']) ?></span>
+                            <span><i class="ph ph-eye"></i> <?= $post['views'] ?? 0 ?> vues</span>
                         </div>
                     </header>
 
@@ -100,17 +100,17 @@ $comments = $stmt_comments->fetchAll();
 
                     <?php if (!empty($post['embed_link'])): ?>
                     <div class="article-embed">
-                        <h4><i class="fas fa-link"></i> Lien externe</h4>
+                        <h4><i class="ph ph-link"></i> Lien externe</h4>
                         <a href="<?= htmlspecialchars($post['embed_link']) ?>" target="_blank"><?= htmlspecialchars($post['embed_link']) ?></a>
                     </div>
                     <?php endif; ?>
 
                     <?php if (count($files) > 0): ?>
                     <div class="article-files">
-                        <h4><i class="fas fa-download"></i> Fichiers attachés</h4>
+                        <h4><i class="ph ph-download"></i> Fichiers attachés</h4>
                         <ul>
                             <?php foreach ($files as $file): ?>
-                            <li><a href="../uploads/<?= htmlspecialchars($file['file_path'] ?: $file['file_name']) ?>" target="_blank"><i class="fas fa-file"></i> <?= htmlspecialchars($file['file_name']) ?></a></li>
+                            <li><a href="../uploads/<?= htmlspecialchars($file['file_path'] ?: $file['file_name']) ?>" target="_blank"><i class="ph ph-file"></i> <?= htmlspecialchars($file['file_name']) ?></a></li>
                             <?php endforeach; ?>
                         </ul>
                     </div>
@@ -118,7 +118,7 @@ $comments = $stmt_comments->fetchAll();
                 </article>
 
                 <div class="comments-section">
-                    <h3><i class="fas fa-comments"></i> Commentaires (<?= count($comments) ?>)</h3>
+                    <h3><i class="ph ph-chats"></i> Commentaires (<?= count($comments) ?>)</h3>
                     
                     <?php foreach ($comments as $comment): ?>
                     <div class="comment">

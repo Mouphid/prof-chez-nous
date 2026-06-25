@@ -42,27 +42,27 @@ include "../includes/header.php";
 
 <div class="max-w-7xl mx-auto px-4 py-12">
     <div class="text-center mb-12">
-        <h1 class="text-3xl font-bold text-gray-900"><i class="fas fa-envelope text-primary"></i> Contact</h1>
+        <h1 class="text-3xl font-bold text-gray-900"><i class="ph ph-envelope text-primary"></i> Contact</h1>
         <p class="text-gray-500 mt-2">Une question, une suggestion ? Écrivez-nous !</p>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
         <div class="lg:col-span-2">
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-                <h2 class="text-xl font-semibold text-gray-900 mb-6"><i class="fas fa-paper-plane text-primary"></i> Envoyez-nous un message</h2>
+                <h2 class="text-xl font-semibold text-gray-900 mb-6"><i class="ph ph-paper-plane-right text-primary"></i> Envoyez-nous un message</h2>
                 <form method="post" class="space-y-5">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1"><i class="fas fa-user text-primary"></i> Nom complet</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1"><i class="ph ph-user text-primary"></i> Nom complet</label>
                             <input type="text" name="name" required placeholder="Votre nom" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1"><i class="fas fa-envelope text-primary"></i> Email</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1"><i class="ph ph-envelope text-primary"></i> Email</label>
                             <input type="email" name="email" required placeholder="votre@email.com" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1"><i class="fas fa-tag text-primary"></i> Sujet</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1"><i class="ph ph-tag text-primary"></i> Sujet</label>
                         <select name="subject" required class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary">
                             <option value="">Sélectionnez un sujet</option>
                             <option value="question">Question générale</option>
@@ -73,11 +73,11 @@ include "../includes/header.php";
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1"><i class="fas fa-comment text-primary"></i> Message</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1"><i class="ph ph-chat text-primary"></i> Message</label>
                         <textarea name="message" rows="6" required placeholder="Votre message..." class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary"></textarea>
                     </div>
                     <button type="submit" class="bg-primary text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-indigo-700 transition inline-flex items-center gap-2">
-                        <i class="fas fa-paper-plane"></i> Envoyer le message
+                        <i class="ph ph-paper-plane-right"></i> Envoyer le message
                     </button>
                 </form>
             </div>
@@ -85,30 +85,30 @@ include "../includes/header.php";
 
         <div class="space-y-6">
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-900 mb-4"><i class="fas fa-id-card text-primary"></i> Coordonnées</h3>
+                <h3 class="font-semibold text-gray-900 mb-4"><i class="ph ph-identification-card text-primary"></i> Coordonnées</h3>
                 <ul class="space-y-4">
                     <li class="flex items-start gap-3">
-                        <div class="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center text-primary flex-shrink-0"><i class="fas fa-envelope"></i></div>
+                        <div class="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center text-primary flex-shrink-0"><i class="ph ph-envelope"></i></div>
                         <div><strong class="text-sm">Email</strong><p class="text-sm text-gray-500">contact@joieenseignante.com</p></div>
                     </li>
                     <li class="flex items-start gap-3">
-                        <div class="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center text-primary flex-shrink-0"><i class="fas fa-phone"></i></div>
+                        <div class="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center text-primary flex-shrink-0"><i class="ph ph-phone"></i></div>
                         <div><strong class="text-sm">Téléphone</strong><p class="text-sm text-gray-500">+229 XX XX XX XX</p></div>
                     </li>
                     <li class="flex items-start gap-3">
-                        <div class="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center text-primary flex-shrink-0"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center text-primary flex-shrink-0"><i class="ph ph-map-pin"></i></div>
                         <div><strong class="text-sm">Adresse</strong><p class="text-sm text-gray-500">Cotonou, Bénin</p></div>
                     </li>
                 </ul>
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-900 mb-4"><i class="fas fa-share-alt text-primary"></i> Suivez-nous</h3>
+                <h3 class="font-semibold text-gray-900 mb-4"><i class="ph ph-share-network text-primary"></i> Suivez-nous</h3>
                 <div class="flex gap-3">
-                    <a href="#" class="w-10 h-10 bg-gray-100 hover:bg-indigo-100 hover:text-primary rounded-lg flex items-center justify-center transition text-gray-600"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="w-10 h-10 bg-gray-100 hover:bg-indigo-100 hover:text-primary rounded-lg flex items-center justify-center transition text-gray-600"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="w-10 h-10 bg-gray-100 hover:bg-indigo-100 hover:text-primary rounded-lg flex items-center justify-center transition text-gray-600"><i class="fab fa-youtube"></i></a>
-                    <a href="#" class="w-10 h-10 bg-gray-100 hover:bg-indigo-100 hover:text-primary rounded-lg flex items-center justify-center transition text-gray-600"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="w-10 h-10 bg-gray-100 hover:bg-indigo-100 hover:text-primary rounded-lg flex items-center justify-center transition text-gray-600"><i class="ph ph-facebook-logo"></i></a>
+                    <a href="#" class="w-10 h-10 bg-gray-100 hover:bg-indigo-100 hover:text-primary rounded-lg flex items-center justify-center transition text-gray-600"><i class="ph ph-twitter-logo"></i></a>
+                    <a href="#" class="w-10 h-10 bg-gray-100 hover:bg-indigo-100 hover:text-primary rounded-lg flex items-center justify-center transition text-gray-600"><i class="ph ph-youtube-logo"></i></a>
+                    <a href="#" class="w-10 h-10 bg-gray-100 hover:bg-indigo-100 hover:text-primary rounded-lg flex items-center justify-center transition text-gray-600"><i class="ph ph-linkedin-logo-in"></i></a>
                 </div>
             </div>
         </div>

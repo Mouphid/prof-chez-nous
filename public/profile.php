@@ -92,35 +92,35 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
     <title><?= $page_title ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>tailwind.config={theme:{extend:{colors:{primary:'#4F46E5'}}}}</script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
 </head>
 <body class="bg-gray-50 font-sans text-gray-800">
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
-            <a href="index.php" class="flex items-center gap-2 text-xl font-extrabold text-primary"><i class="fas fa-graduation-cap"></i> Joie Enseignante</a>
+            <a href="index.php" class="flex items-center gap-2 text-xl font-extrabold text-primary"><i class="ph ph-graduation-cap"></i> Joie Enseignante</a>
             <nav class="hidden md:flex items-center gap-1">
-                <a href="index.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="fas fa-home"></i> Accueil</a>
+                <a href="index.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-house"></i> Accueil</a>
                 <?php if (isset($_SESSION['user_id'])): ?>
                 <div class="relative group">
                     <button class="flex items-center gap-2 bg-emerald-500 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-emerald-600 transition">
-                        <i class="fas fa-user"></i> <?= htmlspecialchars($_SESSION['user_name'] ?? 'Profil') ?> <i class="fas fa-chevron-down text-xs"></i>
+                        <i class="ph ph-user"></i> <?= htmlspecialchars($_SESSION['user_name'] ?? 'Profil') ?> <i class="ph ph-caret-down text-xs"></i>
                     </button>
                     <div class="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                        <a href="profile.php" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-primary rounded-t-lg"><i class="fas fa-user-cog w-5"></i> Mon profil</a>
-                        <a href="my_downloads.php" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-primary"><i class="fas fa-download w-5"></i> Mes téléchargements</a>
-                        <a href="my_comments.php" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-primary"><i class="fas fa-comments w-5"></i> Mes commentaires</a>
+                        <a href="profile.php" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-primary rounded-t-lg"><i class="ph ph-user-cog w-5"></i> Mon profil</a>
+                        <a href="my_downloads.php" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-primary"><i class="ph ph-download w-5"></i> Mes téléchargements</a>
+                        <a href="my_comments.php" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-primary"><i class="ph ph-chats w-5"></i> Mes commentaires</a>
                         <hr class="border-gray-100">
-                        <a href="logout.php" class="block px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-b-lg"><i class="fas fa-sign-out-alt w-5"></i> Déconnexion</a>
+                        <a href="logout.php" class="block px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-b-lg"><i class="ph ph-sign-out w-5"></i> Déconnexion</a>
                     </div>
                 </div>
                 <?php endif; ?>
             </nav>
-            <button class="md:hidden text-gray-600 p-2" onclick="document.getElementById('mobileNav').classList.toggle('hidden')" aria-label="Menu"><i class="fas fa-bars text-xl"></i></button>
+            <button class="md:hidden text-gray-600 p-2" onclick="document.getElementById('mobileNav').classList.toggle('hidden')" aria-label="Menu"><i class="ph ph-list text-xl"></i></button>
         </div>
         <div class="hidden md:hidden bg-white border-t px-4 py-3 space-y-1" id="mobileNav">
-            <a href="index.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="fas fa-home"></i> Accueil</a>
-            <a href="profile.php" class="block px-3 py-2 rounded-lg text-sm font-medium bg-indigo-50 text-primary"><i class="fas fa-user-cog"></i> Mon profil</a>
-            <a href="logout.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-red-600"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+            <a href="index.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-house"></i> Accueil</a>
+            <a href="profile.php" class="block px-3 py-2 rounded-lg text-sm font-medium bg-indigo-50 text-primary"><i class="ph ph-user-cog"></i> Mon profil</a>
+            <a href="logout.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-red-600"><i class="ph ph-sign-out"></i> Déconnexion</a>
         </div>
     </header>
 
@@ -129,24 +129,24 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
     <main class="max-w-4xl mx-auto px-4 -mt-24">
         <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sm:p-10">
             <?php if ($flash_success): ?>
-            <div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-2"><i class="fas fa-check-circle"></i> <?= htmlspecialchars($flash_success) ?></div>
+            <div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-2"><i class="ph ph-check-circle"></i> <?= htmlspecialchars($flash_success) ?></div>
             <?php endif; ?>
             <?php if ($success): ?>
-            <div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-2"><i class="fas fa-check-circle"></i> <?= htmlspecialchars($success) ?></div>
+            <div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-2"><i class="ph ph-check-circle"></i> <?= htmlspecialchars($success) ?></div>
             <?php endif; ?>
             <?php if ($error): ?>
-            <div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-2"><i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($error) ?></div>
+            <div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-2"><i class="ph ph-warning-circle"></i> <?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
 
             <div class="text-center -mt-20 mb-6">
                 <?php if (!empty($user['avatar'])): ?>
                 <img src="../uploads/images/<?= htmlspecialchars($user['avatar']) ?>" alt="Avatar" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-lg mx-auto">
                 <?php else: ?>
-                <div class="w-28 h-28 rounded-full bg-gray-200 border-4 border-white shadow-lg mx-auto flex items-center justify-center text-4xl text-gray-400"><i class="fas fa-user"></i></div>
+                <div class="w-28 h-28 rounded-full bg-gray-200 border-4 border-white shadow-lg mx-auto flex items-center justify-center text-4xl text-gray-400"><i class="ph ph-user"></i></div>
                 <?php endif; ?>
                 <h2 class="text-xl font-bold text-gray-900 mt-4"><?= htmlspecialchars($user['name']) ?></h2>
                 <p class="text-gray-500"><?= htmlspecialchars($user['email']) ?></p>
-                <span class="inline-flex items-center gap-1 text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full mt-2"><i class="fas fa-circle" style="font-size:6px;"></i> En ligne</span>
+                <span class="inline-flex items-center gap-1 text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full mt-2"><i class="ph ph-circle" style="font-size:6px;"></i> En ligne</span>
                 <?php if (!empty($user['bio'])): ?>
                 <p class="mt-4 px-4 py-3 bg-gray-50 rounded-lg text-gray-600 italic text-sm"><?= nl2br(htmlspecialchars($user['bio'])) ?></p>
                 <?php endif; ?>
@@ -163,13 +163,13 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                     <div class="text-sm text-gray-500">Téléchargements</div>
                 </div>
                 <div class="bg-emerald-50 rounded-xl p-4 text-center">
-                    <div class="text-2xl font-bold text-emerald-600"><i class="fas fa-check-circle"></i></div>
+                    <div class="text-2xl font-bold text-emerald-600"><i class="ph ph-check-circle"></i></div>
                     <div class="text-sm text-emerald-700">Actif</div>
                 </div>
             </div>
 
             <div class="mb-8">
-                <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2"><i class="fas fa-history text-primary"></i> Activité récente</h3>
+                <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2"><i class="ph ph-clock-counter-clockwise text-primary"></i> Activité récente</h3>
                 <div class="bg-gray-50 rounded-xl p-4">
                     <?php
                     $activities = [];
@@ -183,7 +183,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                     <ul class="space-y-2">
                         <?php foreach ($activities as $act): ?>
                         <li class="flex items-center gap-3 text-sm py-2 border-b border-gray-200 last:border-0">
-                            <i class="fas fa-download w-5 text-amber-500"></i>
+                            <i class="ph ph-download w-5 text-amber-500"></i>
                             <span class="flex-1 text-gray-600"><?= htmlspecialchars($act['title']) ?></span>
                             <span class="text-xs text-gray-400"><?= format_date($act['date']) ?></span>
                         </li>
@@ -196,7 +196,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
             </div>
 
             <div class="mb-8">
-                <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2"><i class="fas fa-edit text-primary"></i> Modifier le profil</h3>
+                <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2"><i class="ph ph-pencil text-primary"></i> Modifier le profil</h3>
                 <form method="post" enctype="multipart/form-data" class="max-w-lg space-y-4">
                     <?= csrf_field() ?>
                     <div>
@@ -212,19 +212,19 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                         <textarea name="bio" rows="4" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none transition resize-none"><?= htmlspecialchars($user['bio'] ?? '') ?></textarea>
                     </div>
                     <button type="submit" name="update" class="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 transition inline-flex items-center gap-2">
-                        <i class="fas fa-save"></i> Enregistrer
+                        <i class="ph ph-floppy-disk"></i> Enregistrer
                     </button>
                 </form>
             </div>
 
             <div>
-                <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2"><i class="fas fa-download text-primary"></i> Mes téléchargements (<?= $my_downloads_count ?>)</h3>
+                <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2"><i class="ph ph-download text-primary"></i> Mes téléchargements (<?= $my_downloads_count ?>)</h3>
                 <?php if (count($user_downloads) > 0): ?>
                 <div class="space-y-3">
                     <?php foreach ($user_downloads as $dl): ?>
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 py-3 border-b border-gray-100 last:border-0">
                         <div>
-                            <a href="download.php?type=images&file=<?= urlencode($dl['file_name']) ?>&id=<?= $dl['id_file'] ?>" class="text-primary font-medium hover:underline"><i class="fas fa-file"></i> <?= htmlspecialchars($dl['file_name']) ?></a>
+                            <a href="download.php?type=images&file=<?= urlencode($dl['file_name']) ?>&id=<?= $dl['id_file'] ?>" class="text-primary font-medium hover:underline"><i class="ph ph-file"></i> <?= htmlspecialchars($dl['file_name']) ?></a>
                             <p class="text-xs text-gray-400 mt-1">
                                 Téléchargé le <?= format_date($dl['downloaded_at']) ?>
                                 <?php if (!empty($dl['post_title'])): ?> &middot; <?= htmlspecialchars($dl['post_title']) ?><?php endif; ?>

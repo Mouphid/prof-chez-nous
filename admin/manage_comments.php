@@ -49,7 +49,7 @@ $can_view_users = has_permission('manage_users');
     <title>Gestion Commentaires - Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>tailwind.config={theme:{extend:{colors:{primary:'#4F46E5'}}}}</script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
 </head>
 <body class="bg-gray-100 font-sans">
     <div class="flex min-h-screen">
@@ -57,26 +57,26 @@ $can_view_users = has_permission('manage_users');
         <aside class="w-64 bg-gray-900 text-white fixed h-full overflow-y-auto">
             <div class="p-5 border-b border-gray-700">
                 <a href="dashboard.php" class="flex items-center gap-3 text-xl font-extrabold">
-                    <i class="fas fa-graduation-cap text-indigo-400"></i> JoieEnseignante
+                    <i class="ph ph-graduation-cap text-indigo-400"></i> JoieEnseignante
                 </a>
             </div>
             <nav class="p-4">
                 <ul class="space-y-1">
-                    <li><a href="dashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="fas fa-home w-5"></i> Dashboard</a></li>
+                    <li><a href="dashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-house w-5"></i> Dashboard</a></li>
                     <?php if($can_view_posts): ?>
-                    <li><a href="manage_posts.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="fas fa-file-alt w-5"></i> Articles</a></li>
-                    <li><a href="add_post.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="fas fa-plus w-5"></i> Nouveau post</a></li>
+                    <li><a href="manage_posts.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-file-alt w-5"></i> Articles</a></li>
+                    <li><a href="add_post.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-plus w-5"></i> Nouveau post</a></li>
                     <?php endif; ?>
-                    <li><a href="manage_comments.php" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-gray-700 text-white"><i class="fas fa-comments w-5"></i> Commentaires</a></li>
+                    <li><a href="manage_comments.php" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-gray-700 text-white"><i class="ph ph-chats w-5"></i> Commentaires</a></li>
                     <?php if($can_view_categories): ?>
-                    <li><a href="manage_categories.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="fas fa-folder w-5"></i> Catégories</a></li>
+                    <li><a href="manage_categories.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-folder w-5"></i> Catégories</a></li>
                     <?php endif; ?>
                     <?php if($can_view_users): ?>
-                    <li><a href="manage_users.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="fas fa-users w-5"></i> Utilisateurs</a></li>
+                    <li><a href="manage_users.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-users w-5"></i> Utilisateurs</a></li>
                     <?php endif; ?>
                     <li class="border-t border-gray-700 pt-3 mt-3">
-                        <a href="../public/index.php" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="fas fa-external-link-alt w-5"></i> Voir le site</a>
-                        <a href="logout.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="fas fa-sign-out-alt w-5"></i> Déconnexion</a>
+                        <a href="../public/index.php" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-arrow-square-out w-5"></i> Voir le site</a>
+                        <a href="logout.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-sign-out w-5"></i> Déconnexion</a>
                     </li>
                 </ul>
             </nav>
@@ -85,7 +85,7 @@ $can_view_users = has_permission('manage_users');
         <!-- Main -->
         <main class="flex-1 ml-64 p-8">
             <div class="flex justify-between items-center mb-8">
-                <h1 class="text-2xl font-bold text-gray-800"><i class="fas fa-comments text-primary mr-2"></i> Gestion des Commentaires</h1>
+                <h1 class="text-2xl font-bold text-gray-800"><i class="ph ph-chats text-primary mr-2"></i> Gestion des Commentaires</h1>
             </div>
 
             <!-- Stats -->
@@ -122,7 +122,7 @@ $can_view_users = has_permission('manage_users');
                 ?>
                 <div class="p-5 border-b border-gray-100 hover:bg-gray-50">
                     <div class="flex justify-between items-start mb-2">
-                        <span class="font-semibold text-primary"><i class="fas fa-user mr-1"></i><?= htmlspecialchars($c['author_email'] ?? 'Anonyme') ?></span>
+                        <span class="font-semibold text-primary"><i class="ph ph-user mr-1"></i><?= htmlspecialchars($c['author_email'] ?? 'Anonyme') ?></span>
                         <span class="text-xs font-semibold px-2 py-1 rounded-full <?= $badge_class ?>"><?= $c_status ?: 'en attente' ?></span>
                     </div>
                     <p class="text-sm text-gray-500 mb-2">
@@ -133,17 +133,17 @@ $can_view_users = has_permission('manage_users');
                     <div class="flex gap-2">
                         <?php $token = csrf_token(); ?>
                         <?php if ($c_status !== 'visible'): ?>
-                        <a href="?approve=<?= $c['id_comment'] ?>&csrf_token=<?= $token ?>" class="px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-sm hover:bg-green-100 transition"><i class="fas fa-check"></i> Approuver</a>
+                        <a href="?approve=<?= $c['id_comment'] ?>&csrf_token=<?= $token ?>" class="px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-sm hover:bg-green-100 transition"><i class="ph ph-check"></i> Approuver</a>
                         <?php endif; ?>
                         <?php if ($c_status === 'visible'): ?>
-                        <a href="?hide=<?= $c['id_comment'] ?>&csrf_token=<?= $token ?>" class="px-3 py-1.5 bg-red-50 text-red-700 rounded-lg text-sm hover:bg-red-100 transition"><i class="fas fa-eye-slash"></i> Masquer</a>
+                        <a href="?hide=<?= $c['id_comment'] ?>&csrf_token=<?= $token ?>" class="px-3 py-1.5 bg-red-50 text-red-700 rounded-lg text-sm hover:bg-red-100 transition"><i class="ph ph-eye-slash"></i> Masquer</a>
                         <?php endif; ?>
-                        <a href="?delete=<?= $c['id_comment'] ?>&csrf_token=<?= $token ?>" class="px-3 py-1.5 bg-gray-100 text-red-600 rounded-lg text-sm hover:bg-red-100 transition" onclick="return confirm('Supprimer ce commentaire ?');"><i class="fas fa-trash"></i> Supprimer</a>
+                        <a href="?delete=<?= $c['id_comment'] ?>&csrf_token=<?= $token ?>" class="px-3 py-1.5 bg-gray-100 text-red-600 rounded-lg text-sm hover:bg-red-100 transition" onclick="return confirm('Supprimer ce commentaire ?');"><i class="ph ph-trash"></i> Supprimer</a>
                     </div>
                 </div>
                 <?php endforeach; ?>
                 <?php if(!$has_items): ?>
-                <div class="p-10 text-center text-gray-400"><i class="fas fa-comments text-3xl block mb-2"></i> Aucun commentaire trouvé.</div>
+                <div class="p-10 text-center text-gray-400"><i class="ph ph-chats text-3xl block mb-2"></i> Aucun commentaire trouvé.</div>
                 <?php endif; ?>
             </div>
         </main>

@@ -58,7 +58,7 @@ $latest_posts = $pdo->query("SELECT p.*, c.name as category_name, u.name as auth
     <title>Dashboard - Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>tailwind.config={theme:{extend:{colors:{primary:'#4F46E5'}}}}</script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
 </head>
 <body class="bg-gray-100 font-sans">
     <div class="flex min-h-screen">
@@ -66,28 +66,28 @@ $latest_posts = $pdo->query("SELECT p.*, c.name as category_name, u.name as auth
         <aside class="w-64 bg-gray-900 text-white fixed h-full overflow-y-auto">
             <div class="p-5 border-b border-gray-700">
                 <a href="dashboard.php" class="flex items-center gap-3 text-xl font-extrabold">
-                    <i class="fas fa-graduation-cap text-indigo-400"></i> JoieEnseignante
+                    <i class="ph ph-graduation-cap text-indigo-400"></i> JoieEnseignante
                 </a>
             </div>
             <nav class="p-4">
                 <ul class="space-y-1">
-                    <li><a href="dashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-gray-700 text-white"><i class="fas fa-home w-5"></i> Dashboard</a></li>
+                    <li><a href="dashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-gray-700 text-white"><i class="ph ph-house w-5"></i> Dashboard</a></li>
                     <?php if($can_view_posts): ?>
-                    <li><a href="manage_posts.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="fas fa-file-alt w-5"></i> Articles</a></li>
-                    <li><a href="add_post.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="fas fa-plus w-5"></i> Nouveau post</a></li>
+                    <li><a href="manage_posts.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-file-alt w-5"></i> Articles</a></li>
+                    <li><a href="add_post.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-plus w-5"></i> Nouveau post</a></li>
                     <?php endif; ?>
                     <?php if($can_view_comments): ?>
-                    <li><a href="manage_comments.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="fas fa-comments w-5"></i> Commentaires</a></li>
+                    <li><a href="manage_comments.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-chats w-5"></i> Commentaires</a></li>
                     <?php endif; ?>
                     <?php if($can_view_categories): ?>
-                    <li><a href="manage_categories.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="fas fa-folder w-5"></i> Catégories</a></li>
+                    <li><a href="manage_categories.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-folder w-5"></i> Catégories</a></li>
                     <?php endif; ?>
                     <?php if($can_view_users): ?>
-                    <li><a href="manage_users.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="fas fa-users w-5"></i> Utilisateurs</a></li>
+                    <li><a href="manage_users.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-users w-5"></i> Utilisateurs</a></li>
                     <?php endif; ?>
                     <li class="border-t border-gray-700 pt-3 mt-3">
-                        <a href="../public/index.php" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="fas fa-external-link-alt w-5"></i> Voir le site</a>
-                        <a href="logout.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="fas fa-sign-out-alt w-5"></i> Déconnexion</a>
+                        <a href="../public/index.php" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-arrow-square-out w-5"></i> Voir le site</a>
+                        <a href="logout.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-sign-out w-5"></i> Déconnexion</a>
                     </li>
                 </ul>
             </nav>
@@ -97,7 +97,7 @@ $latest_posts = $pdo->query("SELECT p.*, c.name as category_name, u.name as auth
         <main class="flex-1 ml-64 p-8">
             <!-- Header -->
             <div class="flex justify-between items-center mb-8">
-                <h1 class="text-2xl font-bold text-gray-800"><i class="fas fa-tachometer-alt text-primary mr-2"></i> Tableau de bord</h1>
+                <h1 class="text-2xl font-bold text-gray-800"><i class="ph ph-gauge text-primary mr-2"></i> Tableau de bord</h1>
                 <div class="flex items-center gap-3">
                     <span class="text-gray-600"><?= htmlspecialchars($admin['name'] ?? 'Admin') ?></span>
                     <span class="bg-primary text-white text-xs font-semibold px-3 py-1 rounded-full"><?= $admin_role_label ?></span>
@@ -107,7 +107,7 @@ $latest_posts = $pdo->query("SELECT p.*, c.name as category_name, u.name as auth
             <?php if($can_view_users): ?>
             <!-- Permission table -->
             <div class="bg-indigo-50 rounded-xl p-5 mb-6">
-                <h3 class="font-semibold text-indigo-900 mb-3"><i class="fas fa-shield-alt"></i> Vos permissions</h3>
+                <h3 class="font-semibold text-indigo-900 mb-3"><i class="ph ph-shield"></i> Vos permissions</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm border-collapse">
                         <thead>
@@ -147,37 +147,37 @@ $latest_posts = $pdo->query("SELECT p.*, c.name as category_name, u.name as auth
             <!-- Quick actions -->
             <div class="flex gap-3 mb-8 flex-wrap">
                 <?php if($can_publish): ?>
-                <a href="add_post.php" class="flex items-center gap-2 bg-white px-5 py-3 rounded-lg shadow-sm hover:shadow-md transition font-medium text-gray-800"><i class="fas fa-plus text-primary"></i> Nouveau post</a>
+                <a href="add_post.php" class="flex items-center gap-2 bg-white px-5 py-3 rounded-lg shadow-sm hover:shadow-md transition font-medium text-gray-800"><i class="ph ph-plus text-primary"></i> Nouveau post</a>
                 <?php endif; ?>
                 <?php if($can_view_comments): ?>
-                <a href="manage_comments.php" class="flex items-center gap-2 bg-white px-5 py-3 rounded-lg shadow-sm hover:shadow-md transition font-medium text-gray-800"><i class="fas fa-comments text-primary"></i> Commentaires</a>
+                <a href="manage_comments.php" class="flex items-center gap-2 bg-white px-5 py-3 rounded-lg shadow-sm hover:shadow-md transition font-medium text-gray-800"><i class="ph ph-chats text-primary"></i> Commentaires</a>
                 <?php endif; ?>
                 <?php if($can_view_users): ?>
-                <a href="manage_users.php" class="flex items-center gap-2 bg-white px-5 py-3 rounded-lg shadow-sm hover:shadow-md transition font-medium text-gray-800"><i class="fas fa-user-plus text-primary"></i> Utilisateurs</a>
+                <a href="manage_users.php" class="flex items-center gap-2 bg-white px-5 py-3 rounded-lg shadow-sm hover:shadow-md transition font-medium text-gray-800"><i class="ph ph-user-plus text-primary"></i> Utilisateurs</a>
                 <?php endif; ?>
             </div>
 
             <!-- Stats -->
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
                 <?php if($can_view_posts): ?>
-                <div class="bg-white p-5 rounded-xl shadow-sm"><i class="fas fa-file-alt text-indigo-400 text-xl mb-2 block"></i><div class="text-3xl font-extrabold text-gray-800"><?= $stats['posts'] ?></div><div class="text-sm text-gray-500">Articles</div></div>
-                <div class="bg-white p-5 rounded-xl shadow-sm"><i class="fas fa-check-circle text-green-400 text-xl mb-2 block"></i><div class="text-3xl font-extrabold text-gray-800"><?= $stats['posts_published'] ?></div><div class="text-sm text-gray-500">Publiés</div></div>
-                <div class="bg-white p-5 rounded-xl shadow-sm"><i class="fas fa-edit text-yellow-400 text-xl mb-2 block"></i><div class="text-3xl font-extrabold text-gray-800"><?= $stats['posts_draft'] ?></div><div class="text-sm text-gray-500">Brouillons</div></div>
+                <div class="bg-white p-5 rounded-xl shadow-sm"><i class="ph ph-file-alt text-indigo-400 text-xl mb-2 block"></i><div class="text-3xl font-extrabold text-gray-800"><?= $stats['posts'] ?></div><div class="text-sm text-gray-500">Articles</div></div>
+                <div class="bg-white p-5 rounded-xl shadow-sm"><i class="ph ph-check-circle text-green-400 text-xl mb-2 block"></i><div class="text-3xl font-extrabold text-gray-800"><?= $stats['posts_published'] ?></div><div class="text-sm text-gray-500">Publiés</div></div>
+                <div class="bg-white p-5 rounded-xl shadow-sm"><i class="ph ph-pencil text-yellow-400 text-xl mb-2 block"></i><div class="text-3xl font-extrabold text-gray-800"><?= $stats['posts_draft'] ?></div><div class="text-sm text-gray-500">Brouillons</div></div>
                 <?php endif; ?>
                 <?php if($can_view_comments): ?>
-                <div class="bg-white p-5 rounded-xl shadow-sm"><i class="fas fa-comments text-blue-400 text-xl mb-2 block"></i><div class="text-3xl font-extrabold text-gray-800"><?= $stats['comments'] ?></div><div class="text-sm text-gray-500">Commentaires</div></div>
+                <div class="bg-white p-5 rounded-xl shadow-sm"><i class="ph ph-chats text-blue-400 text-xl mb-2 block"></i><div class="text-3xl font-extrabold text-gray-800"><?= $stats['comments'] ?></div><div class="text-sm text-gray-500">Commentaires</div></div>
                 <?php endif; ?>
                 <?php if($admin_role === 'admin'): ?>
-                <div class="bg-white p-5 rounded-xl shadow-sm"><i class="fas fa-heart text-red-400 text-xl mb-2 block"></i><div class="text-3xl font-extrabold text-gray-800"><?= $stats['likes'] ?></div><div class="text-sm text-gray-500">Likes</div></div>
-                <div class="bg-white p-5 rounded-xl shadow-sm"><i class="fas fa-eye text-gray-400 text-xl mb-2 block"></i><div class="text-3xl font-extrabold text-gray-800"><?= number_format($stats['views']) ?></div><div class="text-sm text-gray-500">Vues</div></div>
-                <div class="bg-white p-5 rounded-xl shadow-sm"><i class="fas fa-users text-purple-400 text-xl mb-2 block"></i><div class="text-3xl font-extrabold text-gray-800"><?= $stats['users'] ?></div><div class="text-sm text-gray-500">Utilisateurs</div></div>
+                <div class="bg-white p-5 rounded-xl shadow-sm"><i class="ph ph-heart text-red-400 text-xl mb-2 block"></i><div class="text-3xl font-extrabold text-gray-800"><?= $stats['likes'] ?></div><div class="text-sm text-gray-500">Likes</div></div>
+                <div class="bg-white p-5 rounded-xl shadow-sm"><i class="ph ph-eye text-gray-400 text-xl mb-2 block"></i><div class="text-3xl font-extrabold text-gray-800"><?= number_format($stats['views']) ?></div><div class="text-sm text-gray-500">Vues</div></div>
+                <div class="bg-white p-5 rounded-xl shadow-sm"><i class="ph ph-users text-purple-400 text-xl mb-2 block"></i><div class="text-3xl font-extrabold text-gray-800"><?= $stats['users'] ?></div><div class="text-sm text-gray-500">Utilisateurs</div></div>
                 <?php endif; ?>
             </div>
 
             <!-- Latest posts -->
             <?php if(count($latest_posts) > 0 && $can_view_posts): ?>
             <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
-                <h2 class="text-lg font-semibold p-5 border-b border-gray-100"><i class="fas fa-clock text-primary mr-2"></i> Derniers articles</h2>
+                <h2 class="text-lg font-semibold p-5 border-b border-gray-100"><i class="ph ph-clock text-primary mr-2"></i> Derniers articles</h2>
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead class="bg-gray-50 text-left text-sm font-semibold text-gray-600">
@@ -191,9 +191,9 @@ $latest_posts = $pdo->query("SELECT p.*, c.name as category_name, u.name as auth
                                 <td class="p-3"><span class="text-xs font-semibold px-2 py-1 rounded-full <?= $post['status']==='published'?'bg-green-100 text-green-700':'bg-red-100 text-red-700' ?>"><?= $post['status'] ?></span></td>
                                 <td class="p-3 text-gray-500 text-sm"><?= format_date($post['created_at']) ?></td>
                                 <td class="p-3">
-                                    <a href="edit_post.php?id=<?= $post['id_post'] ?>" class="text-indigo-600 hover:text-indigo-800 mr-2"><i class="fas fa-edit"></i></a>
+                                    <a href="edit_post.php?id=<?= $post['id_post'] ?>" class="text-indigo-600 hover:text-indigo-800 mr-2"><i class="ph ph-pencil"></i></a>
                                     <?php if(has_permission('delete_any_post') || $post['id_user'] == $_SESSION['admin_id']): ?>
-                                    <a href="delete_post.php?id=<?= $post['id_post'] ?>&csrf_token=<?= csrf_token() ?>" class="text-red-600 hover:text-red-800" onclick="return confirm('Supprimer?')"><i class="fas fa-trash"></i></a>
+                                    <a href="delete_post.php?id=<?= $post['id_post'] ?>&csrf_token=<?= csrf_token() ?>" class="text-red-600 hover:text-red-800" onclick="return confirm('Supprimer?')"><i class="ph ph-trash"></i></a>
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -207,7 +207,7 @@ $latest_posts = $pdo->query("SELECT p.*, c.name as category_name, u.name as auth
             <!-- Recent comments -->
             <?php if(count($recent_comments) > 0 && $can_view_comments): ?>
             <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                <h2 class="text-lg font-semibold p-5 border-b border-gray-100"><i class="fas fa-comments text-primary mr-2"></i> Commentaires récents</h2>
+                <h2 class="text-lg font-semibold p-5 border-b border-gray-100"><i class="ph ph-chats text-primary mr-2"></i> Commentaires récents</h2>
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead class="bg-gray-50 text-left text-sm font-semibold text-gray-600">

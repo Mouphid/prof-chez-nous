@@ -104,44 +104,44 @@ $can_view_users = has_permission('manage_users');
     <title>Nouveau post - Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>tailwind.config={theme:{extend:{colors:{primary:'#4F46E5'}}}}</script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
 </head>
 <body class="bg-gray-100 font-sans">
     <div class="flex min-h-screen">
         <aside class="w-64 bg-gray-900 text-white fixed h-full overflow-y-auto">
             <div class="p-5 border-b border-gray-700">
-                <a href="dashboard.php" class="flex items-center gap-3 text-xl font-extrabold"><i class="fas fa-graduation-cap text-indigo-400"></i> JoieEnseignante</a>
+                <a href="dashboard.php" class="flex items-center gap-3 text-xl font-extrabold"><i class="ph ph-graduation-cap text-indigo-400"></i> JoieEnseignante</a>
             </div>
             <nav class="p-4">
                 <ul class="space-y-1">
-                    <li><a href="dashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="fas fa-home w-5"></i> Dashboard</a></li>
-                    <li><a href="manage_posts.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="fas fa-file-alt w-5"></i> Articles</a></li>
-                    <li><a href="add_post.php" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-gray-700 text-white"><i class="fas fa-plus w-5"></i> Nouveau post</a></li>
+                    <li><a href="dashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-house w-5"></i> Dashboard</a></li>
+                    <li><a href="manage_posts.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-file-alt w-5"></i> Articles</a></li>
+                    <li><a href="add_post.php" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-gray-700 text-white"><i class="ph ph-plus w-5"></i> Nouveau post</a></li>
                     <?php if($can_view_comments): ?>
-                    <li><a href="manage_comments.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="fas fa-comments w-5"></i> Commentaires</a></li>
+                    <li><a href="manage_comments.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-chats w-5"></i> Commentaires</a></li>
                     <?php endif; ?>
                     <?php if($can_view_categories): ?>
-                    <li><a href="manage_categories.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="fas fa-folder w-5"></i> Catégories</a></li>
+                    <li><a href="manage_categories.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-folder w-5"></i> Catégories</a></li>
                     <?php endif; ?>
                     <?php if($can_view_users): ?>
-                    <li><a href="manage_users.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="fas fa-users w-5"></i> Utilisateurs</a></li>
+                    <li><a href="manage_users.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-users w-5"></i> Utilisateurs</a></li>
                     <?php endif; ?>
                     <li class="border-t border-gray-700 pt-3 mt-3">
-                        <a href="../public/index.php" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="fas fa-external-link-alt w-5"></i> Voir le site</a>
-                        <a href="logout.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="fas fa-sign-out-alt w-5"></i> Déconnexion</a>
+                        <a href="../public/index.php" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-arrow-square-out w-5"></i> Voir le site</a>
+                        <a href="logout.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-sign-out w-5"></i> Déconnexion</a>
                     </li>
                 </ul>
             </nav>
         </aside>
 
         <main class="flex-1 ml-64 p-8 max-w-4xl">
-            <h1 class="text-2xl font-bold text-gray-800 mb-8"><i class="fas fa-plus-circle text-primary mr-2"></i> Ajouter un nouveau post</h1>
+            <h1 class="text-2xl font-bold text-gray-800 mb-8"><i class="ph ph-plus-circle text-primary mr-2"></i> Ajouter un nouveau post</h1>
 
             <?php if ($error): ?>
-            <div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2"><i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($error) ?></div>
+            <div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2"><i class="ph ph-warning-circle"></i> <?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
             <?php if ($success): ?>
-            <div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2"><i class="fas fa-check-circle"></i> <?= htmlspecialchars($success) ?></div>
+            <div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2"><i class="ph ph-check-circle"></i> <?= htmlspecialchars($success) ?></div>
             <?php endif; ?>
 
             <div class="bg-white rounded-xl shadow-sm p-6">
@@ -197,7 +197,7 @@ $can_view_users = has_permission('manage_users');
                     </div>
 
                     <button type="submit" class="bg-primary hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition flex items-center gap-2">
-                        <i class="fas fa-plus"></i> Ajouter le post
+                        <i class="ph ph-plus"></i> Ajouter le post
                     </button>
                 </form>
             </div>

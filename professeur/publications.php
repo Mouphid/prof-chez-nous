@@ -12,7 +12,7 @@ $page_title = "Publications - " . ($admin['name'] ?? 'Prof. Professeur');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?></title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -20,7 +20,7 @@ $page_title = "Publications - " . ($admin['name'] ?? 'Prof. Professeur');
     <header class="prof-header">
         <div class="header-container">
             <div class="logo">
-                <div class="avatar"><i class="fas fa-user"></i></div>
+                <div class="avatar"><i class="ph ph-user"></i></div>
                 <div class="logo-text">
                     <h1><?= htmlspecialchars($admin['name'] ?? 'Prof. Professeur') ?></h1>
                     <p>Département de Littérature | Université de Cotonou</p>
@@ -28,21 +28,21 @@ $page_title = "Publications - " . ($admin['name'] ?? 'Prof. Professeur');
             </div>
             <nav class="main-nav" id="mainNav">
                 <ul>
-                    <li><a href="index.php"><i class="fas fa-home"></i> Accueil</a></li>
-                    <li><a href="profil.php"><i class="fas fa-user"></i> Profil</a></li>
-                    <li><a href="publications.php" class="active"><i class="fas fa-book"></i> Publications</a></li>
-                    <li><a href="cours.php"><i class="fas fa-graduation-cap"></i> Cours</a></li>
-                    <li><a href="contact.php"><i class="fas fa-envelope"></i> Contact</a></li>
+                    <li><a href="index.php"><i class="ph ph-house"></i> Accueil</a></li>
+                    <li><a href="profil.php"><i class="ph ph-user"></i> Profil</a></li>
+                    <li><a href="publications.php" class="active"><i class="ph ph-book"></i> Publications</a></li>
+                    <li><a href="cours.php"><i class="ph ph-graduation-cap"></i> Cours</a></li>
+                    <li><a href="contact.php"><i class="ph ph-envelope"></i> Contact</a></li>
                 </ul>
             </nav>
-            <button class="menu-toggle" onclick="document.getElementById('mainNav').classList.toggle('active')"><i class="fas fa-bars"></i></button>
+            <button class="menu-toggle" onclick="document.getElementById('mainNav').classList.toggle('active')"><i class="ph ph-list"></i></button>
         </div>
     </header>
 
     <main>
         <section class="hero compact">
             <div class="container text-center">
-                <h2><i class="fas fa-book"></i> Publications</h2>
+                <h2><i class="ph ph-book"></i> Publications</h2>
                 <p>Découvrez tous mes travaux de recherche en littérature et linguistique africaine</p>
             </div>
         </section>
@@ -56,13 +56,13 @@ $page_title = "Publications - " . ($admin['name'] ?? 'Prof. Professeur');
                     while ($cat = $categories->fetch()):
                     ?>
                     <button class="filter-btn" data-filter="<?= $cat['id_category'] ?>">
-                        <i class="fas fa-folder"></i> <?= htmlspecialchars($cat['name']) ?>
+                        <i class="ph ph-folder"></i> <?= htmlspecialchars($cat['name']) ?>
                     </button>
                     <?php endwhile; ?>
                 </div>
 
                 <div class="pub-section">
-                    <h3 class="section-subtitle"><i class="fas fa-list"></i> Tous les articles</h3>
+                    <h3 class="section-subtitle"><i class="ph ph-list-bullets"></i> Tous les articles</h3>
                     
                     <div class="pub-list">
                         <?php
@@ -76,20 +76,20 @@ $page_title = "Publications - " . ($admin['name'] ?? 'Prof. Professeur');
                         while ($post = $stmt->fetch()):
                         ?>
                         <div class="pub-item" data-category="<?= $post['id_category'] ?? 0 ?>">
-                            <div class="pub-icon-lg"><i class="fas fa-feather-alt"></i></div>
+                            <div class="pub-icon-lg"><i class="ph ph-feather"></i></div>
                             <div class="pub-details">
                                 <h4><?= htmlspecialchars($post['title']) ?></h4>
                                 <p class="pub-authors">
-                                    <i class="fas fa-folder"></i> <?= htmlspecialchars($post['category_name'] ?? 'Non classé') ?>
+                                    <i class="ph ph-folder"></i> <?= htmlspecialchars($post['category_name'] ?? 'Non classé') ?>
                                 </p>
                                 <p class="pub-abstract"><?= truncate(strip_tags($post['content']), 200) ?></p>
                                 <div class="pub-meta">
-                                    <span><i class="fas fa-calendar"></i> <?= format_date($post['created_at']) ?></span>
-                                    <span><i class="fas fa-eye"></i> <?= $post['views'] ?? 0 ?> vues</span>
+                                    <span><i class="ph ph-calendar"></i> <?= format_date($post['created_at']) ?></span>
+                                    <span><i class="ph ph-eye"></i> <?= $post['views'] ?? 0 ?> vues</span>
                                 </div>
                                 <div class="pub-actions">
                                     <a href="article.php?id=<?= $post['id_post'] ?>" class="btn btn-sm btn-primary">
-                                        <i class="fas fa-book-reader"></i> Lire l'article
+                                        <i class="ph ph-book-reader"></i> Lire l'article
                                     </a>
                                 </div>
                             </div>
@@ -98,7 +98,7 @@ $page_title = "Publications - " . ($admin['name'] ?? 'Prof. Professeur');
                         
                         <?php if ($stmt->rowCount() == 0): ?>
                         <div class="empty-state">
-                            <i class="fas fa-book-open"></i>
+                            <i class="ph ph-book-open"></i>
                             <p>Aucune publication pour le moment.</p>
                         </div>
                         <?php endif; ?>
@@ -127,9 +127,9 @@ $page_title = "Publications - " . ($admin['name'] ?? 'Prof. Professeur');
                 <div class="footer-section">
                     <h4>Suivez-moi</h4>
                     <div class="social-links">
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                        <a href="#"><i class="fab fa-researchgate"></i></a>
-                        <a href="#"><i class="fab fa-google"></i></a>
+                        <a href="#"><i class="ph ph-linkedin-logo"></i></a>
+                        <a href="#"><i class="ph ph-google-logo"></i></a>
+                        <a href="#"><i class="ph ph-google-logo"></i></a>
                     </div>
                 </div>
             </div>

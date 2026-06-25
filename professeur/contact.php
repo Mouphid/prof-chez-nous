@@ -43,7 +43,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?></title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
@@ -57,7 +57,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     <header class="prof-header">
         <div class="header-container">
             <div class="logo">
-                <div class="avatar"><i class="fas fa-user"></i></div>
+                <div class="avatar"><i class="ph ph-user"></i></div>
                 <div class="logo-text">
                     <h1><?= htmlspecialchars($admin['name'] ?? 'Prof. Professeur') ?></h1>
                     <p>Département de Littérature | Université de Cotonou</p>
@@ -65,21 +65,21 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <nav class="main-nav" id="mainNav">
                 <ul>
-                    <li><a href="index.php"><i class="fas fa-home"></i> Accueil</a></li>
-                    <li><a href="profil.php"><i class="fas fa-user"></i> Profil</a></li>
-                    <li><a href="publications.php"><i class="fas fa-book"></i> Publications</a></li>
-                    <li><a href="cours.php"><i class="fas fa-graduation-cap"></i> Cours</a></li>
-                    <li><a href="contact.php" class="active"><i class="fas fa-envelope"></i> Contact</a></li>
+                    <li><a href="index.php"><i class="ph ph-house"></i> Accueil</a></li>
+                    <li><a href="profil.php"><i class="ph ph-user"></i> Profil</a></li>
+                    <li><a href="publications.php"><i class="ph ph-book"></i> Publications</a></li>
+                    <li><a href="cours.php"><i class="ph ph-graduation-cap"></i> Cours</a></li>
+                    <li><a href="contact.php" class="active"><i class="ph ph-envelope"></i> Contact</a></li>
                 </ul>
             </nav>
-            <button class="menu-toggle" onclick="document.getElementById('mainNav').classList.toggle('active')"><i class="fas fa-bars"></i></button>
+            <button class="menu-toggle" onclick="document.getElementById('mainNav').classList.toggle('active')"><i class="ph ph-list"></i></button>
         </div>
     </header>
 
     <main>
         <section class="hero compact">
             <div class="container text-center">
-                <h2><i class="fas fa-envelope"></i> Contact</h2>
+                <h2><i class="ph ph-envelope"></i> Contact</h2>
                 <p>N'hésitez pas à me contacter pour toute question académique</p>
             </div>
         </section>
@@ -88,34 +88,34 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="container">
                 <div class="contact-grid">
                     <div class="contact-form-card">
-                        <h3><i class="fas fa-paper-plane"></i> Envoyez-moi un message</h3>
+                        <h3><i class="ph ph-paper-plane-right"></i> Envoyez-moi un message</h3>
                         
                         <?php if($success): ?>
                         <div class="alert alert-success">
-                            <i class="fas fa-check-circle"></i> <?= htmlspecialchars($success) ?>
+                            <i class="ph ph-check-circle"></i> <?= htmlspecialchars($success) ?>
                         </div>
                         <?php endif; ?>
                         
                         <?php if($error): ?>
                         <div class="alert alert-error">
-                            <i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($error) ?>
+                            <i class="ph ph-warning-circle"></i> <?= htmlspecialchars($error) ?>
                         </div>
                         <?php endif; ?>
                         
                         <form method="post" class="contact-form">
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label><i class="fas fa-user"></i> Nom complet</label>
+                                    <label><i class="ph ph-user"></i> Nom complet</label>
                                     <input type="text" name="name" placeholder="Votre nom" required>
                                 </div>
                                 <div class="form-group">
-                                    <label><i class="fas fa-envelope"></i> Email</label>
+                                    <label><i class="ph ph-envelope"></i> Email</label>
                                     <input type="email" name="email" placeholder="votre@email.com" required>
                                 </div>
                             </div>
                             
                             <div class="form-group">
-                                <label><i class="fas fa-tag"></i> Sujet</label>
+                                <label><i class="ph ph-tag"></i> Sujet</label>
                                 <select name="subject" required>
                                     <option value="">Sélectionnez un sujet</option>
                                     <option value="question">Question académique</option>
@@ -127,43 +127,43 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                             
                             <div class="form-group">
-                                <label><i class="fas fa-comment"></i> Message</label>
+                                <label><i class="ph ph-chat"></i> Message</label>
                                 <textarea name="message" rows="6" placeholder="Votre message..." required></textarea>
                             </div>
                             
                             <button type="submit" class="btn btn-primary btn-lg w-full">
-                                <i class="fas fa-paper-plane"></i> Envoyer le message
+                                <i class="ph ph-paper-plane-right"></i> Envoyer le message
                             </button>
                         </form>
                     </div>
 
                     <div class="contact-info">
                         <div class="info-card">
-                            <h3><i class="fas fa-id-card"></i> Informations de contact</h3>
+                            <h3><i class="ph ph-identification-card"></i> Informations de contact</h3>
                             <ul class="contact-list">
                                 <li>
-                                    <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                                    <div class="contact-icon"><i class="ph ph-envelope"></i></div>
                                     <div>
                                         <strong>Email</strong>
                                         <p><?= htmlspecialchars($admin['email'] ?? '') ?></p>
                                     </div>
                                 </li>
                                 <li>
-                                    <div class="contact-icon"><i class="fas fa-phone"></i></div>
+                                    <div class="contact-icon"><i class="ph ph-phone"></i></div>
                                     <div>
                                         <strong>Téléphone</strong>
                                         <p>+229 XX XX XX XX</p>
                                     </div>
                                 </li>
                                 <li>
-                                    <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                                    <div class="contact-icon"><i class="ph ph-map-pin"></i></div>
                                     <div>
                                         <strong>Bureau</strong>
                                         <p>Bâtiment Lettres<br>Université de Cotonou</p>
                                     </div>
                                 </li>
                                 <li>
-                                    <div class="contact-icon"><i class="fas fa-clock"></i></div>
+                                    <div class="contact-icon"><i class="ph ph-clock"></i></div>
                                     <div>
                                         <strong>Horaires</strong>
                                         <p>Lun - Ven: 8h00 - 17h00<br>(sur rendez-vous)</p>
@@ -173,18 +173,18 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
 
                         <div class="info-card">
-                            <h3><i class="fas fa-share-alt"></i> Réseaux académiques</h3>
+                            <h3><i class="ph ph-share-network"></i> Réseaux académiques</h3>
                             <div class="social-grid">
                                 <a href="#" class="social-item">
-                                    <i class="fab fa-linkedin"></i>
+                                    <i class="ph ph-linkedin-logo"></i>
                                     <span>LinkedIn</span>
                                 </a>
                                 <a href="#" class="social-item">
-                                    <i class="fab fa-researchgate"></i>
+                                    <i class="ph ph-google-logo"></i>
                                     <span>ResearchGate</span>
                                 </a>
                                 <a href="#" class="social-item">
-                                    <i class="fas fa-graduation-cap"></i>
+                                    <i class="ph ph-graduation-cap"></i>
                                     <span>Google Scholar</span>
                                 </a>
                             </div>
@@ -214,9 +214,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="footer-section">
                     <h4>Suivez-moi</h4>
                     <div class="social-links">
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                        <a href="#"><i class="fab fa-researchgate"></i></a>
-                        <a href="#"><i class="fab fa-google"></i></a>
+                        <a href="#"><i class="ph ph-linkedin-logo"></i></a>
+                        <a href="#"><i class="ph ph-google-logo"></i></a>
+                        <a href="#"><i class="ph ph-google-logo"></i></a>
                     </div>
                 </div>
             </div>
