@@ -4,7 +4,7 @@ require_once "../config/config.php";
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo json_encode(['success' => false, 'message' => 'Methode non autorisee']);
+    echo json_encode(['success' => false, 'message' => 'Méthode non autorisée']);
     exit;
 }
 
@@ -22,50 +22,31 @@ if (strlen($content) < 3) {
 }
 
 try {
-    // Verifier que le post existe
     $stmt = $pdo->prepare("SELECT id_post FROM posts WHERE id_post = ?");
     $stmt->execute([$id_post]);
     if (!$stmt->fetch()) {
-        echo json_encode(['success' => false, 'message' => 'Article non trouve']);
+        echo json_encode(['success' => false, 'message' => 'Article non trouvé']);
         exit;
     }
 
-    // Generate unique token for this comment
     $token = bin2hex(random_bytes(16));
-    
-    // If user is logged in, use their info
-    if (isset($_SESSION['user_id'])) {
-        $author_name = $_SESSION['user_name'] ?? 'Utilisateur';
-        $author_email = $_SESSION['user_email'] ?? '';
-        $id_user = $_SESSION['user_id'];
-        
-        $stmt = $pdo->prepare("
-            INSERT INTO comments (id_post, id_user, author_name, author_email, content, token_hash, status, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, 'visible', NOW())
-        ");
-        $stmt->execute([$id_post, $id_user, $author_name, $author_email, $content, $token]);
-    } else {
-        $author_email = 'visiteur_' . $token;
-        
-        $stmt = $pdo->prepare("
-            INSERT INTO comments (id_post, author_email, content, token_hash, status, created_at)
-            VALUES (?, ?, ?, ?, 'visible', NOW())
-        ");
-        $stmt->execute([$id_post, $author_email, $content, $token]);
-    }
-    
+    $author_name = $_SESSION['user_name'] ?? 'Visiteur';
+    $author_email = $_SESSION['user_email'] ?? ('visiteur_' . $token);
+    $id_user = $_SESSION['user_id'] ?? null;
+
+    $stmt = $pdo->prepare("INSERT INTO comments (id_post, id_user, author_name, author_email, content, token_hash, status, created_at) VALUES (?, ?, ?, ?, ?, ?, 'visible', NOW())");
+    $stmt->execute([$id_post, $id_user, $author_name, $author_email, $content, $token]);
+
     $id_comment = $pdo->lastInsertId();
-    
-    // Return the token so visitor can manage their comment
+
     echo json_encode([
         'success' => true,
-        'message' => 'Commentaire publie avec succes !',
+        'message' => 'Commentaire publié avec succès !',
         'id_comment' => $id_comment,
         'token' => $token,
-        'author_name' => isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Visiteur'
+        'author_name' => $author_name
     ]);
-    
 } catch (PDOException $e) {
+    error_log("add_comment: " . $e->getMessage());
     echo json_encode(['success' => false, 'message' => 'Erreur lors de la publication']);
 }
-?>

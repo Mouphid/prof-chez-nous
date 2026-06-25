@@ -55,9 +55,14 @@ $stmt_likes->execute([$id_post]);
 $likes_count = $stmt_likes->fetchColumn();
 
 $user_ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
-$session_id = session_id() ?: 'no-session';
-$has_liked = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE id_post = ? AND (ip_address = ? OR ip_address = ?)");
-$has_liked->execute([$id_post, $user_ip, $session_id]);
+$user_id = $_SESSION['user_id'] ?? null;
+if ($user_id) {
+    $has_liked = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE id_post = ? AND id_user = ?");
+    $has_liked->execute([$id_post, $user_id]);
+} else {
+    $has_liked = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE id_post = ? AND user_ip = ? AND id_user IS NULL");
+    $has_liked->execute([$id_post, $user_ip]);
+}
 $user_liked = $has_liked->fetchColumn() > 0;
 
 $page_title = htmlspecialchars($post['title']);
@@ -332,13 +337,13 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                         btn.classList.add('bg-red-50', 'text-red-600', 'border-red-200');
                         btn.dataset.liked = '1';
                         textSpan.textContent = "Vous aimez";
-                        btn.querySelector('.fa-heart').classList.add('text-red-500');
+                        btn.querySelector('.ph-heart').classList.add('text-red-500');
                     } else {
                         btn.classList.remove('bg-red-50', 'text-red-600', 'border-red-200');
                         btn.classList.add('bg-white', 'text-gray-600', 'border-gray-200');
                         btn.dataset.liked = '0';
                         textSpan.textContent = "J'aime";
-                        btn.querySelector('.fa-heart').classList.remove('text-red-500');
+                        btn.querySelector('.ph-heart').classList.remove('text-red-500');
                     }
                 } else {
                     alert('Erreur: ' + (data.message || 'Impossible de liker'));
@@ -390,11 +395,10 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
     window.saveComment = function(idComment) {
         const newContent = document.getElementById('edit-content-' + idComment).value;
         const token = localStorage.getItem('comment_token_' + idComment);
-        if (!token) { alert('Token de modification perdu.'); return; }
         const formData = new FormData();
         formData.append('id_comment', idComment);
-        formData.append('token', token);
         formData.append('content', newContent);
+        if (token) formData.append('token', token);
         fetch('manage_comment.php?action=update', { method: 'POST', body: formData })
         .then(r => r.json())
         .then(data => { if (data.success) location.reload(); else alert(data.message || 'Erreur'); });
@@ -403,7 +407,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
     window.cancelEdit = function(idComment, originalContent) {
         const commentDiv = document.getElementById('comment-content-' + idComment);
         const actionsDiv = document.getElementById('comment-actions-' + idComment);
-        commentDiv.innerHTML = '<p>' + originalContent + '</p>';
+        commentDiv.innerHTML = '<p>' + originalContent.replace(/</g, '&lt;') + '</p>';
         actionsDiv.innerHTML = '<button class="text-xs text-primary hover:underline" onclick="editComment(' + idComment + ')"><i class="ph ph-pencil"></i> Modifier</button>' +
                             '<button class="text-xs text-red-500 hover:underline" onclick="deleteComment(' + idComment + ')"><i class="ph ph-trash"></i> Supprimer</button>';
     };
@@ -411,10 +415,9 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
     window.deleteComment = function(idComment) {
         if (!confirm('Voulez-vous vraiment supprimer ce commentaire?')) return;
         const token = localStorage.getItem('comment_token_' + idComment);
-        if (!token) { alert('Token de suppression perdu.'); return; }
         const formData = new FormData();
         formData.append('id_comment', idComment);
-        formData.append('token', token);
+        if (token) formData.append('token', token);
         fetch('manage_comment.php?action=delete', { method: 'POST', body: formData })
         .then(r => r.json())
         .then(data => { if (data.success) { localStorage.removeItem('comment_token_' + idComment); location.reload(); } else alert(data.message || 'Erreur'); });

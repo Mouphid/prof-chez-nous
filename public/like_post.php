@@ -4,7 +4,7 @@ require_once "../config/config.php";
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo json_encode(['success' => false, 'message' => 'Methode non autorisee']);
+    echo json_encode(['success' => false, 'message' => 'Méthode non autorisée']);
     exit;
 }
 
@@ -15,26 +15,30 @@ if (!$id_post) {
     exit;
 }
 
-// Use both IP and session for more reliable tracking
 $user_ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
-$session_id = session_id() ?: 'no-session';
+$user_id = $_SESSION['user_id'] ?? null;
 
-// Check if already liked (using IP + session for uniqueness)
-$stmt = $pdo->prepare("SELECT id_like FROM likes WHERE id_post = ? AND (user_ip = ? OR user_ip = ?)");
-$stmt->execute([$id_post, $user_ip, $session_id]);
-$existing_like = $stmt->fetch();
+if ($user_id) {
+    $stmt = $pdo->prepare("SELECT id_like FROM likes WHERE id_post = ? AND id_user = ?");
+    $stmt->execute([$id_post, $user_id]);
+} else {
+    $stmt = $pdo->prepare("SELECT id_like FROM likes WHERE id_post = ? AND user_ip = ? AND id_user IS NULL");
+    $stmt->execute([$id_post, $user_ip]);
+}
+$existing = $stmt->fetch();
 
-if ($existing_like) {
-    // Remove the like
-    $pdo->prepare("DELETE FROM likes WHERE id_post = ? AND (user_ip = ? OR user_ip = ?)")->execute([$id_post, $user_ip, $session_id]);
+if ($existing) {
+    if ($user_id) {
+        $pdo->prepare("DELETE FROM likes WHERE id_post = ? AND id_user = ?")->execute([$id_post, $user_id]);
+    } else {
+        $pdo->prepare("DELETE FROM likes WHERE id_post = ? AND user_ip = ? AND id_user IS NULL")->execute([$id_post, $user_ip]);
+    }
     $action = 'unliked';
 } else {
-    // Add the like
-    $pdo->prepare("INSERT INTO likes (id_post, user_ip, created_at) VALUES (?, ?, NOW())")->execute([$id_post, $user_ip]);
+    $pdo->prepare("INSERT INTO likes (id_post, id_user, user_ip, created_at) VALUES (?, ?, ?, NOW())")->execute([$id_post, $user_id, $user_ip]);
     $action = 'liked';
 }
 
-// Get total likes
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE id_post = ?");
 $stmt->execute([$id_post]);
 $total_likes = $stmt->fetchColumn();
@@ -42,7 +46,5 @@ $total_likes = $stmt->fetchColumn();
 echo json_encode([
     'success' => true,
     'total_likes' => $total_likes,
-    'action' => $action,
-    'debug' => ['ip' => $user_ip, 'session' => $session_id]
+    'action' => $action
 ]);
-?>
