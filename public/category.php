@@ -27,7 +27,7 @@ $stmt = $pdo->prepare("
            (SELECT COUNT(*) FROM comments WHERE id_post = p.id_post AND status = 'visible') as comments_count
     FROM posts p
     LEFT JOIN users u ON p.id_user = u.id_user
-    WHERE p.id_category = ? AND p.status = 'published'
+    WHERE p.id_category = ? AND (p.status = 'published' OR (p.status = 'scheduled' AND p.published_at <= NOW()))
     ORDER BY p.created_at DESC
 ");
 $stmt->execute([$category['id_category']]);
@@ -40,12 +40,11 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $page_title ?> - Joie Enseignante</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config={theme:{extend:{colors:{primary:'#4F46E5'}}}}</script>
-    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+    <title><?= $page_title ?> - <?= SITE_NAME ?></title>
+    <?php cdn_head(); animation_styles(); ?>
 </head>
-<body class="bg-gray-50 font-sans text-gray-800">
+<body class="bg-gray-50 font-sans text-gray-800 leading-relaxed">
+    <?php skip_link() ?>
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
             <a href="index.php" class="flex items-center gap-2 text-xl font-extrabold text-primary"><i class="ph ph-graduation-cap"></i> Joie Enseignante</a>
@@ -53,7 +52,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                 <a href="index.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-house"></i> Accueil</a>
                 <a href="category.php" class="px-3 py-2 rounded-lg text-sm font-medium bg-indigo-50 text-primary"><i class="ph ph-folder"></i> Catégories</a>
                 <a href="about.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-info"></i> À propos</a>
-                <a href="biography.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-user-tie"></i> Biographie</a>
+                <a href="biography.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-user-circle"></i> Biographie</a>
                 <a href="contact.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-envelope"></i> Contact</a>
                 <a href="search.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-magnifying-glass"></i> Recherche</a>
                 <?php if (isset($_SESSION['user_id'])): ?>
@@ -74,13 +73,13 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                 <a href="login.php" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition"><i class="ph ph-sign-in"></i> Connexion</a>
                 <?php endif; ?>
             </nav>
-            <button class="md:hidden text-gray-600 p-2" onclick="document.getElementById('mobileNav').classList.toggle('hidden')" aria-label="Menu"><i class="ph ph-list text-xl"></i></button>
+            <button class="md:hidden text-gray-600 p-2" onclick="toggleMobileMenu(this)" aria-label="Menu"><i class="ph ph-list text-xl"></i></button>
         </div>
-        <div class="hidden md:hidden bg-white border-t px-4 py-3 space-y-1" id="mobileNav">
+        <div class="hidden md:hidden bg-white border-t px-4 py-3 space-y-1" id="mobileNav" role="navigation">
             <a href="index.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-house"></i> Accueil</a>
             <a href="category.php" class="block px-3 py-2 rounded-lg text-sm font-medium bg-indigo-50 text-primary"><i class="ph ph-folder"></i> Catégories</a>
             <a href="about.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-info"></i> À propos</a>
-            <a href="biography.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-user-tie"></i> Biographie</a>
+            <a href="biography.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-user-circle"></i> Biographie</a>
             <a href="contact.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-envelope"></i> Contact</a>
             <a href="search.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-magnifying-glass"></i> Recherche</a>
             <?php if (isset($_SESSION['user_id'])): ?>
@@ -94,7 +93,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 py-8">
+    <main class="max-w-7xl mx-auto px-4 py-8 animate-fadeIn" id="main-content">
         <div class="flex flex-col lg:flex-row gap-8">
             <div class="flex-1">
                 <div class="flex items-center gap-3 mb-6">
@@ -108,13 +107,13 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                 </div>
 
                 <?php if (count($posts) > 0): ?>
-                <div class="space-y-6">
+                <div class="space-y-6 animate-stagger">
                     <?php foreach ($posts as $post): ?>
-                    <article class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition">
+                    <article class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition animate-slideUp">
                         <div class="flex flex-col sm:flex-row">
                             <?php if (!empty($post['main_image'])): ?>
-                            <div class="sm:w-48 h-48 sm:h-auto flex-shrink-0">
-                                <img src="../uploads/images/<?= htmlspecialchars($post['main_image']) ?>" alt="" class="w-full h-full object-cover">
+                            <div class="sm:w-48 h-48 sm:h-auto flex-shrink-0 overflow-hidden">
+                                <img src="../uploads/images/<?= htmlspecialchars($post['main_image']) ?>" alt="<?= htmlspecialchars($post['title']) ?>" loading="lazy" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
                             </div>
                             <?php endif; ?>
                             <div class="p-6 flex-1">
@@ -127,7 +126,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                                 </div>
                                 <p class="text-gray-600 text-sm leading-relaxed mb-4"><?= truncate(strip_tags($post['content']), 250) ?></p>
                                 <div class="flex items-center gap-4 text-sm">
-                                    <a href="post.php?id=<?= $post['id_post'] ?>" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition inline-flex items-center gap-1">
+                                    <a href="post.php?id=<?= $post['id_post'] ?>" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition inline-flex items-center gap-1 active:scale-[0.97]">
                                         <i class="ph ph-book-open"></i> Lire plus
                                     </a>
                                     <span class="text-gray-400"><i class="ph ph-heart"></i> <?= $post['likes_count'] ?? 0 ?></span>

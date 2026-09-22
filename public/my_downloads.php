@@ -11,12 +11,12 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 $downloads = $pdo->prepare("
-    SELECT f.*, p.title as post_title, ud.created_at as downloaded_at
+    SELECT f.*, p.title as post_title, ud.downloaded_at
     FROM user_downloads ud
     JOIN files f ON ud.id_file = f.id_file
     LEFT JOIN posts p ON f.id_post = p.id_post
     WHERE ud.id_user = ?
-    ORDER BY ud.created_at DESC
+    ORDER BY ud.downloaded_at DESC
 ");
 $downloads->execute([$user_id]);
 $rows = $downloads->fetchAll();
@@ -41,11 +41,10 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?></title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config={theme:{extend:{colors:{primary:'#4F46E5'}}}}</script>
-    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+    <?php cdn_head(); animation_styles(); ?>
 </head>
-<body class="bg-gray-50 font-sans text-gray-800">
+<body class="bg-gray-50 font-sans text-gray-800 leading-relaxed">
+    <?php skip_link() ?>
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
             <a href="index.php" class="flex items-center gap-2 text-xl font-extrabold text-primary"><i class="ph ph-graduation-cap"></i> Joie Enseignante</a>
@@ -66,27 +65,36 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                 </div>
                 <?php endif; ?>
             </nav>
-            <button class="md:hidden text-gray-600 p-2" onclick="document.getElementById('mobileNav').classList.toggle('hidden')" aria-label="Menu"><i class="ph ph-list text-xl"></i></button>
+            <button class="md:hidden text-gray-600 p-2" onclick="toggleMobileMenu(this)" aria-label="Menu"><i class="ph ph-list text-xl"></i></button>
         </div>
-        <div class="hidden md:hidden bg-white border-t px-4 py-3 space-y-1" id="mobileNav">
+        <div class="hidden md:hidden bg-white border-t px-4 py-3 space-y-1" id="mobileNav" role="navigation">
             <a href="index.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-house"></i> Accueil</a>
             <a href="profile.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-user-cog"></i> Mon profil</a>
             <a href="logout.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-red-600"><i class="ph ph-sign-out"></i> Déconnexion</a>
         </div>
     </header>
 
-    <main class="max-w-4xl mx-auto px-4 py-8">
+    <main class="max-w-4xl mx-auto px-4 py-8" id="main-content">
         <h1 class="text-2xl font-bold text-gray-900 mb-6"><i class="ph ph-download text-primary"></i> Mes Téléchargements</h1>
 
         <?php if (count($my_downloads) > 0): ?>
+        <h2 class="sr-only">Liste des téléchargements</h2>
         <div class="space-y-4">
             <?php foreach ($my_downloads as $dl): ?>
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:shadow-md transition">
-                <div class="w-14 h-14 bg-indigo-50 rounded-xl flex items-center justify-center text-primary text-xl flex-shrink-0">
-                    <i class="ph ph-file-alt"></i>
+                <div class="w-14 h-14 rounded-xl flex items-center justify-center text-xl flex-shrink-0 <?= $dl['folder'] === 'images' ? 'bg-pink-50 text-pink-500' : ($dl['folder'] === 'pdf' ? 'bg-red-50 text-red-500' : ($dl['folder'] === 'video' ? 'bg-blue-50 text-blue-500' : ($dl['folder'] === 'audio' ? 'bg-amber-50 text-amber-500' : 'bg-indigo-50 text-primary'))) ?>">
+                    <?php
+                    $ext_icon = $dl['folder'] === 'images' ? 'ph ph-image' : ($dl['folder'] === 'pdf' ? 'ph ph-file-pdf' : ($dl['folder'] === 'video' ? 'ph ph-video' : ($dl['folder'] === 'audio' ? 'ph ph-music-note' : 'ph ph-file-text')));
+                    ?>
+                    <i class="<?= $ext_icon ?>"></i>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <h3 class="font-semibold text-gray-900 truncate"><?= htmlspecialchars($dl['file_name']) ?></h3>
+                    <h3 class="font-semibold text-gray-900 truncate flex items-center gap-2">
+                        <?= htmlspecialchars($dl['file_name']) ?>
+                        <span class="text-xs font-medium px-2 py-0.5 rounded-full <?= $dl['folder'] === 'images' ? 'bg-pink-50 text-pink-600' : ($dl['folder'] === 'pdf' ? 'bg-red-50 text-red-600' : ($dl['folder'] === 'video' ? 'bg-blue-50 text-blue-600' : ($dl['folder'] === 'audio' ? 'bg-amber-50 text-amber-600' : 'bg-gray-50 text-gray-600'))) ?>">
+                            <?= $dl['folder'] === 'images' ? 'Image' : ($dl['folder'] === 'pdf' ? 'PDF' : ($dl['folder'] === 'video' ? 'Vidéo' : ($dl['folder'] === 'audio' ? 'Audio' : 'Fichier'))) ?>
+                        </span>
+                    </h3>
                     <p class="text-sm text-gray-500">
                         <?php if ($dl['post_title']): ?>
                         Article: <a href="post.php?id=<?= $dl['id_post'] ?>" class="text-primary hover:underline"><?= htmlspecialchars($dl['post_title']) ?></a> &middot;

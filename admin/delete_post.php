@@ -34,10 +34,16 @@ $stmt_files = $pdo->prepare("SELECT * FROM files WHERE id_post = ?");
 $stmt_files->execute([$post_id]);
 $files = $stmt_files->fetchAll();
 
+$upload_root = realpath(__DIR__ . '/../uploads/');
+$allowed_types = ['pdf','word','docs','audio','video','images','image','excel'];
 foreach($files as $file){
-    $file_path = "../uploads/".$file['file_type']."/".$file['file_name'];
-    if(file_exists($file_path)){
-        unlink($file_path);
+    $file_type = basename($file['file_type']);
+    $file_name = basename($file['file_name']);
+    if (in_array($file_type, $allowed_types)) {
+        $file_path = realpath($upload_root . '/' . $file_type . '/' . $file_name);
+        if ($file_path && str_starts_with($file_path, $upload_root) && file_exists($file_path)){
+            unlink($file_path);
+        }
     }
     $stmt_del_file = $pdo->prepare("DELETE FROM files WHERE id_file = ?");
     $stmt_del_file->execute([$file['id_file']]);

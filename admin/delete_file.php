@@ -18,9 +18,14 @@ $stmt->execute([$file_id]);
 $file = $stmt->fetch();
 
 if($file){
-    $file_path = "../uploads/".$file['file_type']."/".$file['file_name'];
-    if(file_exists($file_path)){
-        unlink($file_path); // Supprime le fichier du serveur
+    $file_type = basename($file['file_type']);
+    $file_name = basename($file['file_name']);
+    $allowed_types = ['pdf','word','docs','audio','video','images','image','excel'];
+    if (!in_array($file_type, $allowed_types)) { die("Type de fichier invalide"); }
+    $file_path = realpath(__DIR__ . '/../uploads/' . $file_type . '/' . $file_name);
+    $upload_root = realpath(__DIR__ . '/../uploads/');
+    if ($file_path && str_starts_with($file_path, $upload_root) && file_exists($file_path)){
+        unlink($file_path);
     }
 
     // Supprimer de la base

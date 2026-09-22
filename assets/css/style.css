@@ -226,6 +226,11 @@ img { max-width: 100%; height: auto; }
     .footer-content { grid-template-columns: 1fr; }
 }
 
+/* === REDUCED MOTION === */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
 /* === STATS === */
 .stat-box { background: var(--white); padding: 20px; border-radius: var(--radius); text-align: center; box-shadow: var(--shadow); }
 .stat-box i { font-size: 2rem; color: var(--primary); margin-bottom: 8px; }

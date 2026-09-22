@@ -21,211 +21,338 @@ $can_view_comments = has_permission('manage_comments');
 $can_publish = has_permission('publish_articles');
 $admin_role_label = $admin_role === 'admin' ? 'Super Admin' : ($admin_role === 'auteur' ? 'Auteur' : 'Étudiant');
 
-if($_SESSION['admin_role'] === 'auteur'){
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM posts WHERE id_user = ?");
-    $stmt->execute([$_SESSION['admin_id']]); $stats['posts'] = $stmt->fetchColumn();
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM comments WHERE id_post IN (SELECT id_post FROM posts WHERE id_user = ?)");
-    $stmt->execute([$_SESSION['admin_id']]); $stats['comments'] = $stmt->fetchColumn();
-    $stmt = $pdo->prepare("SELECT COALESCE(SUM(views),0) FROM posts WHERE id_user = ?");
-    $stmt->execute([$_SESSION['admin_id']]); $stats['views'] = $stmt->fetchColumn();
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM posts WHERE id_user = ? AND status = 'published'");
-    $stmt->execute([$_SESSION['admin_id']]); $stats['posts_published'] = $stmt->fetchColumn();
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM posts WHERE id_user = ? AND status = 'draft'");
-    $stmt->execute([$_SESSION['admin_id']]); $stats['posts_draft'] = $stmt->fetchColumn();
+if ($_SESSION['admin_role'] === 'auteur') {
+    $owner_cond = " WHERE id_user = " . (int)$_SESSION['admin_id'];
+
+    $stats = [];
+    $stmt = $pdo->query("SELECT COUNT(*) FROM posts$owner_cond"); $stats['posts'] = $stmt->fetchColumn();
+    $stmt = $pdo->query("SELECT COUNT(*) FROM posts$owner_cond AND status='published'"); $stats['posts_published'] = $stmt->fetchColumn();
+    $stmt = $pdo->query("SELECT COUNT(*) FROM posts$owner_cond AND status='draft'"); $stats['posts_draft'] = $stmt->fetchColumn();
+    $stmt = $pdo->query("SELECT COUNT(*) FROM posts$owner_cond AND status='scheduled'"); $stats['posts_scheduled'] = $stmt->fetchColumn();
+    $stmt = $pdo->query("SELECT COUNT(*) FROM comments WHERE id_post IN (SELECT id_post FROM posts$owner_cond)"); $stats['comments'] = $stmt->fetchColumn();
+    $stmt = $pdo->query("SELECT COALESCE(SUM(views),0) FROM posts$owner_cond"); $stats['views'] = $stmt->fetchColumn();
+    $stmt = $pdo->query("SELECT COUNT(*) FROM likes WHERE id_post IN (SELECT id_post FROM posts$owner_cond)"); $stats['likes'] = $stmt->fetchColumn();
+    $stats['users'] = 0; $stats['categories'] = 0; $stats['files'] = 0; $stats['comments_pending'] = 0;
+
+    $stmt = $pdo->query("SELECT COUNT(*) FROM posts$owner_cond AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)"); $stats['posts_month'] = $stmt->fetchColumn();
+    $stmt = $pdo->query("SELECT COUNT(*) FROM comments WHERE id_post IN (SELECT id_post FROM posts$owner_cond) AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)"); $stats['comments_month'] = $stmt->fetchColumn();
 } else {
+    $stats = [];
     $stats['posts'] = $pdo->query("SELECT COUNT(*) FROM posts")->fetchColumn();
-    $stats['posts_published'] = $pdo->query("SELECT COUNT(*) FROM posts WHERE status = 'published'")->fetchColumn();
-    $stats['posts_draft'] = $pdo->query("SELECT COUNT(*) FROM posts WHERE status = 'draft'")->fetchColumn();
+    $stats['posts_published'] = $pdo->query("SELECT COUNT(*) FROM posts WHERE status='published'")->fetchColumn();
+    $stats['posts_draft'] = $pdo->query("SELECT COUNT(*) FROM posts WHERE status='draft'")->fetchColumn();
+    $stats['posts_scheduled'] = $pdo->query("SELECT COUNT(*) FROM posts WHERE status='scheduled'")->fetchColumn();
     $stats['comments'] = $pdo->query("SELECT COUNT(*) FROM comments")->fetchColumn();
-    $stats['comments_pending'] = $pdo->query("SELECT COUNT(*) FROM comments WHERE status = 'pending' OR status IS NULL")->fetchColumn();
+    $stats['comments_pending'] = $pdo->query("SELECT COUNT(*) FROM comments WHERE status='pending' OR status IS NULL")->fetchColumn();
     $stats['likes'] = $pdo->query("SELECT COUNT(*) FROM likes")->fetchColumn();
     $stats['categories'] = $pdo->query("SELECT COUNT(*) FROM categories")->fetchColumn();
     $stats['users'] = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
     $stats['files'] = $pdo->query("SELECT COUNT(*) FROM files")->fetchColumn();
     $stats['views'] = $pdo->query("SELECT COALESCE(SUM(views),0) FROM posts")->fetchColumn();
+
+    $stats['posts_month'] = $pdo->query("SELECT COUNT(*) FROM posts WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)")->fetchColumn();
+    $stats['users_month'] = $pdo->query("SELECT COUNT(*) FROM users WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)")->fetchColumn();
+    $stats['comments_month'] = $pdo->query("SELECT COUNT(*) FROM comments WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)")->fetchColumn();
 }
 
-$draft_posts = $pdo->query("SELECT p.*, u.name as author_name FROM posts p LEFT JOIN users u ON p.id_user = u.id_user WHERE p.status = 'draft' ORDER BY p.created_at DESC LIMIT 10")->fetchAll();
-$recent_comments = $pdo->query("SELECT c.*, p.title as post_title FROM comments c LEFT JOIN posts p ON c.id_post = p.id_post ORDER BY c.created_at DESC LIMIT 10")->fetchAll();
-$popular_posts = $pdo->query("SELECT id_post, title, views, created_at FROM posts WHERE status = 'published' ORDER BY views DESC LIMIT 5")->fetchAll();
-$latest_posts = $pdo->query("SELECT p.*, c.name as category_name, u.name as author_name FROM posts p LEFT JOIN categories c ON p.id_category = c.id_category LEFT JOIN users u ON p.id_user = u.id_user ORDER BY p.created_at DESC LIMIT 10")->fetchAll();
+$draft_posts = $pdo->query("SELECT p.*, u.name as author_name FROM posts p LEFT JOIN users u ON p.id_user=u.id_user WHERE p.status='draft' ORDER BY p.created_at DESC LIMIT 10")->fetchAll();
+$recent_comments = $pdo->query("SELECT c.*, p.title as post_title FROM comments c LEFT JOIN posts p ON c.id_post=p.id_post ORDER BY c.created_at DESC LIMIT 10")->fetchAll();
+$popular_posts = $pdo->query("SELECT id_post, title, views, created_at FROM posts WHERE status='published' ORDER BY views DESC LIMIT 5")->fetchAll();
+$latest_posts = $pdo->query("SELECT p.*, c.name as category_name, u.name as author_name FROM posts p LEFT JOIN categories c ON p.id_category=c.id_category LEFT JOIN users u ON p.id_user=u.id_user ORDER BY p.created_at DESC LIMIT 10")->fetchAll();
+$now = date('Y-m-d H:i:s');
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Admin</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config={theme:{extend:{colors:{primary:'#4F46E5'}}}}</script>
-    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+    <title>Dashboard - <?= SITE_NAME ?></title>
+    <?php cdn_head(); ?>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-50 font-sans leading-relaxed">
+    <?php skip_link() ?>
     <div class="flex min-h-screen">
         <!-- Sidebar -->
-        <aside class="w-64 bg-gray-900 text-white fixed h-full overflow-y-auto">
+        <aside class="w-64 bg-gray-900 text-white fixed h-full overflow-y-auto z-40">
             <div class="p-5 border-b border-gray-700">
-                <a href="dashboard.php" class="flex items-center gap-3 text-xl font-extrabold">
-                    <i class="ph ph-graduation-cap text-indigo-400"></i> JoieEnseignante
+                <a href="dashboard.php" class="flex items-center gap-3">
+                    <img src="../img/logo.jpg" alt="Joie Enseignante" class="h-8 w-auto bg-white p-1 rounded">
                 </a>
             </div>
-            <nav class="p-4">
+            <nav class="p-4" aria-label="Menu admin">
                 <ul class="space-y-1">
-                    <li><a href="dashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-gray-700 text-white"><i class="ph ph-house w-5"></i> Dashboard</a></li>
-                    <?php if($can_view_posts): ?>
-                    <li><a href="manage_posts.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-file-alt w-5"></i> Articles</a></li>
-                    <li><a href="add_post.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-plus w-5"></i> Nouveau post</a></li>
+                    <li><a href="dashboard.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg bg-indigo-600 text-white text-sm font-medium"><i class="ph ph-gauge w-5"></i> Dashboard</a></li>
+                    <?php if ($can_view_posts): ?>
+                    <li><a href="manage_posts.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition text-sm"><i class="ph ph-newspaper w-5"></i> Articles</a></li>
+                    <li><a href="add_post.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition text-sm"><i class="ph ph-plus-circle w-5"></i> Nouveau post</a></li>
                     <?php endif; ?>
-                    <?php if($can_view_comments): ?>
-                    <li><a href="manage_comments.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-chats w-5"></i> Commentaires</a></li>
+                    <?php if ($can_view_comments): ?>
+                    <li><a href="manage_comments.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition text-sm"><i class="ph ph-chats w-5"></i> Commentaires</a></li>
                     <?php endif; ?>
-                    <?php if($can_view_categories): ?>
-                    <li><a href="manage_categories.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-folder w-5"></i> Catégories</a></li>
+                    <?php if ($can_view_categories): ?>
+                    <li><a href="manage_categories.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition text-sm"><i class="ph ph-folder w-5"></i> Catégories</a></li>
                     <?php endif; ?>
-                    <?php if($can_view_users): ?>
-                    <li><a href="manage_users.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-users w-5"></i> Utilisateurs</a></li>
+                    <?php if ($can_view_users): ?>
+                    <li><a href="manage_users.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition text-sm"><i class="ph ph-users w-5"></i> Utilisateurs</a></li>
                     <?php endif; ?>
-                    <li class="border-t border-gray-700 pt-3 mt-3">
-                        <a href="../public/index.php" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-arrow-square-out w-5"></i> Voir le site</a>
-                        <a href="logout.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-sign-out w-5"></i> Déconnexion</a>
+                    <li class="border-t border-gray-700 pt-3 mt-3 space-y-1">
+                        <a href="../public/index.php" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition text-sm"><i class="ph ph-arrow-square-out w-5"></i> Voir le site</a>
+                        <a href="logout.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition text-sm"><i class="ph ph-sign-out w-5"></i> Déconnexion</a>
                     </li>
                 </ul>
             </nav>
         </aside>
 
         <!-- Main -->
-        <main class="flex-1 ml-64 p-8">
-            <!-- Header -->
-            <div class="flex justify-between items-center mb-8">
-                <h1 class="text-2xl font-bold text-gray-800"><i class="ph ph-gauge text-primary mr-2"></i> Tableau de bord</h1>
+        <main class="flex-1 ml-64" id="main-content">
+            <!-- Top bar -->
+            <header class="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between sticky top-0 z-30">
+                <h1 class="text-xl font-bold text-gray-900"><i class="ph ph-gauge text-primary mr-2"></i> Tableau de bord</h1>
                 <div class="flex items-center gap-3">
-                    <span class="text-gray-600"><?= htmlspecialchars($admin['name'] ?? 'Admin') ?></span>
+                    <span class="text-sm text-gray-500"><?= htmlspecialchars($admin['name'] ?? 'Admin') ?></span>
                     <span class="bg-primary text-white text-xs font-semibold px-3 py-1 rounded-full"><?= $admin_role_label ?></span>
+                    <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold">
+                        <?= strtoupper(substr($admin['name'] ?? 'A', 0, 1)) ?>
+                    </div>
                 </div>
-            </div>
+            </header>
 
-            <?php if($can_view_users): ?>
-            <!-- Permission table -->
-            <div class="bg-indigo-50 rounded-xl p-5 mb-6">
-                <h3 class="font-semibold text-indigo-900 mb-3"><i class="ph ph-shield"></i> Vos permissions</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm border-collapse">
-                        <thead>
-                            <tr class="bg-primary text-white">
-                                <th class="p-2 text-left">Permission</th>
-                                <th class="p-2 text-center">Admin</th>
-                                <th class="p-2 text-center">Auteur</th>
-                                <th class="p-2 text-center">Étudiant</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white">
-                            <?php
-                            $rows = [
-                                ['Accéder au panel admin', '✅', '✅', '❌'],
-                                ['Publier des articles', '✅', '✅', '❌'],
-                                ['Gérer les utilisateurs', '✅', '❌', '❌'],
-                                ['Attribuer des rôles', '✅', '❌', '❌'],
-                                ['Gérer les catégories', '✅', '❌', '❌'],
-                                ['Modérer les commentaires', '✅', '✅', '❌'],
-                                ['Télécharger les ressources', '✅', '✅', '✅'],
-                                ['Commenter les articles', '✅', '✅', '✅'],
-                            ];
-                            foreach($rows as $r): ?>
-                            <tr class="border-b border-gray-100">
-                                <td class="p-2 font-medium"><?= $r[0] ?></td>
-                                <td class="p-2 text-center"><?= $r[1] ?></td>
-                                <td class="p-2 text-center"><?= $r[2] ?></td>
-                                <td class="p-2 text-center"><?= $r[3] ?></td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+            <div class="p-8">
+                <!-- Welcome -->
+                <div class="bg-gradient-to-r from-primary to-indigo-400 rounded-2xl p-6 sm:p-8 text-white mb-8">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold">Bonjour, <?= htmlspecialchars($admin['name'] ?? 'Admin') ?> 👋</h2>
+                            <p class="text-indigo-100 mt-1">Voici un aperçu de votre plateforme au <?= date('d/m/Y') ?></p>
+                        </div>
+                        <div class="hidden sm:flex items-center gap-2 bg-white/10 rounded-xl px-4 py-2">
+                            <i class="ph ph-clock"></i>
+                            <span class="text-sm"><?= date('H:i') ?></span>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <?php endif; ?>
 
-            <!-- Quick actions -->
-            <div class="flex gap-3 mb-8 flex-wrap">
-                <?php if($can_publish): ?>
-                <a href="add_post.php" class="flex items-center gap-2 bg-white px-5 py-3 rounded-lg shadow-sm hover:shadow-md transition font-medium text-gray-800"><i class="ph ph-plus text-primary"></i> Nouveau post</a>
-                <?php endif; ?>
-                <?php if($can_view_comments): ?>
-                <a href="manage_comments.php" class="flex items-center gap-2 bg-white px-5 py-3 rounded-lg shadow-sm hover:shadow-md transition font-medium text-gray-800"><i class="ph ph-chats text-primary"></i> Commentaires</a>
-                <?php endif; ?>
-                <?php if($can_view_users): ?>
-                <a href="manage_users.php" class="flex items-center gap-2 bg-white px-5 py-3 rounded-lg shadow-sm hover:shadow-md transition font-medium text-gray-800"><i class="ph ph-user-plus text-primary"></i> Utilisateurs</a>
-                <?php endif; ?>
-            </div>
+                <!-- Stats row -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+                    <?php if ($can_view_posts): ?>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-11 h-11 bg-indigo-100 text-primary rounded-xl flex items-center justify-center"><i class="ph ph-newspaper text-xl"></i></div>
+                            <?php if (isset($stats['posts_month']) && $stats['posts_month'] > 0): ?>
+                            <span class="text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full font-medium flex items-center gap-1"><i class="ph ph-trend-up"></i> +<?= $stats['posts_month'] ?> ce mois</span>
+                            <?php endif; ?>
+                        </div>
+                        <p class="text-sm text-gray-500">Total articles</p>
+                        <p class="text-2xl font-bold text-gray-900"><?= $stats['posts'] ?></p>
+                        <div class="mt-2 flex gap-3 text-xs text-gray-400">
+                            <span class="text-emerald-600"><?= $stats['posts_published'] ?> publiés</span>
+                            <span class="text-amber-600"><?= $stats['posts_draft'] ?> brouillons</span>
+                            <?php if (isset($stats['posts_scheduled']) && $stats['posts_scheduled'] > 0): ?>
+                            <span class="text-blue-600"><?= $stats['posts_scheduled'] ?> programmés</span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <?php endif; ?>
 
-            <!-- Stats -->
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-                <?php if($can_view_posts): ?>
-                <div class="bg-white p-5 rounded-xl shadow-sm"><i class="ph ph-file-alt text-indigo-400 text-xl mb-2 block"></i><div class="text-3xl font-extrabold text-gray-800"><?= $stats['posts'] ?></div><div class="text-sm text-gray-500">Articles</div></div>
-                <div class="bg-white p-5 rounded-xl shadow-sm"><i class="ph ph-check-circle text-green-400 text-xl mb-2 block"></i><div class="text-3xl font-extrabold text-gray-800"><?= $stats['posts_published'] ?></div><div class="text-sm text-gray-500">Publiés</div></div>
-                <div class="bg-white p-5 rounded-xl shadow-sm"><i class="ph ph-pencil text-yellow-400 text-xl mb-2 block"></i><div class="text-3xl font-extrabold text-gray-800"><?= $stats['posts_draft'] ?></div><div class="text-sm text-gray-500">Brouillons</div></div>
-                <?php endif; ?>
-                <?php if($can_view_comments): ?>
-                <div class="bg-white p-5 rounded-xl shadow-sm"><i class="ph ph-chats text-blue-400 text-xl mb-2 block"></i><div class="text-3xl font-extrabold text-gray-800"><?= $stats['comments'] ?></div><div class="text-sm text-gray-500">Commentaires</div></div>
-                <?php endif; ?>
-                <?php if($admin_role === 'admin'): ?>
-                <div class="bg-white p-5 rounded-xl shadow-sm"><i class="ph ph-heart text-red-400 text-xl mb-2 block"></i><div class="text-3xl font-extrabold text-gray-800"><?= $stats['likes'] ?></div><div class="text-sm text-gray-500">Likes</div></div>
-                <div class="bg-white p-5 rounded-xl shadow-sm"><i class="ph ph-eye text-gray-400 text-xl mb-2 block"></i><div class="text-3xl font-extrabold text-gray-800"><?= number_format($stats['views']) ?></div><div class="text-sm text-gray-500">Vues</div></div>
-                <div class="bg-white p-5 rounded-xl shadow-sm"><i class="ph ph-users text-purple-400 text-xl mb-2 block"></i><div class="text-3xl font-extrabold text-gray-800"><?= $stats['users'] ?></div><div class="text-sm text-gray-500">Utilisateurs</div></div>
-                <?php endif; ?>
-            </div>
+                    <?php if ($can_view_comments): ?>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-11 h-11 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center"><i class="ph ph-chats text-xl"></i></div>
+                            <?php if (isset($stats['comments_month']) && $stats['comments_month'] > 0): ?>
+                            <span class="text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full font-medium flex items-center gap-1"><i class="ph ph-trend-up"></i> +<?= $stats['comments_month'] ?> ce mois</span>
+                            <?php endif; ?>
+                        </div>
+                        <p class="text-sm text-gray-500">Commentaires</p>
+                        <p class="text-2xl font-bold text-gray-900"><?= $stats['comments'] ?></p>
+                        <?php if (isset($stats['comments_pending']) && $stats['comments_pending'] > 0): ?>
+                        <div class="mt-2 text-xs text-amber-600"><?= $stats['comments_pending'] ?> en attente</div>
+                        <?php endif; ?>
+                    </div>
+                    <?php endif; ?>
 
-            <!-- Latest posts -->
-            <?php if(count($latest_posts) > 0 && $can_view_posts): ?>
-            <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
-                <h2 class="text-lg font-semibold p-5 border-b border-gray-100"><i class="ph ph-clock text-primary mr-2"></i> Derniers articles</h2>
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="bg-gray-50 text-left text-sm font-semibold text-gray-600">
-                            <tr><th class="p-3">Titre</th><th class="p-3">Catégorie</th><th class="p-3">Statut</th><th class="p-3">Date</th><th class="p-3">Actions</th></tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach($latest_posts as $post): ?>
-                            <tr class="border-b border-gray-50 hover:bg-gray-50">
-                                <td class="p-3"><a href="../public/post.php?id=<?= $post['id_post'] ?>" target="_blank" class="text-primary hover:underline"><?= htmlspecialchars(truncate($post['title'], 40)) ?></a></td>
-                                <td class="p-3 text-gray-600"><?= $post['category_name'] ?? '-' ?></td>
-                                <td class="p-3"><span class="text-xs font-semibold px-2 py-1 rounded-full <?= $post['status']==='published'?'bg-green-100 text-green-700':'bg-red-100 text-red-700' ?>"><?= $post['status'] ?></span></td>
-                                <td class="p-3 text-gray-500 text-sm"><?= format_date($post['created_at']) ?></td>
-                                <td class="p-3">
-                                    <a href="edit_post.php?id=<?= $post['id_post'] ?>" class="text-indigo-600 hover:text-indigo-800 mr-2"><i class="ph ph-pencil"></i></a>
-                                    <?php if(has_permission('delete_any_post') || $post['id_user'] == $_SESSION['admin_id']): ?>
-                                    <a href="delete_post.php?id=<?= $post['id_post'] ?>&csrf_token=<?= csrf_token() ?>" class="text-red-600 hover:text-red-800" onclick="return confirm('Supprimer?')"><i class="ph ph-trash"></i></a>
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                    <?php if ($admin_role === 'admin'): ?>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-11 h-11 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center"><i class="ph ph-users text-xl"></i></div>
+                            <?php if (isset($stats['users_month']) && $stats['users_month'] > 0): ?>
+                            <span class="text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full font-medium flex items-center gap-1"><i class="ph ph-trend-up"></i> +<?= $stats['users_month'] ?> ce mois</span>
+                            <?php endif; ?>
+                        </div>
+                        <p class="text-sm text-gray-500">Utilisateurs</p>
+                        <p class="text-2xl font-bold text-gray-900"><?= $stats['users'] ?></p>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-11 h-11 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center"><i class="ph ph-eye text-xl"></i></div>
+                        </div>
+                        <p class="text-sm text-gray-500">Vues totales</p>
+                        <p class="text-2xl font-bold text-gray-900"><?= number_format($stats['views']) ?></p>
+                        <div class="mt-2 flex gap-3 text-xs text-gray-400">
+                            <span class="text-red-500"><i class="ph ph-heart"></i> <?= $stats['likes'] ?> likes</span>
+                            <span><i class="ph ph-folder"></i> <?= $stats['categories'] ?> catégories</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-11 h-11 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center"><i class="ph ph-file text-xl"></i></div>
+                        </div>
+                        <p class="text-sm text-gray-500">Fichiers</p>
+                        <p class="text-2xl font-bold text-gray-900"><?= $stats['files'] ?></p>
+                    </div>
+                    <?php endif; ?>
                 </div>
-            </div>
-            <?php endif; ?>
 
-            <!-- Recent comments -->
-            <?php if(count($recent_comments) > 0 && $can_view_comments): ?>
-            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                <h2 class="text-lg font-semibold p-5 border-b border-gray-100"><i class="ph ph-chats text-primary mr-2"></i> Commentaires récents</h2>
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="bg-gray-50 text-left text-sm font-semibold text-gray-600">
-                            <tr><th class="p-3">Article</th><th class="p-3">Commentaire</th><th class="p-3">Date</th></tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach($recent_comments as $c): ?>
-                            <tr class="border-b border-gray-50">
-                                <td class="p-3 text-gray-600"><?= $c['post_title'] ?? '-' ?></td>
-                                <td class="p-3 text-gray-600"><?= htmlspecialchars(truncate($c['content'], 60)) ?></td>
-                                <td class="p-3 text-gray-500 text-sm"><?= format_date($c['created_at']) ?></td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                <!-- Quick actions -->
+                <div class="flex gap-3 mb-8 flex-wrap">
+                    <?php if ($can_publish): ?>
+                    <a href="add_post.php" class="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition shadow-sm"><i class="ph ph-plus-circle"></i> Nouvel article</a>
+                    <?php endif; ?>
+                    <?php if ($can_view_comments): ?>
+                    <a href="manage_comments.php" class="flex items-center gap-2 bg-white border border-gray-200 px-5 py-2.5 rounded-lg font-medium text-gray-700 hover:border-primary hover:text-primary transition shadow-sm"><i class="ph ph-chats"></i> Commentaires</a>
+                    <?php endif; ?>
+                    <?php if ($can_view_users): ?>
+                    <a href="manage_users.php" class="flex items-center gap-2 bg-white border border-gray-200 px-5 py-2.5 rounded-lg font-medium text-gray-700 hover:border-primary hover:text-primary transition shadow-sm"><i class="ph ph-user-plus"></i> Utilisateurs</a>
+                    <?php endif; ?>
+                    <a href="../public/index.php" target="_blank" class="flex items-center gap-2 bg-white border border-gray-200 px-5 py-2.5 rounded-lg font-medium text-gray-700 hover:border-primary hover:text-primary transition shadow-sm"><i class="ph ph-arrow-square-out"></i> Voir le site</a>
                 </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                    <!-- Latest posts -->
+                    <?php if (count($latest_posts) > 0 && $can_view_posts): ?>
+                    <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                            <h2 class="text-base font-bold text-gray-900"><i class="ph ph-clock text-primary mr-2"></i> Derniers articles</h2>
+                            <a href="manage_posts.php" class="text-xs text-primary hover:underline font-medium">Voir tout</a>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                        <th class="px-6 py-3">Titre</th>
+                                        <th class="px-6 py-3">Statut</th>
+                                        <th class="px-6 py-3">Date</th>
+                                        <th class="px-6 py-3 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-50">
+                                    <?php foreach ($latest_posts as $post): ?>
+                                    <tr class="hover:bg-gray-50 transition">
+                                        <td class="px-6 py-3.5">
+                                            <a href="../public/post.php?id=<?= $post['id_post'] ?>" target="_blank" class="text-sm font-medium text-gray-900 hover:text-primary"><?= htmlspecialchars(truncate($post['title'], 45)) ?></a>
+                                            <p class="text-xs text-gray-400 mt-0.5"><?= $post['author_name'] ?? 'Admin' ?> <?= $post['category_name'] ? '· ' . $post['category_name'] : '' ?></p>
+                                        </td>
+                                        <td class="px-6 py-3.5">
+                                            <span class="text-xs font-semibold px-2 py-0.5 rounded-full <?= $post['status']==='published' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700' ?>"><?= $post['status'] ?></span>
+                                        </td>
+                                        <td class="px-6 py-3.5 text-sm text-gray-500"><?= format_date($post['created_at']) ?></td>
+                                        <td class="px-6 py-3.5 text-right">
+                                            <a href="edit_post.php?id=<?= $post['id_post'] ?>" class="text-gray-400 hover:text-primary transition mx-1"><i class="ph ph-pencil"></i></a>
+                                            <?php if (has_permission('delete_any_post') || $post['id_user'] == $_SESSION['admin_id']): ?>
+                                            <a href="delete_post.php?id=<?= $post['id_post'] ?>&csrf_token=<?= csrf_token() ?>" class="text-gray-400 hover:text-red-500 transition mx-1" onclick="return confirm('Supprimer cet article ?')"><i class="ph ph-trash"></i></a>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+
+                    <!-- Right sidebar -->
+                    <div class="space-y-6">
+                        <!-- Popular posts -->
+                        <?php if (count($popular_posts) > 0 && $can_view_posts): ?>
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                            <div class="px-6 py-4 border-b border-gray-100">
+                                <h2 class="text-base font-bold text-gray-900"><i class="ph ph-trend-up text-primary mr-2"></i> Articles populaires</h2>
+                            </div>
+                            <div class="p-4 space-y-2">
+                                <?php foreach ($popular_posts as $i => $pp): ?>
+                                <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition">
+                                    <span class="w-6 h-6 rounded-full bg-gray-100 text-gray-500 text-xs font-bold flex items-center justify-center flex-shrink-0"><?= $i + 1 ?></span>
+                                    <div class="min-w-0 flex-1">
+                                        <a href="../public/post.php?id=<?= $pp['id_post'] ?>" target="_blank" class="text-sm font-medium text-gray-800 hover:text-primary block truncate"><?= htmlspecialchars(truncate($pp['title'], 35)) ?></a>
+                                        <span class="text-xs text-gray-400"><i class="ph ph-eye"></i> <?= number_format($pp['views']) ?> vues</span>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+
+                        <?php
+                        $scheduled_posts = $pdo->query("SELECT p.*, u.name as author_name FROM posts p LEFT JOIN users u ON p.id_user=u.id_user WHERE p.status='scheduled' ORDER BY p.published_at ASC LIMIT 10")->fetchAll();
+                        ?>
+                        <?php if (count($scheduled_posts) > 0 && $can_view_posts): ?>
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                            <div class="px-6 py-4 border-b border-gray-100">
+                                <h2 class="text-base font-bold text-gray-900"><i class="ph ph-clock text-blue-500 mr-2"></i> Programmés</h2>
+                            </div>
+                            <div class="divide-y divide-gray-50">
+                                <?php foreach ($scheduled_posts as $sp): ?>
+                                <a href="edit_post.php?id=<?= $sp['id_post'] ?>" class="flex items-center justify-between px-6 py-3 hover:bg-gray-50 transition">
+                                    <span class="text-sm text-gray-700 truncate max-w-[200px]"><?= htmlspecialchars(truncate($sp['title'], 30)) ?></span>
+                                    <span class="text-xs text-blue-500"><?= date('d/m H:i', strtotime($sp['published_at'])) ?></span>
+                                </a>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+
+                        <!-- Drafts -->
+                        <?php if (count($draft_posts) > 0 && $can_view_posts): ?>
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                            <div class="px-6 py-4 border-b border-gray-100">
+                                <h2 class="text-base font-bold text-gray-900"><i class="ph ph-pencil text-amber-500 mr-2"></i> Brouillons</h2>
+                            </div>
+                            <div class="divide-y divide-gray-50">
+                                <?php foreach ($draft_posts as $dp): ?>
+                                <a href="edit_post.php?id=<?= $dp['id_post'] ?>" class="flex items-center justify-between px-6 py-3 hover:bg-gray-50 transition">
+                                    <span class="text-sm text-gray-700 truncate max-w-[200px]"><?= htmlspecialchars(truncate($dp['title'], 30)) ?></span>
+                                    <span class="text-xs text-gray-400"><?= format_date($dp['created_at']) ?></span>
+                                </a>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Recent comments -->
+                <?php if (count($recent_comments) > 0 && $can_view_comments): ?>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                        <h2 class="text-base font-bold text-gray-900"><i class="ph ph-chats text-primary mr-2"></i> Commentaires récents</h2>
+                        <a href="manage_comments.php" class="text-xs text-primary hover:underline font-medium">Voir tout</a>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    <th class="px-6 py-3">Article</th>
+                                    <th class="px-6 py-3">Auteur</th>
+                                    <th class="px-6 py-3">Commentaire</th>
+                                    <th class="px-6 py-3">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-50">
+                                <?php foreach ($recent_comments as $c): ?>
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="px-6 py-3.5 text-sm text-gray-700"><?= htmlspecialchars(truncate($c['post_title'] ?? '-', 30)) ?></td>
+                                    <td class="px-6 py-3.5 text-sm text-gray-700"><?= htmlspecialchars($c['author_name'] ?? 'Visiteur') ?></td>
+                                    <td class="px-6 py-3.5 text-sm text-gray-500 max-w-xs truncate"><?= htmlspecialchars(truncate($c['content'], 60)) ?></td>
+                                    <td class="px-6 py-3.5 text-sm text-gray-500 whitespace-nowrap"><?= format_date($c['created_at']) ?></td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <?php endif; ?>
             </div>
-            <?php endif; ?>
         </main>
     </div>
 </body>

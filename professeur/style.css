@@ -437,6 +437,11 @@
     color: #6B7280;
 }
 
+/* === REDUCED MOTION === */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
 /* === BUTTONS === */
 .btn {
     display: inline-flex;

@@ -9,6 +9,9 @@ $success = '';
 $error = '';
 
 if($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_POST['csrf_token']) || !verify_csrf($_POST['csrf_token'])) {
+        $error = "Token de sécurité invalide";
+    } else {
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $subject = trim($_POST['subject'] ?? '');
@@ -36,6 +39,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             $success = "Votre message a été envoyé avec succès. Je vous répondrai dans les plus brefs délais.";
         }
     }
+    }
 }
 ?>
 <html lang="fr">
@@ -43,8 +47,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?></title>
-    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="<?= BASE_URL ?>assets/phosphor/phosphor.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>assets/fonts/inter/index.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>assets/fonts/playfair-display/index.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
         .hero { background: linear-gradient(135deg, #1F2937 0%, #374151 100%); }
@@ -53,7 +58,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         .map-placeholder { background: linear-gradient(135deg, #8B5CF6, #A78BFA); }
     </style>
 </head>
-<body>
+    <body>
+    <?php skip_link() ?>
     <header class="prof-header">
         <div class="header-container">
             <div class="logo">
@@ -63,7 +69,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <p>Département de Littérature | Université de Cotonou</p>
                 </div>
             </div>
-            <nav class="main-nav" id="mainNav">
+            <nav class="main-nav" id="mainNav" aria-label="Navigation professeur">
                 <ul>
                     <li><a href="index.php"><i class="ph ph-house"></i> Accueil</a></li>
                     <li><a href="profil.php"><i class="ph ph-user"></i> Profil</a></li>
@@ -72,11 +78,11 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <li><a href="contact.php" class="active"><i class="ph ph-envelope"></i> Contact</a></li>
                 </ul>
             </nav>
-            <button class="menu-toggle" onclick="document.getElementById('mainNav').classList.toggle('active')"><i class="ph ph-list"></i></button>
+            <button class="menu-toggle" onclick="document.getElementById('mainNav').classList.toggle('active')" aria-label="Menu"><i class="ph ph-list"></i></button>
         </div>
     </header>
 
-    <main>
+    <main id="main-content">
         <section class="hero compact">
             <div class="container text-center">
                 <h2><i class="ph ph-envelope"></i> Contact</h2>
@@ -91,32 +97,33 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <h3><i class="ph ph-paper-plane-right"></i> Envoyez-moi un message</h3>
                         
                         <?php if($success): ?>
-                        <div class="alert alert-success">
+                        <div class="alert alert-success" role="alert">
                             <i class="ph ph-check-circle"></i> <?= htmlspecialchars($success) ?>
                         </div>
                         <?php endif; ?>
                         
                         <?php if($error): ?>
-                        <div class="alert alert-error">
+                        <div class="alert alert-error" role="alert">
                             <i class="ph ph-warning-circle"></i> <?= htmlspecialchars($error) ?>
                         </div>
                         <?php endif; ?>
                         
                         <form method="post" class="contact-form">
+                            <?= csrf_field() ?>
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label><i class="ph ph-user"></i> Nom complet</label>
-                                    <input type="text" name="name" placeholder="Votre nom" required>
+                                    <label for="prof_name"><i class="ph ph-user"></i> Nom complet</label>
+                                    <input type="text" id="prof_name" name="name" placeholder="Votre nom" required>
                                 </div>
                                 <div class="form-group">
-                                    <label><i class="ph ph-envelope"></i> Email</label>
-                                    <input type="email" name="email" placeholder="votre@email.com" required>
+                                    <label for="prof_email"><i class="ph ph-envelope"></i> Email</label>
+                                    <input type="email" id="prof_email" name="email" placeholder="votre@email.com" required>
                                 </div>
                             </div>
                             
                             <div class="form-group">
-                                <label><i class="ph ph-tag"></i> Sujet</label>
-                                <select name="subject" required>
+                                <label for="prof_subject"><i class="ph ph-tag"></i> Sujet</label>
+                                <select id="prof_subject" name="subject" required>
                                     <option value="">Sélectionnez un sujet</option>
                                     <option value="question">Question académique</option>
                                     <option value="collaboration">Collaboration de recherche</option>
@@ -127,8 +134,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                             
                             <div class="form-group">
-                                <label><i class="ph ph-chat"></i> Message</label>
-                                <textarea name="message" rows="6" placeholder="Votre message..." required></textarea>
+                                <label for="prof_message"><i class="ph ph-chat"></i> Message</label>
+                                <textarea id="prof_message" name="message" rows="6" placeholder="Votre message..." required></textarea>
                             </div>
                             
                             <button type="submit" class="btn btn-primary btn-lg w-full">
@@ -214,9 +221,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="footer-section">
                     <h4>Suivez-moi</h4>
                     <div class="social-links">
-                        <a href="#"><i class="ph ph-linkedin-logo"></i></a>
-                        <a href="#"><i class="ph ph-google-logo"></i></a>
-                        <a href="#"><i class="ph ph-google-logo"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="ph ph-linkedin-logo"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="ph ph-twitter-logo"></i></a>
+                        <a href="#" aria-label="Email"><i class="ph ph-google-logo"></i></a>
                     </div>
                 </div>
             </div>

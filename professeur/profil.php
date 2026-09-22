@@ -17,11 +17,13 @@ $page_title = "Profil - " . ($admin['name'] ?? 'Professeur');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?></title>
-    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="<?= BASE_URL ?>assets/phosphor/phosphor.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>assets/fonts/inter/index.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>assets/fonts/playfair-display/index.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+    <body>
+    <?php skip_link() ?>
     <header class="prof-header">
         <div class="header-container">
             <div class="logo">
@@ -31,7 +33,7 @@ $page_title = "Profil - " . ($admin['name'] ?? 'Professeur');
                     <p>Département de Littérature | Université de Cotonou</p>
                 </div>
             </div>
-            <nav class="main-nav" id="mainNav">
+            <nav class="main-nav" id="mainNav" aria-label="Navigation professeur">
                 <ul>
                     <li><a href="index.php"><i class="ph ph-house"></i> Accueil</a></li>
                     <li><a href="profil.php" class="active"><i class="ph ph-user"></i> Profil</a></li>
@@ -40,11 +42,11 @@ $page_title = "Profil - " . ($admin['name'] ?? 'Professeur');
                     <li><a href="contact.php"><i class="ph ph-envelope"></i> Contact</a></li>
                 </ul>
             </nav>
-            <button class="menu-toggle" onclick="document.getElementById('mainNav').classList.toggle('active')"><i class="ph ph-list"></i></button>
+            <button class="menu-toggle" onclick="document.getElementById('mainNav').classList.toggle('active')" aria-label="Menu"><i class="ph ph-list"></i></button>
         </div>
     </header>
 
-    <main>
+    <main id="main-content">
         <section class="hero compact">
             <div class="container">
                 <div class="profile-intro">
@@ -57,9 +59,9 @@ $page_title = "Profil - " . ($admin['name'] ?? 'Professeur');
                         <p class="title-line"><i class="ph ph-map-pin"></i> Cotonou, Bénin</p>
                         <p class="title-line"><i class="ph ph-envelope"></i> <?= htmlspecialchars($admin['email'] ?? '') ?></p>
                         <div class="profile-social">
-                            <a href="#"><i class="ph ph-linkedin-logo"></i></a>
-                            <a href="#"><i class="ph ph-google-logo"></i></a>
-                            <a href="#"><i class="ph ph-graduation-cap"></i></a>
+                            <a href="#" aria-label="LinkedIn"><i class="ph ph-linkedin-logo"></i></a>
+                            <a href="#" aria-label="Twitter"><i class="ph ph-twitter-logo"></i></a>
+                            <a href="#" aria-label="Google Scholar"><i class="ph ph-graduation-cap"></i></a>
                         </div>
                     </div>
                 </div>
@@ -72,7 +74,7 @@ $page_title = "Profil - " . ($admin['name'] ?? 'Professeur');
                     <div class="profile-main">
                         <div class="profile-card">
                             <h3><i class="ph ph-user"></i> Biographie</h3>
-                            <p>Professeur de littérature passionné, je dédié ma carrière à l'étude et à la promotion des lettres africaines. Mon travail se concentre sur la littérature orale, la critique littéraire et la didactique de la littérature.</p>
+                            <p>Professeur de littérature passionné, je dédie ma carrière à l'étude et à la promotion des lettres africaines. Mon travail se concentre sur la littérature orale, la critique littéraire et la didactique de la littérature.</p>
                             <p>Avec plus de 15 ans d'expérience dans l'enseignement supérieur, j'ai formé des centaines d'étudiants qui travaillent aujourd'hui dans l'éducation, la culture et les médias.</p>
                         </div>
 
@@ -168,9 +170,9 @@ $page_title = "Profil - " . ($admin['name'] ?? 'Professeur');
                 <div class="footer-section">
                     <h4>Suivez-moi</h4>
                     <div class="social-links">
-                        <a href="#"><i class="ph ph-linkedin-logo"></i></a>
-                        <a href="#"><i class="ph ph-google-logo"></i></a>
-                        <a href="#"><i class="ph ph-google-logo"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="ph ph-linkedin-logo"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="ph ph-twitter-logo"></i></a>
+                        <a href="#" aria-label="Email"><i class="ph ph-google-logo"></i></a>
                     </div>
                 </div>
             </div>

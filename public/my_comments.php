@@ -9,16 +9,15 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 $user_id = $_SESSION['user_id'];
-$user_email = $_SESSION['user_email'] ?? '';
 
 $comments = $pdo->prepare("
     SELECT c.*, p.title as post_title
     FROM comments c
     LEFT JOIN posts p ON c.id_post = p.id_post
-    WHERE c.id_user = ? OR c.author_email = ?
+    WHERE c.id_user = ?
     ORDER BY c.created_at DESC
 ");
-$comments->execute([$user_id, $user_email]);
+$comments->execute([$user_id]);
 $my_comments = $comments->fetchAll();
 
 $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
@@ -29,11 +28,10 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?></title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config={theme:{extend:{colors:{primary:'#4F46E5'}}}}</script>
-    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+    <?php cdn_head(); animation_styles(); ?>
 </head>
-<body class="bg-gray-50 font-sans text-gray-800">
+<body class="bg-gray-50 font-sans text-gray-800 leading-relaxed">
+    <?php skip_link() ?>
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
             <a href="index.php" class="flex items-center gap-2 text-xl font-extrabold text-primary"><i class="ph ph-graduation-cap"></i> Joie Enseignante</a>
@@ -54,16 +52,16 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                 </div>
                 <?php endif; ?>
             </nav>
-            <button class="md:hidden text-gray-600 p-2" onclick="document.getElementById('mobileNav').classList.toggle('hidden')" aria-label="Menu"><i class="ph ph-list text-xl"></i></button>
+            <button class="md:hidden text-gray-600 p-2" onclick="toggleMobileMenu(this)" aria-label="Menu"><i class="ph ph-list text-xl"></i></button>
         </div>
-        <div class="hidden md:hidden bg-white border-t px-4 py-3 space-y-1" id="mobileNav">
+        <div class="hidden md:hidden bg-white border-t px-4 py-3 space-y-1" id="mobileNav" role="navigation">
             <a href="index.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-house"></i> Accueil</a>
             <a href="profile.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-user-cog"></i> Mon profil</a>
             <a href="logout.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-red-600"><i class="ph ph-sign-out"></i> Déconnexion</a>
         </div>
     </header>
 
-    <main class="max-w-4xl mx-auto px-4 py-8">
+    <main class="max-w-4xl mx-auto px-4 py-8" id="main-content">
         <h1 class="text-2xl font-bold text-gray-900 mb-6"><i class="ph ph-chats text-primary"></i> Mes Commentaires</h1>
 
         <?php if (count($my_comments) > 0): ?>

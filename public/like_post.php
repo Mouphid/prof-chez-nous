@@ -8,6 +8,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+if (!isset($_POST['csrf_token']) || !verify_csrf($_POST['csrf_token'])) {
+    echo json_encode(['success' => false, 'message' => 'Token de sécurité invalide']);
+    exit;
+}
+
 $id_post = isset($_POST['id_post']) ? (int)$_POST['id_post'] : 0;
 
 if (!$id_post) {

@@ -12,8 +12,9 @@ $page_title = "Cours - " . ($admin['name'] ?? 'Prof. Professeur');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?></title>
-    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="<?= BASE_URL ?>assets/phosphor/phosphor.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>assets/fonts/inter/index.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>assets/fonts/playfair-display/index.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
         .hero { background: linear-gradient(135deg, #1F2937 0%, #374151 100%); }
@@ -27,7 +28,8 @@ $page_title = "Cours - " . ($admin['name'] ?? 'Prof. Professeur');
         .ch-num { background: linear-gradient(135deg, #8B5CF6, #A78BFA); }
     </style>
 </head>
-<body>
+    <body>
+    <?php skip_link() ?>
     <header class="prof-header">
         <div class="header-container">
             <div class="logo">
@@ -37,7 +39,7 @@ $page_title = "Cours - " . ($admin['name'] ?? 'Prof. Professeur');
                     <p>Département de Littérature | Université de Cotonou</p>
                 </div>
             </div>
-            <nav class="main-nav" id="mainNav">
+            <nav class="main-nav" id="mainNav" aria-label="Navigation professeur">
                 <ul>
                     <li><a href="index.php"><i class="ph ph-house"></i> Accueil</a></li>
                     <li><a href="profil.php"><i class="ph ph-user"></i> Profil</a></li>
@@ -46,11 +48,11 @@ $page_title = "Cours - " . ($admin['name'] ?? 'Prof. Professeur');
                     <li><a href="contact.php"><i class="ph ph-envelope"></i> Contact</a></li>
                 </ul>
             </nav>
-            <button class="menu-toggle" onclick="document.getElementById('mainNav').classList.toggle('active')"><i class="ph ph-list"></i></button>
+            <button class="menu-toggle" onclick="document.getElementById('mainNav').classList.toggle('active')" aria-label="Menu"><i class="ph ph-list"></i></button>
         </div>
     </header>
 
-    <main>
+    <main id="main-content">
         <section class="hero compact">
             <div class="container text-center">
                 <h2><i class="ph ph-graduation-cap"></i> Cours enseignés</h2>
@@ -130,14 +132,14 @@ $page_title = "Cours - " . ($admin['name'] ?? 'Prof. Professeur');
                                         <li><i class="ph ph-clock"></i> <strong>Volume:</strong> 45 heures</li>
                                         <li><i class="ph ph-users"></i> <strong>Niveau:</strong> Licence 3</li>
                                         <li><i class="ph ph-calendar"></i> <strong>Semestre:</strong> Pair</li>
-                                        <li><i class="ph ph-file-alt"></i> <strong>Credits:</strong> 6</li>
+                                        <li><i class="ph ph-file-text"></i> <strong>Crédits:</strong> 6</li>
                                     </ul>
                                 </div>
                                 
                                 <div class="course-resources">
                                     <h4><i class="ph ph-download"></i> Ressources</h4>
                                     <a href="#" class="resource-btn"><i class="ph ph-file-pdf"></i> Polycopié</a>
-                                    <a href="#" class="resource-btn"><i class="ph ph-pencil-alt"></i> TDs</a>
+                                    <a href="#" class="resource-btn"><i class="ph ph-pencil-line"></i> TDs</a>
                                     <a href="#" class="resource-btn"><i class="ph ph-checklist"></i> Examens</a>
                                 </div>
                             </div>
@@ -178,7 +180,7 @@ $page_title = "Cours - " . ($admin['name'] ?? 'Prof. Professeur');
                                         <li><i class="ph ph-clock"></i> <strong>Volume:</strong> 60 heures</li>
                                         <li><i class="ph ph-users"></i> <strong>Niveau:</strong> Master 1</li>
                                         <li><i class="ph ph-calendar"></i> <strong>Semestre:</strong> Impair</li>
-                                        <li><i class="ph ph-file-alt"></i> <strong>Credits:</strong> 8</li>
+                                        <li><i class="ph ph-file-text"></i> <strong>Crédits:</strong> 8</li>
                                     </ul>
                                 </div>
                                 
@@ -194,7 +196,7 @@ $page_title = "Cours - " . ($admin['name'] ?? 'Prof. Professeur');
 
                     <div class="course-full-card">
                         <div class="course-header-full">
-                            <div class="course-icon-lg"><i class="ph ph-pen-fancy"></i></div>
+                            <div class="course-icon-lg"><i class="ph ph-pen-nib"></i></div>
                             <div>
                                 <span class="course-code-badge">LIT302</span>
                                 <h3>Critique Littéraire</h3>
@@ -213,7 +215,7 @@ $page_title = "Cours - " . ($admin['name'] ?? 'Prof. Professeur');
                                     <ul class="objectives-list">
                                         <li>Maîtriser les outils d'analyse textuelle</li>
                                         <li>Appliquer les méthodes de critique</li>
-                                        <li>Rédiger une analyse critiqueargumentée</li>
+                                        <li>Rédiger une analyse critique argumentée</li>
                                         <li>Évaluer les travaux scientifiques en littérature</li>
                                     </ul>
                                 </div>
@@ -226,14 +228,14 @@ $page_title = "Cours - " . ($admin['name'] ?? 'Prof. Professeur');
                                         <li><i class="ph ph-clock"></i> <strong>Volume:</strong> 45 heures</li>
                                         <li><i class="ph ph-users"></i> <strong>Niveau:</strong> Licence 3</li>
                                         <li><i class="ph ph-calendar"></i> <strong>Semestre:</strong> Impair</li>
-                                        <li><i class="ph ph-file-alt"></i> <strong>Credits:</strong> 6</li>
+                                        <li><i class="ph ph-file-text"></i> <strong>Crédits:</strong> 6</li>
                                     </ul>
                                 </div>
                                 
                                 <div class="course-resources">
                                     <h4><i class="ph ph-download"></i> Ressources</h4>
                                     <a href="#" class="resource-btn"><i class="ph ph-file-pdf"></i> Méthodologie</a>
-                                    <a href="#" class="resource-btn"><i class="ph ph-file-alt"></i> Textes d'application</a>
+                                    <a href="#" class="resource-btn"><i class="ph ph-file-text"></i> Textes d'application</a>
                                 </div>
                             </div>
                         </div>
@@ -262,9 +264,9 @@ $page_title = "Cours - " . ($admin['name'] ?? 'Prof. Professeur');
                 <div class="footer-section">
                     <h4>Suivez-moi</h4>
                     <div class="social-links">
-                        <a href="#"><i class="ph ph-linkedin-logo"></i></a>
-                        <a href="#"><i class="ph ph-google-logo"></i></a>
-                        <a href="#"><i class="ph ph-google-logo"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="ph ph-linkedin-logo"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="ph ph-twitter-logo"></i></a>
+                        <a href="#" aria-label="Email"><i class="ph ph-google-logo"></i></a>
                     </div>
                 </div>
             </div>

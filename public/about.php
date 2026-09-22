@@ -9,10 +9,25 @@ $admin = $pdo->query("SELECT * FROM users WHERE role = 'admin' LIMIT 1")->fetch(
 include "../includes/header.php";
 ?>
 
-<div class="max-w-7xl mx-auto px-4 py-12">
-    <div class="text-center mb-12">
+<div class="relative overflow-hidden bg-cover bg-center py-16" style="background-image: url('<?= BASE_URL ?>img/bg/banner-about.jpg');">
+    <div class="absolute inset-0 bg-white/75"></div>
+    <div class="relative z-10 text-center">
         <h1 class="text-3xl font-bold text-gray-900"><i class="ph ph-info text-primary"></i> À propos</h1>
         <p class="text-gray-500 mt-2">Découvrez notre mission et ceux qui font vivre cette plateforme</p>
+    </div>
+</div>
+
+<div id="main-content" class="max-w-7xl mx-auto px-4 py-12">
+    <div class="max-w-3xl mx-auto mb-12 text-center">
+        <span class="text-xs font-semibold text-primary uppercase tracking-widest">Introduction</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-2 mb-6">Introduction à Joie Enseignante</h2>
+        <p class="text-gray-600 leading-relaxed">
+            <strong class="text-primary">Joie Enseignante</strong> est une plateforme dédiée à l'enrichissement de l'éducation, 
+            créée sous l'égide du Professeur Sylvestre Djouamon. L'objectif de cette initiative est de partager son expertise 
+            en littérature orale, en politiques publiques, ainsi qu'en communication. Ce site vise à promouvoir les savoirs 
+            et les valeurs liées à la transmission de la culture et des connaissances à travers des ressources pédagogiques 
+            et des formations spécialisées.
+        </p>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto mb-12">
@@ -56,7 +71,6 @@ include "../includes/header.php";
             </ul>
         </div>
     </div>
-
 </div>
 
 <?php include "../includes/footer.php"; ?>

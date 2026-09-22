@@ -12,11 +12,12 @@ $page_title = "Publications - " . ($admin['name'] ?? 'Prof. Professeur');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?></title>
-    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="<?= BASE_URL ?>assets/phosphor/phosphor.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>assets/fonts/inter/index.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+    <body>
+    <?php skip_link() ?>
     <header class="prof-header">
         <div class="header-container">
             <div class="logo">
@@ -26,7 +27,7 @@ $page_title = "Publications - " . ($admin['name'] ?? 'Prof. Professeur');
                     <p>Département de Littérature | Université de Cotonou</p>
                 </div>
             </div>
-            <nav class="main-nav" id="mainNav">
+            <nav class="main-nav" id="mainNav" aria-label="Navigation professeur">
                 <ul>
                     <li><a href="index.php"><i class="ph ph-house"></i> Accueil</a></li>
                     <li><a href="profil.php"><i class="ph ph-user"></i> Profil</a></li>
@@ -35,11 +36,11 @@ $page_title = "Publications - " . ($admin['name'] ?? 'Prof. Professeur');
                     <li><a href="contact.php"><i class="ph ph-envelope"></i> Contact</a></li>
                 </ul>
             </nav>
-            <button class="menu-toggle" onclick="document.getElementById('mainNav').classList.toggle('active')"><i class="ph ph-list"></i></button>
+            <button class="menu-toggle" onclick="document.getElementById('mainNav').classList.toggle('active')" aria-label="Menu"><i class="ph ph-list"></i></button>
         </div>
     </header>
 
-    <main>
+    <main id="main-content">
         <section class="hero compact">
             <div class="container text-center">
                 <h2><i class="ph ph-book"></i> Publications</h2>
@@ -50,7 +51,7 @@ $page_title = "Publications - " . ($admin['name'] ?? 'Prof. Professeur');
         <section class="section">
             <div class="container">
                 <div class="filters">
-                    <button class="filter-btn active" data-filter="all">Tous (<?= $pdo->query("SELECT COUNT(*) FROM posts WHERE status = 'published'")->fetchColumn() ?>)</button>
+                    <button class="filter-btn active" data-filter="all">Tous (<?= $pdo->query("SELECT COUNT(*) FROM posts WHERE (status = 'published' OR (status = 'scheduled' AND published_at <= NOW()))")->fetchColumn() ?>)</button>
                     <?php
                     $categories = $pdo->query("SELECT * FROM categories ORDER BY name");
                     while ($cat = $categories->fetch()):
@@ -70,7 +71,7 @@ $page_title = "Publications - " . ($admin['name'] ?? 'Prof. Professeur');
                             SELECT p.*, c.name as category_name, c.id_category
                             FROM posts p
                             LEFT JOIN categories c ON p.id_category = c.id_category
-                            WHERE p.status = 'published'
+                            WHERE (p.status = 'published' OR (p.status = 'scheduled' AND p.published_at <= NOW()))
                             ORDER BY p.created_at DESC
                         ");
                         while ($post = $stmt->fetch()):
@@ -89,7 +90,7 @@ $page_title = "Publications - " . ($admin['name'] ?? 'Prof. Professeur');
                                 </div>
                                 <div class="pub-actions">
                                     <a href="article.php?id=<?= $post['id_post'] ?>" class="btn btn-sm btn-primary">
-                                        <i class="ph ph-book-reader"></i> Lire l'article
+                                        <i class="ph ph-book-open-text"></i> Lire l'article
                                     </a>
                                 </div>
                             </div>
@@ -127,9 +128,9 @@ $page_title = "Publications - " . ($admin['name'] ?? 'Prof. Professeur');
                 <div class="footer-section">
                     <h4>Suivez-moi</h4>
                     <div class="social-links">
-                        <a href="#"><i class="ph ph-linkedin-logo"></i></a>
-                        <a href="#"><i class="ph ph-google-logo"></i></a>
-                        <a href="#"><i class="ph ph-google-logo"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="ph ph-linkedin-logo"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="ph ph-twitter-logo"></i></a>
+                        <a href="#" aria-label="Email"><i class="ph ph-google-logo"></i></a>
                     </div>
                 </div>
             </div>

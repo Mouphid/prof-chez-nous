@@ -47,24 +47,23 @@ $can_view_users = has_permission('manage_users');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion Commentaires - Admin</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config={theme:{extend:{colors:{primary:'#4F46E5'}}}}</script>
-    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+    <?php cdn_head(); ?>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-100 font-sans leading-relaxed">
+    <?php skip_link() ?>
     <div class="flex min-h-screen">
         <!-- Sidebar -->
         <aside class="w-64 bg-gray-900 text-white fixed h-full overflow-y-auto">
             <div class="p-5 border-b border-gray-700">
-                <a href="dashboard.php" class="flex items-center gap-3 text-xl font-extrabold">
-                    <i class="ph ph-graduation-cap text-indigo-400"></i> JoieEnseignante
+                <a href="dashboard.php" class="flex items-center gap-3">
+                    <img src="../img/logo.jpg" alt="Joie Enseignante" class="h-8 w-auto bg-white p-1 rounded">
                 </a>
             </div>
-            <nav class="p-4">
+            <nav class="p-4" aria-label="Menu admin">
                 <ul class="space-y-1">
                     <li><a href="dashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-house w-5"></i> Dashboard</a></li>
                     <?php if($can_view_posts): ?>
-                    <li><a href="manage_posts.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-file-alt w-5"></i> Articles</a></li>
+                    <li><a href="manage_posts.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-file-text w-5"></i> Articles</a></li>
                     <li><a href="add_post.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-plus w-5"></i> Nouveau post</a></li>
                     <?php endif; ?>
                     <li><a href="manage_comments.php" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-gray-700 text-white"><i class="ph ph-chats w-5"></i> Commentaires</a></li>
@@ -83,7 +82,7 @@ $can_view_users = has_permission('manage_users');
         </aside>
 
         <!-- Main -->
-        <main class="flex-1 ml-64 p-8">
+        <main class="flex-1 ml-64 p-8" id="main-content">
             <div class="flex justify-between items-center mb-8">
                 <h1 class="text-2xl font-bold text-gray-800"><i class="ph ph-chats text-primary mr-2"></i> Gestion des Commentaires</h1>
             </div>

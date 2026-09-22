@@ -24,6 +24,13 @@ if (!$post) {
     exit;
 }
 
+$is_visible = $post['status'] === 'published' || ($post['status'] === 'scheduled' && !empty($post['published_at']) && strtotime($post['published_at']) <= time());
+$is_admin = isset($_SESSION['admin_id']);
+if (!$is_visible && !$is_admin) {
+    header("Location: index.php");
+    exit;
+}
+
 $pdo->exec("UPDATE posts SET views = views + 1 WHERE id_post = " . $id_post);
 
 if (isset($_SESSION['user_id'])) {
@@ -75,23 +82,22 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?></title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config={theme:{extend:{colors:{primary:'#4F46E5'}}}}</script>
-    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+    <?php cdn_head(); animation_styles(); ?>
     <meta property="og:title" content="<?= $page_title ?>">
     <meta property="og:description" content="<?= truncate(strip_tags($post['content']), 200) ?>">
     <?php if (!empty($post['main_image'])): ?>
     <meta property="og:image" content="../uploads/images/<?= htmlspecialchars($post['main_image']) ?>">
     <?php endif; ?>
 </head>
-<body class="bg-gray-50 font-sans text-gray-800">
+<body class="bg-gray-50 font-sans text-gray-800 leading-relaxed">
+    <?php skip_link() ?>
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
-            <a href="index.php" class="flex items-center gap-2 text-xl font-extrabold text-primary"><i class="ph ph-graduation-cap"></i> Joie Enseignante</a>
+            <a href="index.php"><img src="../img/logo.jpg" alt="Joie Enseignante" class="h-12 w-auto"></a>
             <nav class="hidden md:flex items-center gap-1">
                 <a href="index.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-house"></i> Accueil</a>
                 <a href="about.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-info"></i> À propos</a>
-                <a href="biography.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-user-tie"></i> Biographie</a>
+                <a href="biography.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-user-circle"></i> Biographie</a>
                 <a href="contact.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-envelope"></i> Contact</a>
                 <a href="search.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-magnifying-glass"></i> Recherche</a>
                 <?php if (isset($_SESSION['user_id'])): ?>
@@ -112,12 +118,12 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                 <a href="login.php" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition"><i class="ph ph-sign-in"></i> Connexion</a>
                 <?php endif; ?>
             </nav>
-            <button class="md:hidden text-gray-600 p-2" onclick="document.getElementById('mobileNav').classList.toggle('hidden')" aria-label="Menu"><i class="ph ph-list text-xl"></i></button>
+            <button class="md:hidden text-gray-600 p-2" onclick="toggleMobileMenu(this)" aria-label="Menu"><i class="ph ph-list text-xl"></i></button>
         </div>
-        <div class="hidden md:hidden bg-white border-t px-4 py-3 space-y-1" id="mobileNav">
+        <div class="hidden md:hidden bg-white border-t px-4 py-3 space-y-1" id="mobileNav" role="navigation">
             <a href="index.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-house"></i> Accueil</a>
             <a href="about.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-info"></i> À propos</a>
-            <a href="biography.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-user-tie"></i> Biographie</a>
+            <a href="biography.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-user-circle"></i> Biographie</a>
             <a href="contact.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-envelope"></i> Contact</a>
             <a href="search.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-magnifying-glass"></i> Recherche</a>
             <?php if (isset($_SESSION['user_id'])): ?>
@@ -131,7 +137,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
         </div>
     </header>
 
-    <main class="max-w-4xl mx-auto px-4 py-8">
+    <main class="max-w-4xl mx-auto px-4 py-8 animate-fadeIn" id="main-content">
         <article class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
             <div class="p-6 sm:p-10">
                 <a href="index.php" class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-primary transition mb-6"><i class="ph ph-arrow-left"></i> Retour aux articles</a>
@@ -177,7 +183,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
 
                 <?php if (count($files) > 0): ?>
                 <div class="mt-8 p-6 bg-gray-50 rounded-xl border border-gray-200">
-                    <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4"><i class="ph ph-paperclip text-primary"></i> Fichiers attachés</h3>
+                    <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4"><i class="ph ph-paperclip text-primary"></i> Fichiers attachés</h2>
                     <ul class="space-y-2">
                         <?php foreach ($files as $file): ?>
                         <?php 
@@ -191,7 +197,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                         <li>
                             <a href="download.php?type=<?= $folder ?>&file=<?= htmlspecialchars($file['file_name']) ?>&id=<?= $file['id_file'] ?>" target="_blank" class="flex items-center gap-3 px-4 py-3 bg-white rounded-lg border border-gray-200 hover:border-primary hover:text-primary transition text-gray-700">
                                 <i class="ph ph-file-<?= get_file_icon($file['file_type']) ?> text-primary"></i>
-                                <span class="font-medium"><?= htmlspecialchars($file['file_name']) ?></span>
+                                <span class="font-medium">Télécharger <?= $ext === 'pdf' ? 'le PDF' : ($ext === 'mp4' || $ext === 'webm' || $ext === 'mov' ? 'la vidéo' : ($ext === 'mp3' ? "l'audio" : (in_array($ext, ['jpg','jpeg','png','gif']) ? "l'image" : 'le fichier'))) ?></span>
                             </a>
                         </li>
                         <?php endforeach; ?>
@@ -206,19 +212,13 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                         <span class="like-text"><?= $user_liked ? 'Vous aimez' : "J'aime" ?></span>
                     </button>
 
-                    <div class="flex items-center gap-2 text-sm text-gray-500 flex-wrap">
-                        <span class="font-medium">Partager :</span>
-                        <a href="https://www.facebook.com/sharer/sharer.php?u=<?= urlencode('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']) ?>" target="_blank" class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition" title="Facebook"><i class="ph ph-facebook-logo"></i></a>
-                        <a href="https://twitter.com/intent/tweet?url=<?= urlencode('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']) ?>&text=<?= urlencode($post['title']) ?>" target="_blank" class="w-8 h-8 flex items-center justify-center rounded-full bg-sky-100 text-sky-600 hover:bg-sky-200 transition" title="X (Twitter)"><i class="ph ph-x-logo"></i></a>
-                        <a href="https://www.linkedin.com/shareArticle?mini=true&url=<?= urlencode('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']) ?>" target="_blank" class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 transition" title="LinkedIn"><i class="ph ph-linkedin-logo-in"></i></a>
-                        <a href="mailto:?subject=<?= urlencode($post['title']) ?>&body=<?= urlencode('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']) ?>" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition" title="Email"><i class="ph ph-envelope"></i></a>
-                    </div>
+                    <?php share_links('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], $post['title']); ?>
                 </div>
             </div>
         </article>
 
         <section class="mt-8 bg-white rounded-xl shadow-sm border border-gray-100 p-6 sm:p-10" id="comments">
-            <h3 class="text-xl font-bold text-gray-900 mb-6"><i class="ph ph-chats text-primary"></i> Commentaires (<?= count($comments) ?>)</h3>
+            <h2 class="text-xl font-bold text-gray-900 mb-6"><i class="ph ph-chats text-primary"></i> Commentaires (<?= count($comments) ?>)</h2>
 
             <?php if (count($comments) > 0): ?>
             <div class="space-y-6 mb-8">
@@ -238,7 +238,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                     $can_edit = true;
                 }
                 ?>
-                <div class="border-b border-gray-100 pb-6 last:border-0 last:pb-0" id="comment-<?= $comment['id_comment'] ?>" data-token="<?= htmlspecialchars($token) ?>">
+                <div class="border-b border-gray-100 pb-6 last:border-0 last:pb-0 animate-slideUp" id="comment-<?= $comment['id_comment'] ?>" data-token="<?= htmlspecialchars($token) ?>">
                     <div class="flex items-center justify-between mb-2">
                         <div class="flex items-center gap-2">
                             <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold">
@@ -271,7 +271,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                     <?php if ($can_edit): ?>
                     <div class="flex items-center gap-2 mt-2 ml-10" id="comment-actions-<?= $comment['id_comment'] ?>">
                         <button class="text-xs text-primary hover:underline" onclick="editComment(<?= $comment['id_comment'] ?>)"><i class="ph ph-pencil"></i> Modifier</button>
-                        <button class="text-xs text-red-500 hover:underline" onclick="deleteComment(<?= $comment['id_comment'] ?>)"><i class="ph ph-trash"></i> Supprimer</button>
+                        <a href="manage_comment.php?action=delete&id_comment=<?= $comment['id_comment'] ?>&token=<?= urlencode($token) ?>&csrf_token=<?= urlencode(csrf_token()) ?>&from_form=1&post_id=<?= $id_post ?>" class="text-xs text-red-500 hover:underline"><i class="ph ph-trash"></i> Supprimer</a>
                     </div>
                     <?php endif; ?>
                 </div>
@@ -285,7 +285,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
             <?php endif; ?>
 
             <div class="mt-8 pt-6 border-t border-gray-100">
-                <h4 class="text-lg font-bold text-gray-900 mb-4"><i class="ph ph-pen text-primary"></i> Ajouter un commentaire</h4>
+                <h3 class="text-lg font-bold text-gray-900 mb-4"><i class="ph ph-pen text-primary"></i> Ajouter un commentaire</h3>
                 <form id="commentForm" method="post">
                     <input type="hidden" name="id_post" value="<?= $id_post ?>">
                     <div class="mb-4">
@@ -298,18 +298,11 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                 <div id="commentMessage" class="mt-4"></div>
             </div>
         </section>
-    </main>
-
-    <footer class="bg-gray-900 text-gray-400 mt-12">
-        <div class="max-w-7xl mx-auto px-4 py-8">
-            <div class="border-t border-gray-800 pt-6 text-center text-sm">
-                &copy; <?= date('Y') ?> Joie Enseignante. Tous droits réservés.
-            </div>
-        </div>
-    </footer>
+    <?php include "../includes/footer.php"; ?>
 
     <script>
     const DEBUG = true;
+    const csrfToken = '<?= csrf_token() ?>';
     function logdebug(msg, data) { if (DEBUG) console.log('[DEBUG] ' + msg, data || ''); }
 
     const likeBtn = document.querySelector('.like-btn');
@@ -320,10 +313,13 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
             const postId = btn.dataset.post;
             const liked = btn.dataset.liked === '1';
             logdebug('Like clicked', {postId, currentlyLiked: liked});
+            btn.querySelector('.ph-heart').classList.remove('animate-heartbeat');
+            void btn.querySelector('.ph-heart').offsetWidth;
+            btn.querySelector('.ph-heart').classList.add('animate-heartbeat');
             fetch('like_post.php', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body: 'id_post=' + encodeURIComponent(postId)
+                body: 'id_post=' + encodeURIComponent(postId) + '&csrf_token=' + encodeURIComponent(csrfToken)
             })
             .then(r => { logdebug('Like response status', r.status); return r.json(); })
             .then(data => {
@@ -359,6 +355,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
             e.preventDefault();
             e.stopPropagation();
             const formData = new FormData(this);
+            formData.append('csrf_token', csrfToken);
             logdebug('Comment form submitted', Object.fromEntries(formData));
             fetch('add_comment.php', { method: 'POST', body: formData })
             .then(r => r.json())
@@ -405,6 +402,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
         const formData = new FormData();
         formData.append('id_comment', idComment);
         formData.append('content', newContent);
+        formData.append('csrf_token', csrfToken);
         if (token) formData.append('token', token);
         fetch('manage_comment.php?action=update', { method: 'POST', body: formData })
         .then(r => r.json())
@@ -415,19 +413,9 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
         const commentDiv = document.getElementById('comment-content-' + idComment);
         const actionsDiv = document.getElementById('comment-actions-' + idComment);
         commentDiv.innerHTML = '<p>' + originalContent.replace(/</g, '&lt;') + '</p>';
+        const token = document.getElementById('comment-' + idComment)?.dataset?.token || '';
         actionsDiv.innerHTML = '<button class="text-xs text-primary hover:underline" onclick="editComment(' + idComment + ')"><i class="ph ph-pencil"></i> Modifier</button>' +
-                            '<button class="text-xs text-red-500 hover:underline" onclick="deleteComment(' + idComment + ')"><i class="ph ph-trash"></i> Supprimer</button>';
-    };
-
-    window.deleteComment = function(idComment) {
-        if (!confirm('Voulez-vous vraiment supprimer ce commentaire?')) return;
-        const token = getCommentToken(idComment);
-        const formData = new FormData();
-        formData.append('id_comment', idComment);
-        if (token) formData.append('token', token);
-        fetch('manage_comment.php?action=delete', { method: 'POST', body: formData })
-        .then(r => r.json())
-        .then(data => { if (data.success) { localStorage.removeItem('comment_token_' + idComment); location.reload(); } else alert(data.message || 'Erreur'); });
+            '<a href="manage_comment.php?action=delete&id_comment=' + idComment + '&token=' + encodeURIComponent(token) + '&from_form=1&post_id=<?= $id_post ?>" class="text-xs text-red-500 hover:underline"><i class="ph ph-trash"></i> Supprimer</a>';
     };
     </script>
 </body>

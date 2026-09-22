@@ -24,6 +24,13 @@ if (!$post) {
     exit;
 }
 
+$is_visible = $post['status'] === 'published' || ($post['status'] === 'scheduled' && !empty($post['published_at']) && strtotime($post['published_at']) <= time());
+$is_admin = isset($_SESSION['admin_id']);
+if (!$is_visible && !$is_admin) {
+    header("Location: index.php");
+    exit;
+}
+
 $page_title = htmlspecialchars($post['title']);
 
 $stmt_files = $pdo->prepare("SELECT * FROM files WHERE id_post = ?");
@@ -41,21 +48,22 @@ $comments = $stmt_comments->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?></title>
-    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="<?= BASE_URL ?>assets/phosphor/phosphor.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>assets/fonts/inter/index.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+    <body>
+    <?php skip_link() ?>
     <header class="prof-header">
         <div class="header-container">
             <div class="logo">
                 <div class="avatar"><i class="ph ph-user"></i></div>
                 <div class="logo-text">
-                    <h1>Prof. [Nom]</h1>
+                    <p class="site-title">Prof. [Nom]</p>
                     <p>Département de Littérature | Université de Cotonou</p>
                 </div>
             </div>
-            <nav class="main-nav" id="mainNav">
+            <nav class="main-nav" id="mainNav" aria-label="Navigation professeur">
                 <ul>
                     <li><a href="index.php"><i class="ph ph-house"></i> Accueil</a></li>
                     <li><a href="profil.php"><i class="ph ph-user"></i> Profil</a></li>
@@ -64,11 +72,11 @@ $comments = $stmt_comments->fetchAll();
                     <li><a href="contact.php"><i class="ph ph-envelope"></i> Contact</a></li>
                 </ul>
             </nav>
-            <button class="menu-toggle" onclick="document.getElementById('mainNav').classList.toggle('active')"><i class="ph ph-list"></i></button>
+            <button class="menu-toggle" onclick="document.getElementById('mainNav').classList.toggle('active')" aria-label="Menu"><i class="ph ph-list"></i></button>
         </div>
     </header>
 
-    <main>
+    <main id="main-content">
         <section class="hero compact">
             <div class="container">
                 <a href="index.php" style="color: white; text-decoration: underline;">← Retour aux publications</a>
@@ -110,7 +118,7 @@ $comments = $stmt_comments->fetchAll();
                         <h4><i class="ph ph-download"></i> Fichiers attachés</h4>
                         <ul>
                             <?php foreach ($files as $file): ?>
-                            <li><a href="../uploads/<?= htmlspecialchars($file['file_path'] ?: $file['file_name']) ?>" target="_blank"><i class="ph ph-file"></i> <?= htmlspecialchars($file['file_name']) ?></a></li>
+                            <li><a href="../uploads/<?= htmlspecialchars(basename($file['file_type'])) ?>/<?= htmlspecialchars(basename($file['file_name'])) ?>" target="_blank"><i class="ph ph-file"></i> <?= htmlspecialchars($file['file_name']) ?></a></li>
                             <?php endforeach; ?>
                         </ul>
                     </div>

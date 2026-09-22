@@ -66,21 +66,20 @@ $can_view_users = has_permission('manage_users');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion Catégories - Admin</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config={theme:{extend:{colors:{primary:'#4F46E5'}}}}</script>
-    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+    <?php cdn_head(); ?>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-100 font-sans leading-relaxed">
+    <?php skip_link() ?>
     <div class="flex min-h-screen">
         <aside class="w-64 bg-gray-900 text-white fixed h-full overflow-y-auto">
             <div class="p-5 border-b border-gray-700">
-                <a href="dashboard.php" class="flex items-center gap-3 text-xl font-extrabold"><i class="ph ph-graduation-cap text-indigo-400"></i> JoieEnseignante</a>
+                <a href="dashboard.php" class="flex items-center gap-3"><img src="../img/logo.jpg" alt="Joie Enseignante" class="h-8 w-auto bg-white p-1 rounded"></a>
             </div>
-            <nav class="p-4">
+            <nav class="p-4" aria-label="Menu admin">
                 <ul class="space-y-1">
                     <li><a href="dashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-house w-5"></i> Dashboard</a></li>
                     <?php if($can_view_posts): ?>
-                    <li><a href="manage_posts.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-file-alt w-5"></i> Articles</a></li>
+                    <li><a href="manage_posts.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-file-text w-5"></i> Articles</a></li>
                     <li><a href="add_post.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-plus w-5"></i> Nouveau post</a></li>
                     <?php endif; ?>
                     <?php if($can_view_comments): ?>
@@ -98,11 +97,11 @@ $can_view_users = has_permission('manage_users');
             </nav>
         </aside>
 
-        <main class="flex-1 ml-64 p-8">
+        <main class="flex-1 ml-64 p-8" id="main-content">
             <h1 class="text-2xl font-bold text-gray-800 mb-8"><i class="ph ph-folder text-primary mr-2"></i> Gestion des Catégories</h1>
 
-            <?php if($error): ?><div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2"><i class="ph ph-warning-circle"></i> <?= htmlspecialchars($error) ?></div><?php endif; ?>
-            <?php if($success): ?><div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2"><i class="ph ph-check-circle"></i> <?= htmlspecialchars($success) ?></div><?php endif; ?>
+            <?php if($error): ?><div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2" role="alert"><i class="ph ph-warning-circle"></i> <?= htmlspecialchars($error) ?></div><?php endif; ?>
+            <?php if($success): ?><div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2" role="alert"><i class="ph ph-check-circle"></i> <?= htmlspecialchars($success) ?></div><?php endif; ?>
 
             <!-- Add form -->
             <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
@@ -110,12 +109,12 @@ $can_view_users = has_permission('manage_users');
                 <form method="post" class="flex gap-4 items-end">
                     <?= csrf_field() ?>
                     <div class="flex-1">
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Nom</label>
-                        <input type="text" name="name" placeholder="Ex: Littérature" required class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
+                        <label for="cat_name" class="block text-sm font-semibold text-gray-700 mb-1">Nom</label>
+                        <input type="text" id="cat_name" name="name" placeholder="Ex: Littérature" required class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
                     </div>
                     <div class="flex-1">
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Description</label>
-                        <input type="text" name="description" placeholder="Description (facultatif)" class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
+                        <label for="cat_desc" class="block text-sm font-semibold text-gray-700 mb-1">Description</label>
+                        <input type="text" id="cat_desc" name="description" placeholder="Description (facultatif)" class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
                     </div>
                     <button type="submit" name="add" class="bg-primary hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg transition font-semibold flex items-center gap-2"><i class="ph ph-plus"></i> Ajouter</button>
                 </form>
@@ -145,9 +144,9 @@ $can_view_users = has_permission('manage_users');
                                         <input type="hidden" name="id_category" value="<?= $cat['id_category'] ?>">
                                         <input type="text" name="name" value="<?= htmlspecialchars($cat['name']) ?>" class="px-2 py-1 border border-gray-200 rounded text-sm w-32" required>
                                         <input type="text" name="description" value="<?= htmlspecialchars($cat['description'] ?? '') ?>" class="px-2 py-1 border border-gray-200 rounded text-sm w-40">
-                                        <button type="submit" name="edit" class="bg-emerald-500 hover:bg-emerald-600 text-white px-2.5 py-1.5 rounded text-sm transition"><i class="ph ph-floppy-disk"></i></button>
+                                        <button type="submit" name="edit" class="bg-emerald-500 hover:bg-emerald-600 text-white px-2.5 py-1.5 rounded text-sm transition" aria-label="Enregistrer"><i class="ph ph-floppy-disk"></i></button>
                                     </form>
-                                    <a href="?delete=<?= $cat['id_category'] ?>&csrf_token=<?= csrf_token() ?>" class="text-red-600 hover:text-red-800 ml-2" onclick="return confirm('Supprimer cette catégorie ?');"><i class="ph ph-trash"></i></a>
+                                    <a href="?delete=<?= $cat['id_category'] ?>&csrf_token=<?= csrf_token() ?>" class="text-red-600 hover:text-red-800 ml-2" onclick="return confirm('Supprimer cette catégorie ?');" aria-label="Supprimer"><i class="ph ph-trash"></i></a>
                                 </td>
                             </tr>
                             <?php endforeach; ?>

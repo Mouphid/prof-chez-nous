@@ -98,21 +98,20 @@ $can_view_categories = has_permission('manage_categories');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion Utilisateurs - Admin</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config={theme:{extend:{colors:{primary:'#4F46E5'}}}}</script>
-    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+    <?php cdn_head(); ?>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-100 font-sans leading-relaxed">
+    <?php skip_link() ?>
     <div class="flex min-h-screen">
         <aside class="w-64 bg-gray-900 text-white fixed h-full overflow-y-auto">
             <div class="p-5 border-b border-gray-700">
-                <a href="dashboard.php" class="flex items-center gap-3 text-xl font-extrabold"><i class="ph ph-graduation-cap text-indigo-400"></i> JoieEnseignante</a>
+                <a href="dashboard.php" class="flex items-center gap-3"><img src="../img/logo.jpg" alt="Joie Enseignante" class="h-8 w-auto bg-white p-1 rounded"></a>
             </div>
-            <nav class="p-4">
+            <nav class="p-4" aria-label="Menu admin">
                 <ul class="space-y-1">
                     <li><a href="dashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-house w-5"></i> Dashboard</a></li>
                     <?php if($can_view_posts): ?>
-                    <li><a href="manage_posts.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-file-alt w-5"></i> Articles</a></li>
+                    <li><a href="manage_posts.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-file-text w-5"></i> Articles</a></li>
                     <li><a href="add_post.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-plus w-5"></i> Nouveau post</a></li>
                     <?php endif; ?>
                     <?php if($can_view_comments): ?>
@@ -130,20 +129,20 @@ $can_view_categories = has_permission('manage_categories');
             </nav>
         </aside>
 
-        <main class="flex-1 ml-64 p-8">
+        <main class="flex-1 ml-64 p-8" id="main-content">
             <h1 class="text-2xl font-bold text-gray-800 mb-8"><i class="ph ph-users text-primary mr-2"></i> Gestion des utilisateurs</h1>
 
-            <?php if($error): ?><div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2"><i class="ph ph-warning-circle"></i> <?= htmlspecialchars($error) ?></div><?php endif; ?>
-            <?php if($success): ?><div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2"><i class="ph ph-check-circle"></i> <?= htmlspecialchars($success) ?></div><?php endif; ?>
+            <?php if($error): ?><div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2" role="alert"><i class="ph ph-warning-circle"></i> <?= htmlspecialchars($error) ?></div><?php endif; ?>
+            <?php if($success): ?><div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2" role="alert"><i class="ph ph-check-circle"></i> <?= htmlspecialchars($success) ?></div><?php endif; ?>
             <?php if(isset($_GET['msg'])):
                 $msgs = ['no_permission'=>'Action non autorisée.', 'cannot_delete_self'=>'Vous ne pouvez pas vous supprimer.', 'invalid_token'=>'Token invalide.'];
             ?>
-            <div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2"><i class="ph ph-warning-circle"></i> <?= $msgs[$_GET['msg']] ?? 'Erreur inconnue' ?></div>
+            <div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2" role="alert"><i class="ph ph-warning-circle"></i> <?= $msgs[$_GET['msg']] ?? 'Erreur inconnue' ?></div>
             <?php endif; ?>
 
             <!-- Permission table -->
             <div class="bg-indigo-50 rounded-xl p-5 mb-6 overflow-x-auto">
-                <h3 class="font-semibold text-indigo-900 mb-3"><i class="ph ph-shield"></i> Tableau des permissions</h3>
+                <h2 class="font-semibold text-indigo-900 mb-3"><i class="ph ph-shield"></i> Tableau des permissions</h2>
                 <table class="w-full text-sm">
                     <thead><tr class="bg-primary text-white"><th class="p-2 text-left">Permission</th><th class="p-2 text-center">Admin</th><th class="p-2 text-center">Auteur</th><th class="p-2 text-center">Étudiant</th></tr></thead>
                     <tbody class="bg-white">
@@ -176,22 +175,27 @@ $can_view_categories = has_permission('manage_categories');
                     <?= csrf_field() ?>
                     <div class="flex gap-4">
                         <div class="flex-1">
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Nom</label>
-                            <input type="text" name="name" placeholder="Nom complet" required class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
+                            <label for="user_name" class="block text-sm font-semibold text-gray-700 mb-1">Nom</label>
+                            <input type="text" id="user_name" name="name" placeholder="Nom complet" required class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
                         </div>
                         <div class="flex-1">
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
-                            <input type="email" name="email" placeholder="email@exemple.com" required class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
+                            <label for="user_email" class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+                            <input type="email" id="user_email" name="email" placeholder="email@exemple.com" required class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
                         </div>
                     </div>
                     <div class="flex gap-4">
                         <div class="flex-1">
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Mot de passe</label>
-                            <input type="password" name="password" placeholder="••••••••" required class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
+                            <label for="user_password" class="block text-sm font-semibold text-gray-700 mb-1">Mot de passe</label>
+                            <div class="relative">
+                                <input type="password" id="user_password" name="password" placeholder="••••••••" required class="w-full px-3 py-2 pr-10 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
+                                <button type="button" onclick="togglePassword(this)" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition" aria-label="Afficher le mot de passe">
+                                    <i class="ph ph-eye"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="flex-1">
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Rôle</label>
-                            <select name="role" class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
+                            <label for="user_role" class="block text-sm font-semibold text-gray-700 mb-1">Rôle</label>
+                            <select id="user_role" name="role" class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
                                 <option value="etudiant">Étudiant</option>
                                 <option value="auteur">Auteur</option>
                                 <option value="admin">Admin</option>
@@ -237,10 +241,10 @@ $can_view_categories = has_permission('manage_categories');
                                         <?php else: ?>
                                         <span class="text-xs font-semibold px-2 py-1 rounded-full <?= $role_colors[$user['role']] ?? 'bg-gray-100' ?>"><?= $role_labels[$user['role']] ?? $user['role'] ?></span>
                                         <?php endif; ?>
-                                        <button type="submit" name="edit" class="bg-emerald-500 hover:bg-emerald-600 text-white px-2 py-1 rounded text-sm transition"><i class="ph ph-floppy-disk"></i></button>
+                                        <button type="submit" name="edit" class="bg-emerald-500 hover:bg-emerald-600 text-white px-2 py-1 rounded text-sm transition" aria-label="Enregistrer"><i class="ph ph-floppy-disk"></i></button>
                                     </form>
                                     <?php if($current_user_role === 'admin'): ?>
-                                    <a href="?delete=<?= $user['id_user'] ?>&csrf_token=<?= csrf_token() ?>" class="text-red-600 hover:text-red-800 ml-2" onclick="return confirm('Supprimer cet utilisateur ?');"><i class="ph ph-trash"></i></a>
+                                    <a href="?delete=<?= $user['id_user'] ?>&csrf_token=<?= csrf_token() ?>" class="text-red-600 hover:text-red-800 ml-2" onclick="return confirm('Supprimer cet utilisateur ?');" aria-label="Supprimer"><i class="ph ph-trash"></i></a>
                                     <?php endif; ?>
                                     <?php else: ?>
                                     <?php if($user['id_user'] === $_SESSION['admin_id']): ?><em class="text-gray-400 text-sm">Vous</em><?php endif; ?>
@@ -254,5 +258,18 @@ $can_view_categories = has_permission('manage_categories');
             </div>
         </main>
     </div>
+<script>
+function togglePassword(btn) {
+    const input = btn.parentElement.querySelector('input');
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'ph ph-eye-slash';
+    } else {
+        input.type = 'password';
+        icon.className = 'ph ph-eye';
+    }
+}
+</script>
 </body>
 </html>

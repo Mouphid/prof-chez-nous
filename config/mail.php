@@ -5,22 +5,32 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 function getMailer(): PHPMailer {
+    $config_file = __DIR__ . '/mail_config.php';
+    if (file_exists($config_file)) {
+        $cfg = require $config_file;
+    } else {
+        $cfg = [
+            'host'       => 'smtp.gmail.com',
+            'username'   => '',
+            'password'   => '',
+            'port'       => 587,
+            'encryption' => PHPMailer::ENCRYPTION_STARTTLS,
+            'from_email' => '',
+            'from_name'  => 'Joie Enseignante',
+        ];
+    }
+
     $mail = new PHPMailer(true);
-
-    // --- Configuration SMTP ---
-    // En développement : utilise Mailtrap (https://mailtrap.io)
-    // En production : remplace par les vrais identifiants SMTP (Gmail, SendGrid, etc.)
-
     $mail->isSMTP();
-    $mail->Host       = $_ENV['SMTP_HOST'] ?? 'sandbox.smtp.mailtrap.io';
+    $mail->Host       = $cfg['host'];
     $mail->SMTPAuth   = true;
-    $mail->Username   = $_ENV['SMTP_USER'] ?? '';
-    $mail->Password   = $_ENV['SMTP_PASS'] ?? '';
-    $mail->SMTPSecure = $_ENV['SMTP_SECURE'] ?? PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port       = $_ENV['SMTP_PORT'] ?? 587;
-
-    $mail->CharSet = 'UTF-8';
-    $mail->setFrom($_ENV['MAIL_FROM'] ?? 'noreply@joieenseignante.com', 'Joie Enseignante');
+    $mail->Username   = $cfg['username'];
+    $mail->Password   = $cfg['password'];
+    $mail->SMTPSecure = $cfg['encryption'];
+    $mail->Port       = $cfg['port'];
+    $mail->CharSet    = 'UTF-8';
+    $mail->setFrom($cfg['from_email'], $cfg['from_name']);
+    $mail->addReplyTo($cfg['from_email'], $cfg['from_name']);
 
     return $mail;
 }

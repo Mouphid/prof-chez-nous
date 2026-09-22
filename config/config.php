@@ -31,7 +31,7 @@ if (session_status() === PHP_SESSION_NONE) {
         'lifetime' => 86400,
         'path' => '/',
         'domain' => '',
-        'secure' => false,
+        'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443,
         'httponly' => true,
         'samesite' => 'Lax'
     ]);
@@ -51,4 +51,17 @@ function get_client_ip() {
     if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) return $_SERVER['HTTP_X_FORWARDED_FOR'];
     return $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
 }
+
+// ─── BASE_URL (chemin web racine) ───
+$project_root = str_replace('\\', '/', realpath(__DIR__ . '/..'));
+$doc_root = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT'] ?? '');
+if ($doc_root !== '' && str_starts_with($project_root, $doc_root)) {
+    $relative = substr($project_root, strlen($doc_root));
+    define('BASE_URL', rtrim($relative, '/') . '/');
+} else {
+    // Fallback: depuis un sous-dossier connu
+    define('BASE_URL', '/JoieEnseignante/');
+}
+
+require_once __DIR__ . '/theme.php';
 ?>

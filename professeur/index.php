@@ -13,12 +13,14 @@ $page_title = "Accueil - Prof. $admin_name";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?></title>
-    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="<?= BASE_URL ?>assets/phosphor/phosphor.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>assets/fonts/inter/index.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>assets/fonts/playfair-display/index.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
-<body>
+    <body>
+    <?php skip_link() ?>
     <header class="prof-header">
         <div class="header-container">
             <div class="logo">
@@ -29,7 +31,7 @@ $page_title = "Accueil - Prof. $admin_name";
                 </div>
             </div>
             
-            <nav class="main-nav" id="mainNav">
+            <nav class="main-nav" id="mainNav" aria-label="Navigation professeur">
                 <ul>
                     <li><a href="index.php" class="active"><i class="ph ph-house"></i> Accueil</a></li>
                     <li><a href="profil.php"><i class="ph ph-user"></i> Profil</a></li>
@@ -39,14 +41,14 @@ $page_title = "Accueil - Prof. $admin_name";
                 </ul>
             </nav>
             
-            <button class="menu-toggle" onclick="document.getElementById('mainNav').classList.toggle('active')">
+            <button class="menu-toggle" onclick="document.getElementById('mainNav').classList.toggle('active')" aria-label="Menu">
                 <i class="ph ph-list"></i>
             </button>
             <a href="../admin/login.php" class="btn-admin"><i class="ph ph-gear"></i> Admin</a>
         </div>
     </header>
 
-    <main>
+    <main id="main-content">
         <section class="hero">
             <div class="hero-content">
                 <div class="hero-text">
@@ -67,7 +69,7 @@ $page_title = "Accueil - Prof. $admin_name";
             <div class="container">
                 <div class="stats-grid">
                     <?php
-                    $total_posts = $pdo->query("SELECT COUNT(*) FROM posts WHERE status = 'published'")->fetchColumn() ?: 0;
+                    $total_posts = $pdo->query("SELECT COUNT(*) FROM posts WHERE (status = 'published' OR (status = 'scheduled' AND published_at <= NOW()))")->fetchColumn() ?: 0;
                     $total_comments = $pdo->query("SELECT COUNT(*) FROM comments")->fetchColumn() ?: 0;
                     $total_likes = $pdo->query("SELECT COUNT(*) FROM likes")->fetchColumn() ?: 0;
                     $total_categories = $pdo->query("SELECT COUNT(*) FROM categories")->fetchColumn() ?: 0;
@@ -83,7 +85,7 @@ $page_title = "Accueil - Prof. $admin_name";
                         <span class="stat-label">Étudiants</span>
                     </div>
                     <div class="stat-item">
-                        <i class="ph ph-microphone-alt"></i>
+                        <i class="ph ph-microphone"></i>
                         <span class="stat-number"><?= $total_categories ?></span>
                         <span class="stat-label">Catégories</span>
                     </div>
@@ -105,7 +107,7 @@ $page_title = "Accueil - Prof. $admin_name";
                         SELECT p.*, c.name as category_name
                         FROM posts p
                         LEFT JOIN categories c ON p.id_category = c.id_category
-                        WHERE p.status = 'published'
+                        WHERE (p.status = 'published' OR (p.status = 'scheduled' AND p.published_at <= NOW()))
                         ORDER BY p.created_at DESC
                         LIMIT 3
                     ");
@@ -180,9 +182,9 @@ $page_title = "Accueil - Prof. $admin_name";
                 <div class="footer-section">
                     <h4>Suivez-moi</h4>
                     <div class="social-links">
-                        <a href="#"><i class="ph ph-linkedin-logo"></i></a>
-                        <a href="#"><i class="ph ph-google-logo"></i></a>
-                        <a href="#"><i class="ph ph-google-logo"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="ph ph-linkedin-logo"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="ph ph-twitter-logo"></i></a>
+                        <a href="#" aria-label="Email"><i class="ph ph-google-logo"></i></a>
                     </div>
                 </div>
             </div>

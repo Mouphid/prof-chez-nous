@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once "../config/config.php";
 
 // Vérifier si l'admin est connecté

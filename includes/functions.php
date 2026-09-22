@@ -92,10 +92,18 @@ function increment_rate_limit($key) {
     $_SESSION[$rate_key] = $attempts;
 }
 
+function validate_mime($tmp_name, $allowed_mimes) {
+    if (!file_exists($tmp_name) || !is_file($tmp_name)) return false;
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mime = finfo_file($finfo, $tmp_name);
+    finfo_close($finfo);
+    return in_array($mime, $allowed_mimes, true);
+}
+
 function get_file_icon($type) {
     $icons = [
         'pdf' => 'pdf',
-        'word' => 'word',
+        'word' => 'doc',
         'audio' => 'audio',
         'video' => 'video',
         'image' => 'image'
