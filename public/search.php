@@ -21,64 +21,12 @@ if (!empty($q)) {
     $stmt->execute([$search, $search]);
     $results = $stmt->fetchAll();
 }
-?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $page_title ?></title>
-    <?php cdn_head(); animation_styles(); ?>
-</head>
-<body class="bg-gray-50 font-sans text-gray-800 leading-relaxed">
-    <?php skip_link() ?>
-    <header class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
-            <a href="index.php" class="flex items-center gap-2 text-xl font-extrabold text-primary"><i class="ph ph-graduation-cap"></i> Joie Enseignante</a>
-            <nav class="hidden md:flex items-center gap-1">
-                <a href="index.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-house"></i> Accueil</a>
-                <a href="about.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-info"></i> À propos</a>
-                <a href="biography.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-user-circle"></i> Biographie</a>
-                <a href="contact.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-envelope"></i> Contact</a>
-                <a href="search.php" class="px-3 py-2 rounded-lg text-sm font-medium bg-indigo-50 text-primary"><i class="ph ph-magnifying-glass"></i> Recherche</a>
-                <?php if (isset($_SESSION['user_id'])): ?>
-                <div class="relative group">
-                    <button class="flex items-center gap-2 bg-emerald-500 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-emerald-600 transition">
-                        <i class="ph ph-user"></i> <?= htmlspecialchars($_SESSION['user_name'] ?? 'Profil') ?> <i class="ph ph-caret-down text-xs"></i>
-                    </button>
-                    <div class="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                        <a href="profile.php" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-primary rounded-t-lg"><i class="ph ph-user-cog w-5"></i> Mon profil</a>
-                        <a href="my_downloads.php" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-primary"><i class="ph ph-download w-5"></i> Mes téléchargements</a>
-                        <a href="my_comments.php" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-primary"><i class="ph ph-chats w-5"></i> Mes commentaires</a>
-                        <hr class="border-gray-100">
-                        <a href="logout.php" class="block px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-b-lg"><i class="ph ph-sign-out w-5"></i> Déconnexion</a>
-                    </div>
-                </div>
-                <?php else: ?>
-                <a href="register.php" class="px-3 py-2 rounded-lg text-sm font-medium text-primary hover:bg-indigo-50 transition"><i class="ph ph-user-plus"></i> Inscription</a>
-                <a href="login.php" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition"><i class="ph ph-sign-in"></i> Connexion</a>
-                <?php endif; ?>
-            </nav>
-            <button class="md:hidden text-gray-600 p-2" onclick="toggleMobileMenu(this)" aria-label="Menu"><i class="ph ph-list text-xl"></i></button>
-        </div>
-        <div class="hidden md:hidden bg-white border-t px-4 py-3 space-y-1" id="mobileNav" role="navigation">
-            <a href="index.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-house"></i> Accueil</a>
-            <a href="about.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-info"></i> À propos</a>
-            <a href="biography.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-user-circle"></i> Biographie</a>
-            <a href="contact.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-envelope"></i> Contact</a>
-            <a href="search.php" class="block px-3 py-2 rounded-lg text-sm font-medium bg-indigo-50 text-primary"><i class="ph ph-magnifying-glass"></i> Recherche</a>
-            <?php if (isset($_SESSION['user_id'])): ?>
-            <a href="profile.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-user-cog"></i> Mon profil</a>
-            <a href="my_downloads.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-download"></i> Mes téléchargements</a>
-            <a href="my_comments.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-chats"></i> Mes commentaires</a>
-            <a href="logout.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-red-600"><i class="ph ph-sign-out"></i> Déconnexion</a>
-            <?php else: ?>
-            <a href="login.php" class="block px-3 py-2 rounded-lg text-sm font-medium bg-primary text-white text-center"><i class="ph ph-sign-in"></i> Connexion</a>
-            <?php endif; ?>
-        </div>
-    </header>
+$categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
 
-    <main class="max-w-7xl mx-auto px-4 py-8 animate-fadeIn" id="main-content">
+include "../includes/header.php";
+?>
+
+    <section class="max-w-7xl mx-auto px-4 py-8 animate-fade-in" id="main-content">
         <div class="flex flex-col lg:flex-row gap-8">
             <div class="flex-1">
                 <h1 class="text-2xl font-bold text-gray-900 mb-6"><i class="ph ph-magnifying-glass text-primary"></i> Recherche</h1>
@@ -86,7 +34,7 @@ if (!empty($q)) {
                 <form method="get" class="mb-8">
                     <div class="flex gap-2">
                         <input type="text" name="q" value="<?= htmlspecialchars($q) ?>" placeholder="Rechercher un article..." required class="flex-1 px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none transition">
-                        <button type="submit" class="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 transition flex items-center gap-2 active:scale-[0.98]">
+                        <button type="submit" class="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-primary-700 transition flex items-center gap-2 active:scale-[0.98]">
                             <i class="ph ph-magnifying-glass"></i> Rechercher
                         </button>
                     </div>
@@ -141,14 +89,7 @@ if (!empty($q)) {
                 </div>
             </aside>
         </div>
-    </main>
+    </section>
 
-    <footer class="bg-gray-900 text-gray-400 mt-12">
-        <div class="max-w-7xl mx-auto px-4 py-8">
-            <div class="border-t border-gray-800 pt-6 text-center text-sm">
-                &copy; <?= date('Y') ?> Joie Enseignante. Tous droits réservés.
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
+    <?php include "../includes/newsletter-section.php"; ?>
+<?php include "../includes/footer.php"; ?>

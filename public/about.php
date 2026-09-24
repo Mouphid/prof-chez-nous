@@ -32,7 +32,7 @@ include "../includes/header.php";
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto mb-12">
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-            <div class="w-14 h-14 bg-indigo-50 rounded-xl flex items-center justify-center text-primary text-2xl mb-4"><i class="ph ph-handshake"></i></div>
+            <div class="w-14 h-14 bg-primary-50 rounded-xl flex items-center justify-center text-primary text-2xl mb-4"><i class="ph ph-handshake"></i></div>
             <h2 class="text-xl font-bold text-gray-900 mb-4">Qui sommes-nous ?</h2>
             <p class="text-gray-600 leading-relaxed mb-4">
                 <strong class="text-primary">Joie Enseignante</strong> est une plateforme pédagogique dédiée aux enseignants et aux étudiants. 
@@ -49,7 +49,7 @@ include "../includes/header.php";
         </div>
 
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-            <div class="w-14 h-14 bg-indigo-50 rounded-xl flex items-center justify-center text-primary text-2xl mb-4"><i class="ph ph-target"></i></div>
+            <div class="w-14 h-14 bg-primary-50 rounded-xl flex items-center justify-center text-primary text-2xl mb-4"><i class="ph ph-target"></i></div>
             <h2 class="text-xl font-bold text-gray-900 mb-4">Notre mission</h2>
             <ul class="space-y-4">
                 <li class="flex gap-3">
@@ -73,4 +73,5 @@ include "../includes/header.php";
     </div>
 </div>
 
+<?php include "../includes/newsletter-section.php"; ?>
 <?php include "../includes/footer.php"; ?>

@@ -18,7 +18,7 @@ Blog académique pour un professeur universitaire spécialisé en littérature.
    - Admin : `http://localhost/JoieEnseignante/admin/`
 
 4. **Comptes**
-   - **Admin** : admin@joieenseignante.com / admin123
+   - **Admin** : compte du professeur créé via l'import (`prof@joieenseignante.com`), mot de passe défini au déploiement
    - **Utilisateurs** : s'inscrivent via `/public/register.php`
 
 ---

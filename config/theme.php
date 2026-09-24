@@ -39,7 +39,7 @@ define('GRADIENT_HERO', 'bg-hero-pattern');
 define('GRADIENT_CTA', 'bg-cta-pattern');
 define('GRADIENT_AUTH', 'from-primary-500 to-primary-700');
 define('GRADIENT_PROFILE', 'from-primary-500 to-primary-700');
-define('GRADIENT_EMPTY', 'from-primary-50 to-purple-50');
+define('GRADIENT_EMPTY', 'from-primary-50 to-primary-100');
 define('GRADIENT_TESTIMONIAL', 'bg-gradient-to-b from-gray-50 to-white dark:from-dark-50 dark:to-dark');
 
 // ─── Classes d'animations ───
@@ -85,7 +85,7 @@ function badge_role($role) {
 // ─── États vides ───
 function empty_state($icon, $title, $subtitle = '') {
     echo '<div class="text-center py-24 bg-white dark:bg-dark-50 rounded-2xl border border-gray-100 dark:border-dark-100 shadow-sm">';
-    echo '<div class="w-20 h-20 bg-gradient-to-br from-primary-50 to-purple-50 dark:from-primary-900/20 dark:to-purple-900/20 rounded-full flex items-center justify-center mx-auto mb-4">';
+    echo '<div class="w-20 h-20 bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/20 dark:to-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4">';
     echo '<i class="ph ph-' . htmlspecialchars($icon) . ' text-3xl text-primary-400 dark:text-primary-300"></i></div>';
     echo '<p class="text-lg font-semibold text-gray-700 dark:text-dark-500">' . htmlspecialchars($title) . '</p>';
     if ($subtitle) echo '<p class="text-sm text-gray-400 dark:text-dark-300 mt-1">' . htmlspecialchars($subtitle) . '</p>';
@@ -181,7 +181,7 @@ function animation_styles() {
         .card-hover:hover { transform: translateY(-6px); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.12); }
 
         /* Gradient text */
-        .gradient-text { background: linear-gradient(135deg, #2563EB, #7C3AED); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .gradient-text { background: linear-gradient(135deg, #5c7b97, #3d5268); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 
         /* Reduced motion */
         @media (prefers-reduced-motion: reduce) {
@@ -277,14 +277,13 @@ function counter_animation_script() {
     <?php
 }
 
-// ─── Head (Tailwind + Phosphor + Google Fonts) ───
+// ─── Head (Tailwind local + Phosphor + Inter local) ───
 function cdn_head() {
     $a = BASE_URL;
     ?>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
     <link href="<?= $a ?>assets/css/tailwind.css" rel="stylesheet">
+    <style>:root{--font-sans:'Inter',ui-sans-serif,system-ui,sans-serif;--font-display:'Inter',ui-sans-serif,system-ui,sans-serif}</style>
+    <link href="<?= $a ?>assets/css/sobre.css" rel="stylesheet">
     <link href="<?= $a ?>assets/phosphor/phosphor.css" rel="stylesheet">
     <link href="<?= $a ?>assets/fonts/inter/index.css" rel="stylesheet">
     <script>function toggleMobileMenu(b){var m=document.getElementById('mobileNav');if(m){m.classList.toggle('hidden');b.setAttribute('aria-expanded',!m.classList.contains('hidden'));}}</script>

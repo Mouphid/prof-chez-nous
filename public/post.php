@@ -75,75 +75,22 @@ $user_liked = $has_liked->fetchColumn() > 0;
 $page_title = htmlspecialchars($post['title']);
 
 $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
+
+include "../includes/header.php";
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $page_title ?></title>
-    <?php cdn_head(); animation_styles(); ?>
     <meta property="og:title" content="<?= $page_title ?>">
     <meta property="og:description" content="<?= truncate(strip_tags($post['content']), 200) ?>">
     <?php if (!empty($post['main_image'])): ?>
     <meta property="og:image" content="../uploads/images/<?= htmlspecialchars($post['main_image']) ?>">
     <?php endif; ?>
-</head>
-<body class="bg-gray-50 font-sans text-gray-800 leading-relaxed">
-    <?php skip_link() ?>
-    <header class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
-            <a href="index.php"><img src="../img/logo.jpg" alt="Joie Enseignante" class="h-12 w-auto"></a>
-            <nav class="hidden md:flex items-center gap-1">
-                <a href="index.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-house"></i> Accueil</a>
-                <a href="about.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-info"></i> À propos</a>
-                <a href="biography.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-user-circle"></i> Biographie</a>
-                <a href="contact.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-envelope"></i> Contact</a>
-                <a href="search.php" class="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"><i class="ph ph-magnifying-glass"></i> Recherche</a>
-                <?php if (isset($_SESSION['user_id'])): ?>
-                <div class="relative group">
-                    <button class="flex items-center gap-2 bg-emerald-500 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-emerald-600 transition">
-                        <i class="ph ph-user"></i> <?= htmlspecialchars($_SESSION['user_name'] ?? 'Profil') ?> <i class="ph ph-caret-down text-xs"></i>
-                    </button>
-                    <div class="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                        <a href="profile.php" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-primary rounded-t-lg"><i class="ph ph-user-cog w-5"></i> Mon profil</a>
-                        <a href="my_downloads.php" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-primary"><i class="ph ph-download w-5"></i> Mes téléchargements</a>
-                        <a href="my_comments.php" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-primary"><i class="ph ph-chats w-5"></i> Mes commentaires</a>
-                        <hr class="border-gray-100">
-                        <a href="logout.php" class="block px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-b-lg"><i class="ph ph-sign-out w-5"></i> Déconnexion</a>
-                    </div>
-                </div>
-                <?php else: ?>
-                <a href="register.php" class="px-3 py-2 rounded-lg text-sm font-medium text-primary hover:bg-indigo-50 transition"><i class="ph ph-user-plus"></i> Inscription</a>
-                <a href="login.php" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition"><i class="ph ph-sign-in"></i> Connexion</a>
-                <?php endif; ?>
-            </nav>
-            <button class="md:hidden text-gray-600 p-2" onclick="toggleMobileMenu(this)" aria-label="Menu"><i class="ph ph-list text-xl"></i></button>
-        </div>
-        <div class="hidden md:hidden bg-white border-t px-4 py-3 space-y-1" id="mobileNav" role="navigation">
-            <a href="index.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-house"></i> Accueil</a>
-            <a href="about.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-info"></i> À propos</a>
-            <a href="biography.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-user-circle"></i> Biographie</a>
-            <a href="contact.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-envelope"></i> Contact</a>
-            <a href="search.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-magnifying-glass"></i> Recherche</a>
-            <?php if (isset($_SESSION['user_id'])): ?>
-            <a href="profile.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-user-cog"></i> Mon profil</a>
-            <a href="my_downloads.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-download"></i> Mes téléchargements</a>
-            <a href="my_comments.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"><i class="ph ph-chats"></i> Mes commentaires</a>
-            <a href="logout.php" class="block px-3 py-2 rounded-lg text-sm font-medium text-red-600"><i class="ph ph-sign-out"></i> Déconnexion</a>
-            <?php else: ?>
-            <a href="login.php" class="block px-3 py-2 rounded-lg text-sm font-medium bg-primary text-white text-center"><i class="ph ph-sign-in"></i> Connexion</a>
-            <?php endif; ?>
-        </div>
-    </header>
 
-    <main class="max-w-4xl mx-auto px-4 py-8 animate-fadeIn" id="main-content">
+    <section class="max-w-4xl mx-auto px-4 py-8 animate-fade-in" id="main-content">
         <article class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
             <div class="p-6 sm:p-10">
-                <a href="index.php" class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-primary transition mb-6"><i class="ph ph-arrow-left"></i> Retour aux articles</a>
+                <a href="publications.php" class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-primary transition mb-6"><i class="ph ph-arrow-left"></i> Retour aux publications</a>
 
                 <div class="flex flex-wrap items-center gap-2 mb-4">
-                    <span class="bg-indigo-100 text-primary text-xs font-semibold px-3 py-1 rounded-full"><?= htmlspecialchars($post['category_name'] ?? 'Non classé') ?></span>
+                    <span class="bg-primary-100 text-primary-800 text-xs font-semibold px-3 py-1 rounded-full"><?= htmlspecialchars($post['category_name'] ?? 'Non classé') ?></span>
                 </div>
 
                 <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4"><?= htmlspecialchars($post['title']) ?></h1>
@@ -178,30 +125,6 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                     <a href="<?= htmlspecialchars($post['embed_link']) ?>" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-3 rounded-lg transition font-medium">
                         <i class="ph ph-arrow-square-out"></i> Voir le lien externe
                     </a>
-                </div>
-                <?php endif; ?>
-
-                <?php if (count($files) > 0): ?>
-                <div class="mt-8 p-6 bg-gray-50 rounded-xl border border-gray-200">
-                    <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4"><i class="ph ph-paperclip text-primary"></i> Fichiers attachés</h2>
-                    <ul class="space-y-2">
-                        <?php foreach ($files as $file): ?>
-                        <?php 
-                            $ext = strtolower(pathinfo($file['file_name'], PATHINFO_EXTENSION));
-                            $folder = 'docs';
-                            if (in_array($ext, ['jpg','jpeg','png','gif'])) $folder = 'images';
-                            elseif ($ext === 'pdf') $folder = 'pdf';
-                            elseif (in_array($ext, ['mp4','webm','mov'])) $folder = 'video';
-                            elseif ($ext === 'mp3') $folder = 'audio';
-                        ?>
-                        <li>
-                            <a href="download.php?type=<?= $folder ?>&file=<?= htmlspecialchars($file['file_name']) ?>&id=<?= $file['id_file'] ?>" target="_blank" class="flex items-center gap-3 px-4 py-3 bg-white rounded-lg border border-gray-200 hover:border-primary hover:text-primary transition text-gray-700">
-                                <i class="ph ph-file-<?= get_file_icon($file['file_type']) ?> text-primary"></i>
-                                <span class="font-medium">Télécharger <?= $ext === 'pdf' ? 'le PDF' : ($ext === 'mp4' || $ext === 'webm' || $ext === 'mov' ? 'la vidéo' : ($ext === 'mp3' ? "l'audio" : (in_array($ext, ['jpg','jpeg','png','gif']) ? "l'image" : 'le fichier'))) ?></span>
-                            </a>
-                        </li>
-                        <?php endforeach; ?>
-                    </ul>
                 </div>
                 <?php endif; ?>
 
@@ -291,14 +214,14 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                     <div class="mb-4">
                         <textarea name="content" id="content" rows="4" required placeholder="Votre commentaire..." class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none transition resize-none"></textarea>
                     </div>
-                    <button type="submit" class="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 transition inline-flex items-center gap-2">
+                    <button type="submit" class="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-primary-700 transition inline-flex items-center gap-2">
                         <i class="ph ph-paper-plane-right"></i> Publier le commentaire
                     </button>
                 </form>
                 <div id="commentMessage" class="mt-4"></div>
             </div>
         </section>
-    <?php include "../includes/footer.php"; ?>
+    </section>
 
     <script>
     const DEBUG = true;
@@ -418,5 +341,5 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
             '<a href="manage_comment.php?action=delete&id_comment=' + idComment + '&token=' + encodeURIComponent(token) + '&from_form=1&post_id=<?= $id_post ?>" class="text-xs text-red-500 hover:underline"><i class="ph ph-trash"></i> Supprimer</a>';
     };
     </script>
-</body>
-</html>
+    <?php include "../includes/newsletter-section.php"; ?>
+<?php include "../includes/footer.php"; ?>

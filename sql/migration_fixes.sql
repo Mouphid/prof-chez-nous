@@ -25,8 +25,8 @@ CREATE TABLE IF NOT EXISTS `user_downloads` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 2. Colonnes manquantes dans comments
-ALTER TABLE `comments` ADD COLUMN IF NOT EXISTS `id_user` int(11) DEFAULT NULL AFTER `id_comment`;
-ALTER TABLE `comments` ADD COLUMN IF NOT EXISTS `token_hash` varchar(255) DEFAULT NULL AFTER `id_user`;
+ALTER TABLE `comments` ADD COLUMN `id_user` int(11) DEFAULT NULL AFTER `id_comment`;
+ALTER TABLE `comments` ADD COLUMN `token_hash` varchar(255) DEFAULT NULL AFTER `id_user`;
 
 -- 3. Aligner la colonne likes.ip_address -> user_ip
 -- (déjà faite dans le code, vérifier que la colonne existe)
@@ -34,9 +34,9 @@ ALTER TABLE `comments` ADD COLUMN IF NOT EXISTS `token_hash` varchar(255) DEFAUL
 -- Sinon, exécuter: ALTER TABLE likes CHANGE ip_address user_ip varchar(45) DEFAULT NULL;
 
 -- 4. Ajouter les colonnes manquantes dans files (si elles n'existent pas)
-ALTER TABLE `files` ADD COLUMN IF NOT EXISTS `file_path` varchar(255) DEFAULT NULL;
-ALTER TABLE `files` ADD COLUMN IF NOT EXISTS `file_size` bigint(20) DEFAULT NULL;
-ALTER TABLE `files` ADD COLUMN IF NOT EXISTS `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE `files` ADD COLUMN `file_path` varchar(255) DEFAULT NULL;
+ALTER TABLE `files` ADD COLUMN `file_size` bigint(20) DEFAULT NULL;
+ALTER TABLE `files` ADD COLUMN `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP;
 
 -- 5. Mettre à jour les rôles existants pour correspondre au code (admin, auteur, etudiant)
 -- Convertir les anciens rôles
@@ -45,6 +45,6 @@ UPDATE `users` SET `role` = 'auteur' WHERE `role` IN ('teacher', 'Teacher', 'TEA
 UPDATE `users` SET `role` = 'etudiant' WHERE `role` IN ('user', 'User', 'USER', 'student', 'Student', 'STUDENT');
 
 -- 6. Ajouter des index pour les performances
-ALTER TABLE `posts` ADD INDEX IF NOT EXISTS `idx_created_at` (`created_at`);
-ALTER TABLE `comments` ADD INDEX IF NOT EXISTS `idx_created_at` (`created_at`);
-ALTER TABLE `files` ADD INDEX IF NOT EXISTS `idx_created_at` (`created_at`);
+ALTER TABLE `posts` ADD INDEX `idx_created_at` (`created_at`);
+ALTER TABLE `comments` ADD INDEX `idx_created_at` (`created_at`);
+ALTER TABLE `files` ADD INDEX `idx_created_at` (`created_at`);

@@ -1,6 +1,9 @@
 <?php
 require_once "../config/config.php";
 
+header("Location: index.php");
+exit;
+
 if (!isset($_GET['type'], $_GET['file']) || empty($_GET['type']) || empty($_GET['file'])) {
     die("Fichier introuvable.");
 }

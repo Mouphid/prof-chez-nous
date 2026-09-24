@@ -2,6 +2,9 @@
 require_once "../config/config.php";
 require_once "../includes/functions.php";
 
+header("Location: index.php");
+exit;
+
 $email = trim($_GET['email'] ?? '');
 $message = '';
 $success = false;

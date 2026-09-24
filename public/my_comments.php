@@ -2,6 +2,9 @@
 require_once "../config/config.php";
 require_once "../includes/functions.php";
 
+header("Location: index.php");
+exit;
+
 $page_title = "Mes Commentaires - Joie Enseignante";
 
 if (!isset($_SESSION['user_id'])) {

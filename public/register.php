@@ -2,6 +2,9 @@
 require_once "../config/config.php";
 require_once "../includes/functions.php";
 
+header("Location: index.php");
+exit;
+
 $page_title = "Inscription - Joie Enseignante";
 $error = '';
 $success = '';

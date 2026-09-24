@@ -1,21 +1,34 @@
 <?php
 // config/config.php
 
-$host = "localhost";
-$db_name = "joieenseignante";
-$username = "root";
-$password = "";
+$host = getenv('DB_HOST') ?: 'localhost';
+$port = getenv('DB_PORT') ?: '3306';
+$db_name = getenv('DB_NAME') ?: 'joieenseignante';
+$username = getenv('DB_USER') ?: 'root';
+$password = getenv('DB_PASS') !== false ? getenv('DB_PASS') : '';
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db_name;charset=utf8mb4", $username, $password);
-} catch (PDOException $e) {
+// Connexion avec plusieurs tentatives (prod: localhost socket / dev local: 127.0.0.1:3306)
+$attempts = [
+    "mysql:host=$host;dbname=$db_name;charset=utf8mb4",
+    "mysql:host=$host;port=$port;dbname=$db_name;charset=utf8mb4",
+    "mysql:host=127.0.0.1;port=$port;dbname=$db_name;charset=utf8mb4",
+    "mysql:host=$host;dbname=JoieEnseignante;charset=utf8mb4",
+    "mysql:host=127.0.0.1;port=$port;dbname=JoieEnseignante;charset=utf8mb4",
+];
+
+$pdo = null;
+$last_error = null;
+foreach ($attempts as $dsn) {
     try {
-        $db_name = "JoieEnseignante";
-        $pdo = new PDO("mysql:host=$host;dbname=$db_name;charset=utf8mb4", $username, $password);
-    } catch (PDOException $e2) {
-        error_log("Erreur DB: " . $e2->getMessage());
-        die("Erreur de connexion à la base de données");
+        $pdo = new PDO($dsn, $username, $password);
+        break;
+    } catch (PDOException $e) {
+        $last_error = $e;
     }
+}
+if ($pdo === null) {
+    error_log("Erreur DB: " . ($last_error ? $last_error->getMessage() : 'Aucune tentative'));
+    die("Erreur de connexion à la base de données");
 }
 
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -31,7 +44,7 @@ if (session_status() === PHP_SESSION_NONE) {
         'lifetime' => 86400,
         'path' => '/',
         'domain' => '',
-        'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443,
+        'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? 80) == 443,
         'httponly' => true,
         'samesite' => 'Lax'
     ]);
