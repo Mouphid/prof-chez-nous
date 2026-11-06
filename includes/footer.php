@@ -11,7 +11,7 @@
                     <img src="../img/logo.jpg" alt="<?= SITE_NAME ?>" class="h-10 w-auto rounded-lg group-hover:scale-105 transition-transform">
                 </a>
                 <p class="leading-relaxed text-gray-500 dark:text-dark-300 text-sm mb-6"><?= SITE_TAGLINE ?></p>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 sbr-socials">
                     <?php social_icons() ?>
                 </div>
                 <p class="text-xs text-gray-400 dark:text-dark-300 mt-6"><i class="ph ph-map-pin"></i> <?= SITE_ADDRESS ?></p>

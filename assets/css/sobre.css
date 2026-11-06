@@ -191,6 +191,31 @@
 .sbr-footergrad { height: 1px; width: 100%;
     background: var(--color-accent-500); }
 
+/* Newsletter : conserve le rendu d'origine (bleu ardoise + doré) */
+.nl-legacy {
+    --color-primary-50:  #f4f6f8;
+    --color-primary-100: #e9eef2;
+    --color-primary-200: #d4dee6;
+    --color-primary-300: #adc0cf;
+    --color-primary-400: #7f9ab2;
+    --color-primary-500: #5c7b97;
+    --color-primary-600: #49647e;
+    --color-primary-700: #3d5268;
+    --color-primary-800: #2f4050;
+    --color-primary-900: #24313e;
+    --color-accent-100:  #f6f1ea;
+    --color-accent-400:  #cfb697;
+    --color-accent-500:  #b3936b;
+    --color-accent-600:  #93734c;
+}
+.nl-legacy .text-primary-100\/80 { color: rgba(233, 238, 242, .8); }
+.nl-legacy .text-primary-100\/90 { color: rgba(233, 238, 242, .9); }
+
+/* Survol du pied de page : couleurs d'origine (bleu ardoise) */
+#siteFooter a:hover { color: #49647e; }
+.dark #siteFooter a:hover { color: #7f9ab2; }
+#siteFooter .sbr-socials a:hover { background-color: #5c7b97; color: inherit; }
+
 /* Vignettes des derniers articles */
 .sbr-thumb { width: 46px; height: 46px; border-radius: 10px; overflow: hidden; flex-shrink: 0;
     background: linear-gradient(135deg, var(--color-primary-100), var(--color-primary-50));
