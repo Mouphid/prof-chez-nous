@@ -95,6 +95,12 @@
 .via-primary-800 { --tw-gradient-to: rgb(47 64 80 / 0); --tw-gradient-stops: var(--tw-gradient-from, transparent), var(--via, transparent), var(--tw-gradient-to); --via: var(--color-primary-800); }
 .to-primary-900 { --tw-gradient-to: var(--color-primary-900); }
 .bg-accent-500\/20 { background-color: rgba(179, 147, 107, 0.2); }
+.border-white\/40 { border-color: rgba(255, 255, 255, 0.4); }
+.hover\:bg-white\/10:hover { background-color: rgba(255, 255, 255, 0.1); }
+.-top-12 { top: -3rem; }
+.-bottom-14 { bottom: -3.5rem; }
+.-left-10 { left: -2.5rem; }
+.h-52 { height: 13rem; }
 .border-white\/15 { border-color: rgba(255, 255, 255, 0.15); }
 .text-primary-100\/80 { color: rgba(233, 238, 242, 0.8); }
 .text-primary-100\/90 { color: rgba(233, 238, 242, 0.9); }
@@ -418,9 +424,9 @@ body.admin-shell {
     color: var(--adm-ink);
 }
 
-/* ─── Sidebar claire ─── */
+/* ─── Sidebar claire, même fond que le site ─── */
 .admin-sidebar {
-    background: #ffffff;
+    background: var(--adm-bg);
     border-right: 1px solid var(--adm-border);
     color: #374151;
 }
@@ -474,12 +480,13 @@ body.admin-shell {
     transition: background-color .18s ease, color .18s ease;
 }
 .adm-nav-link i { font-size: 1.05rem; color: #8a919c; transition: color .18s ease; }
-.adm-nav-link:hover { background: #f7f4f1; color: #111827; }
+.adm-nav-link:hover { background: #f1ece7; color: #111827; }
 .adm-nav-link:hover i { color: #374151; }
 .adm-nav-link.is-active {
-    background: var(--adm-accent-soft);
+    background: #ffffff;
     color: var(--adm-accent-dark);
     font-weight: 600;
+    box-shadow: inset 3px 0 0 var(--adm-accent);
 }
 .adm-nav-link.is-active i { color: var(--adm-accent); }
 .adm-nav-count {
@@ -1020,7 +1027,7 @@ body.admin-shell {
 /* ─── Conteneur unique ─── */
 .adm-container {
     width: 100%;
-    max-width: 1280px;
+    max-width: 1440px;
     margin-inline: auto;
     padding: 2rem;
 }

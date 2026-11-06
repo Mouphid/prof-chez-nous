@@ -126,15 +126,17 @@ $page_action = '<a href="manage_newsletter.php" class="adm-btn adm-btn-secondary
             <div class="adm-container"><div class="adm-form-wide">
 
             <?php if ($erreurs): ?>
-            <div class="bg-red-50 text-red-700 border border-red-200 rounded-xl px-4 py-3 mb-5 text-sm" role="alert">
+            <div class="adm-alert adm-alert-error mb-5" role="alert">
+                <div>
                 <?php foreach ($erreurs as $err): ?><p><i class="ph ph-warning-circle"></i> <?= htmlspecialchars($err) ?></p><?php endforeach; ?>
+                </div>
             </div>
             <?php endif; ?>
 
             <?php if ($etape === 'apercu' && $apercu): ?>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="lg:col-span-2">
-                        <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="adm-card p-6">
                             <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-3">Aperçu de l'e-mail</p>
                             <div class="border border-gray-200 rounded-xl p-5 bg-white">
                                 <?= $apercu['html'] ?>
@@ -145,13 +147,13 @@ $page_action = '<a href="manage_newsletter.php" class="adm-btn adm-btn-secondary
                         </div>
                     </div>
                     <div class="space-y-4">
-                        <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="adm-card p-6">
                             <p class="text-3xl font-extrabold text-primary"><?= $nb_actifs ?></p>
                             <p class="text-sm text-gray-500 mb-1">abonné<?= $nb_actifs > 1 ? 's' : '' ?> actif<?= $nb_actifs > 1 ? 's' : '' ?></p>
                             <p class="text-xs text-gray-500">recevront ce message.</p>
                         </div>
 
-                        <div class="bg-white rounded-xl shadow-sm p-6 space-y-3">
+                        <div class="adm-card p-6 space-y-3">
                             <form method="post" onsubmit="return confirm('Envoyer ce message à <?= $nb_actifs ?> abonné(s) ? Cette action est définitive.')">
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="action" value="send">
@@ -183,23 +185,23 @@ $page_action = '<a href="manage_newsletter.php" class="adm-btn adm-btn-secondary
             <?php else: ?>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="lg:col-span-2">
-                        <form method="post" class="bg-white rounded-xl shadow-sm p-6 space-y-5">
+                        <form method="post" class="adm-card p-6 space-y-5">
                             <?= csrf_field() ?>
                             <input type="hidden" name="action" value="preview">
 
                             <div>
-                                <label for="newsletter_subject" class="block text-sm font-medium text-gray-700 mb-1.5">Sujet de l'e-mail</label>
+                                <label for="newsletter_subject" class="adm-label">Sujet de l'e-mail</label>
                                 <input type="text" id="newsletter_subject" name="subject" required maxlength="200"
                                        value="<?= htmlspecialchars($sujet) ?>"
                                        placeholder="Ex. : Trois ressources pour préparer vos cours"
-                                       class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary">
+                                       class="adm-input">
                             </div>
 
                             <div>
-                                <label for="newsletter_message" class="block text-sm font-medium text-gray-700 mb-1.5">Message</label>
+                                <label for="newsletter_message" class="adm-label">Message</label>
                                 <textarea id="newsletter_message" name="message" rows="14" required
                                           placeholder="Écrivez votre message. Laissez une ligne vide entre deux paragraphes."
-                                          class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary"><?= htmlspecialchars($message) ?></textarea>
+                                          class="adm-textarea"><?= htmlspecialchars($message) ?></textarea>
                                 <p class="text-xs text-gray-500 mt-1">
                                     Le texte est affiché tel quel (pas de code HTML). Un double saut de ligne crée un nouveau paragraphe.
                                 </p>
@@ -212,7 +214,7 @@ $page_action = '<a href="manage_newsletter.php" class="adm-btn adm-btn-secondary
                     </div>
 
                     <div class="space-y-4">
-                        <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="adm-card p-6">
                             <p class="text-3xl font-extrabold text-primary"><?= $nb_actifs ?></p>
                             <p class="text-sm text-gray-500">abonné<?= $nb_actifs > 1 ? 's' : '' ?> actif<?= $nb_actifs > 1 ? 's' : '' ?></p>
                             <?php if ($nb_actifs === 0): ?>
@@ -220,7 +222,7 @@ $page_action = '<a href="manage_newsletter.php" class="adm-btn adm-btn-secondary
                             <?php endif; ?>
                         </div>
 
-                        <div class="bg-white rounded-xl shadow-sm p-6 text-sm text-gray-600 space-y-3">
+                        <div class="adm-card p-6 text-sm text-gray-600 space-y-3">
                             <p class="font-semibold text-gray-900"><i class="ph ph-lightbulb text-primary"></i> Conseils</p>
                             <p>Un sujet court et concret donne envie d'ouvrir.</p>
                             <p>Une seule idée principale par message fonctionne mieux.</p>
