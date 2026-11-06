@@ -437,9 +437,9 @@ $draft_total   = (int)$stats['posts_draft'] + (int)$stats['posts_scheduled'];
         <?php include "_sidebar.php"; ?>
 
         <main class="admin-main flex-1 ml-64" id="main-content">
-            <?php $page_title = 'Tableau de bord'; $page_icon = 'ph-squares-four'; include "_topbar.php"; ?>
+            <?php $page_title = 'Tableau de bord'; $page_subtitle = 'Vue d’ensemble de votre activité'; $page_search = true; include "_topbar.php"; ?>
 
-            <div class="p-6 sm:p-8">
+            <div class="adm-container">
 
                 <!-- Bienvenue -->
                 <section class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-7">

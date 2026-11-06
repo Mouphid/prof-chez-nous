@@ -96,11 +96,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <main class="admin-main flex-1 ml-64" id="main-content">
             <?php
             $page_title = 'Nouveau cours';
-            $page_icon = 'ph-plus-circle';
-            $page_action = '<a href="manage_courses.php" class="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:border-primary hover:text-primary transition"><i class="ph ph-arrow-left"></i> Retour</a>';
+            $page_subtitle = 'Créez un cours, puis ajoutez ses chapitres';
+            $page_action = '<a href="manage_courses.php" class="adm-btn adm-btn-secondary"><i class="ph ph-arrow-left"></i> Retour</a>';
             include "_topbar.php";
             ?>
-            <div class="p-8 max-w-4xl">
+            <div class="adm-container"><div class="adm-form-narrow">
 
             <?php if ($error): ?>
             <div class="bg-red-50 text-red-700 border border-red-200 rounded-xl px-4 py-3 mb-4 text-sm" role="alert">
@@ -192,16 +192,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </section>
 
                 <div class="flex flex-wrap gap-3">
-                    <button type="submit" class="inline-flex items-center gap-2 bg-primary hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl transition">
+                    <button type="submit" class="adm-btn adm-btn-primary">
                         <i class="ph ph-check"></i> Créer le cours
                     </button>
-                    <a href="manage_courses.php" class="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-6 py-3 rounded-xl transition hover:border-primary hover:text-primary">
+                    <a href="manage_courses.php" class="adm-btn adm-btn-secondary">
                         Annuler
                     </a>
                 </div>
             </form>
 
-            </div>
+            </div></div>
         </main>
     </div>
 </body>

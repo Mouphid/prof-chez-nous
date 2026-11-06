@@ -315,14 +315,14 @@ $price_label = fn(float $n): string => $n > 0
         <main class="admin-main flex-1 ml-64" id="main-content">
             <?php
             $page_title = 'Modifier le cours';
-            $page_icon = 'ph-pencil';
+            $page_subtitle = 'Modifiez le cours, ses chapitres et ses fichiers';
             $page_action = '<div class="flex gap-2">'
-                . '<a href="../public/course.php?id=' . (int)$id . '" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:border-primary hover:text-primary transition"><i class="ph ph-arrow-square-out"></i> Voir</a>'
-                . '<a href="manage_courses.php" class="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:border-primary hover:text-primary transition"><i class="ph ph-arrow-left"></i> Retour</a>'
+                . '<a href="../public/course.php?id=' . (int)$id . '" target="_blank" rel="noopener" class="adm-btn adm-btn-secondary"><i class="ph ph-arrow-square-out"></i> Voir</a>'
+                . '<a href="manage_courses.php" class="adm-btn adm-btn-secondary"><i class="ph ph-arrow-left"></i> Retour</a>'
                 . '</div>';
             include "_topbar.php";
             ?>
-            <div class="p-8 max-w-5xl">
+            <div class="adm-container"><div class="adm-form-wide">
 
             <?php if (hasFlash('success')): ?>
             <div class="bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl px-4 py-3 mb-4 text-sm" role="status">
@@ -422,7 +422,7 @@ $price_label = fn(float $n): string => $n > 0
                     </div>
                 </section>
 
-                <button type="submit" class="inline-flex items-center gap-2 bg-primary hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl transition">
+                <button type="submit" class="adm-btn adm-btn-primary">
                     <i class="ph ph-check"></i> Enregistrer le cours
                 </button>
             </form>
@@ -578,12 +578,12 @@ $price_label = fn(float $n): string => $n > 0
                     </div>
 
                     <div class="flex flex-wrap gap-3 mt-6">
-                        <button type="submit" class="inline-flex items-center gap-2 bg-primary hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl transition">
+                        <button type="submit" class="adm-btn adm-btn-primary">
                             <i class="ph <?= (int)$item_edit['id_item'] > 0 ? 'ph-check' : 'ph-plus' ?>"></i>
                             <?= (int)$item_edit['id_item'] > 0 ? 'Enregistrer le chapitre' : 'Ajouter le chapitre' ?>
                         </button>
                         <?php if ((int)$item_edit['id_item'] > 0): ?>
-                        <a href="edit_course.php?id=<?= (int)$id ?>#chapitres" class="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-6 py-3 rounded-xl transition hover:border-primary hover:text-primary">
+                        <a href="edit_course.php?id=<?= (int)$id ?>#chapitres" class="adm-btn adm-btn-secondary">
                             Annuler la modification
                         </a>
                         <?php endif; ?>

@@ -53,8 +53,13 @@ if(isset($_GET['delete'])){
     }
 }
 
-$stmt = $pdo->query("SELECT * FROM categories ORDER BY name ASC");
-$categories = $stmt->fetchAll();
+$categories = $pdo->query("
+    SELECT c.*, COUNT(p.id_post) AS post_count
+    FROM categories c
+    LEFT JOIN posts p ON p.id_category = c.id_category
+    GROUP BY c.id_category
+    ORDER BY c.name ASC
+")->fetchAll();
 
 ?>
 <!DOCTYPE html>
@@ -71,68 +76,134 @@ $categories = $stmt->fetchAll();
         <?php include "_sidebar.php"; ?>
 
         <main class="admin-main flex-1 ml-64" id="main-content">
-            <?php $page_title = 'Catégories'; $page_icon = 'ph-folder'; include "_topbar.php"; ?>
-            <div class="p-8">
+            <?php
+            $page_title = 'Catégories';
+            $page_subtitle = 'Organisez les rubriques qui structurent le site';
+            include "_topbar.php";
+            ?>
+            <div class="adm-container">
 
-            <?php if($error): ?><div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2" role="alert"><i class="ph ph-warning-circle"></i> <?= htmlspecialchars($error) ?></div><?php endif; ?>
-            <?php if($success): ?><div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2" role="alert"><i class="ph ph-check-circle"></i> <?= htmlspecialchars($success) ?></div><?php endif; ?>
+            <?php if($error): ?>
+            <div class="adm-alert adm-alert-error" role="alert"><i class="ph ph-warning-circle"></i><span><?= htmlspecialchars($error) ?></span></div>
+            <?php endif; ?>
+            <?php if($success): ?>
+            <div class="adm-alert adm-alert-success" role="status"><i class="ph ph-check-circle"></i><span><?= htmlspecialchars($success) ?></span></div>
+            <?php endif; ?>
 
-            <!-- Add form -->
-            <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
-                <h2 class="text-lg font-semibold mb-4"><i class="ph ph-plus-circle text-primary mr-2"></i> Ajouter une catégorie</h2>
-                <form method="post" class="flex gap-4 items-end">
-                    <?= csrf_field() ?>
-                    <div class="flex-1">
-                        <label for="cat_name" class="block text-sm font-semibold text-gray-700 mb-1">Nom</label>
-                        <input type="text" id="cat_name" name="name" placeholder="Ex: Littérature" required class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
+            <!-- Ajout rapide -->
+            <div class="adm-card mb-5">
+                <div class="adm-card-head">
+                    <div>
+                        <h2 class="adm-card-title">Ajouter une catégorie</h2>
+                        <p class="adm-card-sub">Le nom apparaîtra dans les filtres et sous les articles.</p>
                     </div>
-                    <div class="flex-1">
-                        <label for="cat_desc" class="block text-sm font-semibold text-gray-700 mb-1">Description</label>
-                        <input type="text" id="cat_desc" name="description" placeholder="Description (facultatif)" class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
-                    </div>
-                    <button type="submit" name="add" class="bg-primary hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg transition font-semibold flex items-center gap-2"><i class="ph ph-plus"></i> Ajouter</button>
-                </form>
+                </div>
+                <div class="adm-card-body">
+                    <form method="post" class="flex flex-wrap items-end gap-3">
+                        <?= csrf_field() ?>
+                        <div class="flex-1 min-w-0" style="min-width:12rem">
+                            <label for="cat_name" class="adm-label">Nom</label>
+                            <input type="text" id="cat_name" name="name" placeholder="Ex : Littérature" required class="adm-input">
+                        </div>
+                        <div class="flex-1 min-w-0" style="min-width:14rem">
+                            <label for="cat_desc" class="adm-label">Description <span class="text-gray-400 font-normal">(facultatif)</span></label>
+                            <input type="text" id="cat_desc" name="description" placeholder="En quelques mots…" class="adm-input">
+                        </div>
+                        <button type="submit" name="add" class="adm-btn adm-btn-primary adm-btn-match">
+                            <i class="ph ph-plus"></i> Ajouter
+                        </button>
+                    </form>
+                </div>
             </div>
 
-            <!-- Categories list -->
-            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                <h2 class="text-lg font-semibold p-5 border-b border-gray-100"><i class="ph ph-list-bullets mr-2"></i> Catégories existantes</h2>
+            <!-- Liste -->
+            <div class="adm-card overflow-hidden">
+                <div class="adm-card-head">
+                    <div>
+                        <h2 class="adm-card-title">Catégories existantes</h2>
+                        <p class="adm-card-sub"><?= count($categories) ?> catégorie<?= count($categories) > 1 ? 's' : '' ?></p>
+                    </div>
+                </div>
+
+                <?php if (!$categories): ?>
+                <div class="adm-empty">
+                    <i class="ph ph-folder-simple"></i>
+                    <p class="adm-empty-title">Aucune catégorie pour le moment</p>
+                    <p class="adm-empty-note">Créez une première rubrique avec le formulaire ci-dessus.</p>
+                </div>
+                <?php else: ?>
                 <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="bg-gray-50 text-left text-sm font-semibold text-gray-600">
-                            <tr><th class="px-4 py-3">Nom</th><th class="px-4 py-3">Description</th><th class="px-4 py-3">Articles</th><th class="px-4 py-3">Actions</th></tr>
+                    <table class="adm-table">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Description</th>
+                                <th>Articles</th>
+                                <th class="adm-col-actions">Actions</th>
+                            </tr>
                         </thead>
                         <tbody>
-                            <?php foreach($categories as $cat):
-                                $post_count = $pdo->prepare("SELECT COUNT(*) FROM posts WHERE id_category = ?");
-                                $post_count->execute([$cat['id_category']]);
-                                $count = $post_count->fetchColumn();
-                            ?>
-                            <tr class="border-b border-gray-50 hover:bg-gray-50">
-                                <td class="p-3 font-medium"><?= htmlspecialchars($cat['name']) ?></td>
-                                <td class="p-3 text-gray-600"><?= htmlspecialchars($cat['description'] ?? '-') ?></td>
-                                <td class="px-4 py-3"><span class="bg-indigo-50 text-primary text-xs font-semibold px-2 py-1 rounded-full"><?= $count ?></span></td>
-                                <td class="px-4 py-3">
-                                    <form method="post" class="flex gap-2 items-center">
-                                        <?= csrf_field() ?>
-                                        <input type="hidden" name="id_category" value="<?= $cat['id_category'] ?>">
-                                        <input type="text" name="name" value="<?= htmlspecialchars($cat['name']) ?>" class="px-2 py-1 border border-gray-200 rounded text-sm w-32" required>
-                                        <input type="text" name="description" value="<?= htmlspecialchars($cat['description'] ?? '') ?>" class="px-2 py-1 border border-gray-200 rounded text-sm w-40">
-                                        <button type="submit" name="edit" class="bg-emerald-500 hover:bg-emerald-600 text-white px-2.5 py-1.5 rounded text-sm transition" aria-label="Enregistrer"><i class="ph ph-floppy-disk"></i></button>
-                                    </form>
-                                    <a href="?delete=<?= $cat['id_category'] ?>&csrf_token=<?= csrf_token() ?>" class="text-red-600 hover:text-red-800 ml-2" onclick="return confirm('Supprimer cette catégorie ?');" aria-label="Supprimer"><i class="ph ph-trash"></i></a>
+                            <?php foreach($categories as $cat): ?>
+                            <tr>
+                                <td class="font-medium text-gray-900 whitespace-nowrap"><?= htmlspecialchars($cat['name']) ?></td>
+                                <td class="text-gray-600" style="max-width:32rem">
+                                    <span class="adm-clamp-1" title="<?= htmlspecialchars($cat['description'] ?? '') ?>"><?= htmlspecialchars($cat['description'] ?: '—') ?></span>
+                                </td>
+                                <td>
+                                    <span class="adm-badge adm-badge-gray"><?= (int)$cat['post_count'] ?> article<?= (int)$cat['post_count'] > 1 ? 's' : '' ?></span>
+                                </td>
+                                <td class="adm-col-actions">
+                                    <button type="button" class="adm-action adm-action-primary" title="Modifier"
+                                            aria-label="Modifier <?= htmlspecialchars($cat['name'], ENT_QUOTES) ?>"
+                                            onclick="document.getElementById('edit-cat-<?= (int)$cat['id_category'] ?>').showModal()">
+                                        <i class="ph ph-pencil"></i>
+                                    </button>
+                                    <a href="?delete=<?= (int)$cat['id_category'] ?>&csrf_token=<?= csrf_token() ?>"
+                                       class="adm-action adm-action-danger" title="Supprimer"
+                                       aria-label="Supprimer <?= htmlspecialchars($cat['name'], ENT_QUOTES) ?>"
+                                       onclick="return confirm('Supprimer cette catégorie ? Les articles concernés resteront en ligne.');">
+                                        <i class="ph ph-trash"></i>
+                                    </a>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
-                            <?php if(count($categories) === 0): ?>
-                            <tr><td colspan="4" class="p-10 text-center text-gray-400">Aucune catégorie trouvée.</td></tr>
-                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
+                <?php endif; ?>
             </div>
+
             </div>
         </main>
     </div>
+
+    <?php foreach($categories as $cat): ?>
+    <dialog class="adm-dialog" id="edit-cat-<?= (int)$cat['id_category'] ?>" aria-labelledby="edit-cat-title-<?= (int)$cat['id_category'] ?>">
+        <form method="post">
+            <?= csrf_field() ?>
+            <input type="hidden" name="id_category" value="<?= (int)$cat['id_category'] ?>">
+            <div class="adm-dialog-head">
+                <h2 class="adm-dialog-title" id="edit-cat-title-<?= (int)$cat['id_category'] ?>">Modifier la catégorie</h2>
+                <button type="button" class="adm-dialog-close" onclick="this.closest('dialog').close()" aria-label="Fermer">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+            <div class="adm-dialog-body">
+                <div class="mb-4">
+                    <label for="edit-name-<?= (int)$cat['id_category'] ?>" class="adm-label">Nom</label>
+                    <input type="text" id="edit-name-<?= (int)$cat['id_category'] ?>" name="name" value="<?= htmlspecialchars($cat['name']) ?>" required class="adm-input">
+                </div>
+                <div>
+                    <label for="edit-desc-<?= (int)$cat['id_category'] ?>" class="adm-label">Description</label>
+                    <textarea id="edit-desc-<?= (int)$cat['id_category'] ?>" name="description" rows="3" class="adm-textarea"><?= htmlspecialchars($cat['description'] ?? '') ?></textarea>
+                </div>
+            </div>
+            <div class="adm-dialog-foot">
+                <button type="button" class="adm-btn adm-btn-secondary" onclick="this.closest('dialog').close()">Annuler</button>
+                <button type="submit" name="edit" class="adm-btn adm-btn-primary"><i class="ph ph-floppy-disk"></i> Enregistrer</button>
+            </div>
+        </form>
+    </dialog>
+    <?php endforeach; ?>
 </body>
 </html>

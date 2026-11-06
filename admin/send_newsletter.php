@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$page_action = '<a href="manage_newsletter.php" class="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-primary">'
+$page_action = '<a href="manage_newsletter.php" class="adm-btn adm-btn-secondary">'
     . '<i class="ph ph-arrow-left"></i> Liste des abonnés</a>';
 ?>
 <!DOCTYPE html>
@@ -118,8 +118,12 @@ $page_action = '<a href="manage_newsletter.php" class="inline-flex items-center 
         <?php include "_sidebar.php"; ?>
 
         <main class="admin-main flex-1 ml-64" id="main-content">
-            <?php $page_title = 'Écrire une newsletter'; $page_icon = 'ph-paper-plane-tilt'; include "_topbar.php"; ?>
-            <div class="p-8 max-w-5xl">
+            <?php
+            $page_title = 'Écrire une newsletter';
+            $page_subtitle = 'Rédigez le message, prévisualisez-le puis envoyez-le aux abonnés';
+            include "_topbar.php";
+            ?>
+            <div class="adm-container"><div class="adm-form-wide">
 
             <?php if ($erreurs): ?>
             <div class="bg-red-50 text-red-700 border border-red-200 rounded-xl px-4 py-3 mb-5 text-sm" role="alert">
@@ -153,7 +157,7 @@ $page_action = '<a href="manage_newsletter.php" class="inline-flex items-center 
                                 <input type="hidden" name="action" value="send">
                                 <input type="hidden" name="subject" value="<?= htmlspecialchars($sujet) ?>">
                                 <input type="hidden" name="message" value="<?= htmlspecialchars($message) ?>">
-                                <button type="submit" class="w-full inline-flex items-center justify-center gap-2 bg-accent-500 hover:bg-accent-600 text-white font-bold px-5 py-3 rounded-xl transition shadow-lg">
+                                <button type="submit" class="w-full adm-btn adm-btn-primary" style="height:2.9rem">
                                     <i class="ph ph-paper-plane-tilt"></i> Envoyer maintenant
                                 </button>
                             </form>
@@ -163,7 +167,7 @@ $page_action = '<a href="manage_newsletter.php" class="inline-flex items-center 
                                 <input type="hidden" name="action" value="edit">
                                 <input type="hidden" name="subject" value="<?= htmlspecialchars($sujet) ?>">
                                 <input type="hidden" name="message" value="<?= htmlspecialchars($message) ?>">
-                                <button type="submit" class="w-full inline-flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-5 py-3 rounded-xl transition">
+                                <button type="submit" class="w-full adm-btn adm-btn-secondary" style="height:2.9rem">
                                     <i class="ph ph-pencil-simple"></i> Modifier le message
                                 </button>
                             </form>
@@ -201,7 +205,7 @@ $page_action = '<a href="manage_newsletter.php" class="inline-flex items-center 
                                 </p>
                             </div>
 
-                            <button type="submit" class="inline-flex items-center gap-2 bg-primary text-white font-semibold px-6 py-3 rounded-xl hover:bg-indigo-700 transition">
+                            <button type="submit" class="adm-btn adm-btn-primary">
                                 <i class="ph ph-eye"></i> Aperçu avant envoi
                             </button>
                         </form>
@@ -234,7 +238,7 @@ $page_action = '<a href="manage_newsletter.php" class="inline-flex items-center 
                 </div>
             <?php endif; ?>
 
-            </div>
+            </div></div>
         </main>
     </div>
 </body>

@@ -4,15 +4,17 @@
  *
  * À inclure juste après l'ouverture de <main>, avant le contenu.
  * Variables attendues avant l'include :
- * - $page_title  : titre affiché (obligatoire)
- * - $page_icon   : classe Phosphor sans le préfixe "ph " (ex. "ph-newspaper")
- * - $page_action : HTML optionnel d'un bouton d'action à droite
+ * - $page_title    : titre affiché (obligatoire)
+ * - $page_subtitle : sous-titre gris d'une ligne (optionnel)
+ * - $page_action   : HTML optionnel d'un bouton d'action à droite
+ * - $page_search   : true pour afficher la recherche d'articles (défaut : false)
  *
  * Les variables $admin_name et $admin_role viennent de config_admin.php.
  */
-$page_title  = $page_title  ?? 'Administration';
-$page_icon   = $page_icon   ?? 'ph-squares-four';
-$page_action = $page_action ?? '';
+$page_title    = $page_title    ?? 'Administration';
+$page_subtitle = $page_subtitle ?? '';
+$page_action   = $page_action   ?? '';
+$page_search   = $page_search   ?? false;
 
 $role_labels = [
     'admin'    => 'Super Admin',
@@ -39,24 +41,27 @@ if (has_permission('manage_comments')) {
     }
 }
 
-// La recherche en haut renvoie vers la liste des articles
-$topbar_search = basename($_SERVER['PHP_SELF'] ?? '') === 'manage_posts.php'
+// La recherche du haut ne sert qu'aux articles : jamais sur les pages
+// qui ont déjà leur propre champ de recherche (Ventes, Newsletter…).
+$topbar_search = ($page_search && basename($_SERVER['PHP_SELF'] ?? '') === 'manage_posts.php')
     ? trim((string) ($_GET['q'] ?? ''))
     : '';
 ?>
-<header class="adm-topbar px-4 sm:px-6 py-3 flex items-center gap-3 sm:gap-5">
-    <div class="flex items-center gap-3 min-w-0 shrink-0 lg:max-w-[15rem]">
+<header class="adm-topbar px-4 sm:px-6 py-2.5 flex items-center gap-3 sm:gap-5">
+    <div class="flex items-center gap-3 min-w-0 shrink-0">
         <button type="button" class="admin-menu-btn items-center justify-center w-9 h-9 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition"
                 onclick="toggleAdminSidebar()" aria-controls="adminSidebar" aria-expanded="false" aria-label="Ouvrir le menu">
             <i class="ph ph-list text-lg"></i>
         </button>
-        <h1 class="text-base sm:text-lg font-semibold text-gray-900 flex items-center gap-2 min-w-0">
-            <i class="ph <?= htmlspecialchars($page_icon) ?> text-primary text-lg hidden sm:inline"></i>
-            <span class="truncate"><?= htmlspecialchars($page_title) ?></span>
-        </h1>
+        <div class="min-w-0">
+            <h1 class="adm-topbar-title"><?= htmlspecialchars($page_title) ?></h1>
+            <?php if ($page_subtitle !== ''): ?>
+            <p class="adm-topbar-sub"><?= htmlspecialchars($page_subtitle) ?></p>
+            <?php endif; ?>
+        </div>
     </div>
 
-    <?php if (has_permission('manage_posts')): ?>
+    <?php if ($page_search && has_permission('manage_posts')): ?>
     <form class="adm-search hidden lg:block flex-1" action="manage_posts.php" method="get" role="search">
         <i class="ph ph-magnifying-glass"></i>
         <input type="search" name="q" value="<?= htmlspecialchars($topbar_search) ?>"
@@ -70,16 +75,10 @@ $topbar_search = basename($_SERVER['PHP_SELF'] ?? '') === 'manage_posts.php'
     <div class="flex items-center gap-1 sm:gap-2 ml-auto shrink-0">
         <?= $page_action ?>
 
-        <?php if (has_permission('manage_comments')): ?>
-        <a href="manage_comments.php" class="adm-icon-btn" aria-label="Commentaires à valider<?= $topbar_pending > 0 ? ' (' . $topbar_pending . ')' : '' ?>">
+        <?php if ($topbar_pending > 0): ?>
+        <a href="manage_comments.php" class="adm-icon-btn" aria-label="Commentaires à valider (<?= $topbar_pending ?>)">
             <i class="ph ph-bell"></i>
-            <?php if ($topbar_pending > 0): ?><span class="adm-icon-dot"><?= $topbar_pending > 99 ? '99+' : $topbar_pending ?></span><?php endif; ?>
-        </a>
-        <?php endif; ?>
-
-        <?php if ($admin_role === 'admin'): ?>
-        <a href="send_newsletter.php" class="adm-icon-btn hidden sm:inline-flex" aria-label="Écrire une newsletter">
-            <i class="ph ph-envelope-simple"></i>
+            <span class="adm-icon-dot"><?= $topbar_pending > 99 ? '99+' : $topbar_pending ?></span>
         </a>
         <?php endif; ?>
 

@@ -120,9 +120,36 @@ $stats = $pdo->query("
         COUNT(*) AS total,
         SUM(CASE WHEN status = 'paid' THEN 1 ELSE 0 END) AS paid_count,
         SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS paid_total,
-        SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending_count
+        SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending_count,
+        SUM(CASE WHEN status = 'failed' THEN 1 ELSE 0 END) AS failed_count,
+        SUM(CASE WHEN status = 'refunded' THEN 1 ELSE 0 END) AS refunded_count
     FROM purchases
 ")->fetch();
+
+$is_filtered = $q !== '' || $status_filter !== 'all';
+
+$lien = fn(string $statut) => 'manage_purchases.php?' . http_build_query(array_filter([
+    'status' => $statut,
+    'q' => $q,
+], fn($v) => $v !== '' && $v !== 'all'));
+
+$statut_meta = [
+    'paid'     => ['label' => 'Payée',      'badge' => 'adm-badge-green'],
+    'pending'  => ['label' => 'En attente', 'badge' => 'adm-badge-amber'],
+    'failed'   => ['label' => 'Échouée',    'badge' => 'adm-badge-red'],
+    'refunded' => ['label' => 'Remboursée', 'badge' => 'adm-badge-gray'],
+];
+
+$initials_of = function (string $name): string {
+    $name = trim($name);
+    if ($name === '') return '?';
+    $parts = preg_split('/\s+/', $name) ?: [$name];
+    $out = mb_strtoupper(mb_substr($parts[0], 0, 1));
+    if (count($parts) > 1) {
+        $out .= mb_strtoupper(mb_substr(end($parts), 0, 1));
+    }
+    return $out;
+};
 
 ?>
 <!DOCTYPE html>
@@ -139,129 +166,199 @@ $stats = $pdo->query("
         <?php include "_sidebar.php"; ?>
 
         <main class="admin-main flex-1 ml-64" id="main-content">
-            <?php $page_title = 'Ventes'; $page_icon = 'ph-shopping-cart'; include "_topbar.php"; ?>
-            <div class="p-8">
+            <?php
+            $page_title = 'Ventes';
+            $page_subtitle = 'Commandes, paiements et liens de téléchargement';
+            include "_topbar.php";
+            ?>
+            <div class="adm-container">
 
             <?php if (hasFlash('success')): ?>
-            <div class="bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl px-4 py-3 mb-4 text-sm" role="status">
-                <i class="ph ph-check-circle"></i> <?= htmlspecialchars(flash('success')) ?>
-            </div>
+            <div class="adm-alert adm-alert-success" role="status"><i class="ph ph-check-circle"></i><span><?= htmlspecialchars(flash('success')) ?></span></div>
             <?php endif; ?>
             <?php if (hasFlash('error')): ?>
-            <div class="bg-red-50 text-red-700 border border-red-200 rounded-xl px-4 py-3 mb-4 text-sm" role="alert">
-                <i class="ph ph-warning-circle"></i> <?= htmlspecialchars(flash('error')) ?>
-            </div>
+            <div class="adm-alert adm-alert-error" role="alert"><i class="ph ph-warning-circle"></i><span><?= htmlspecialchars(flash('error')) ?></span></div>
             <?php endif; ?>
 
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <div class="bg-white p-5 rounded-xl shadow-sm text-center"><div class="text-2xl font-extrabold text-gray-800"><?= (int)$stats['total'] ?></div><div class="text-sm text-gray-500">Commandes</div></div>
-                <div class="bg-white p-5 rounded-xl shadow-sm text-center"><div class="text-2xl font-extrabold text-green-600"><?= (int)$stats['paid_count'] ?></div><div class="text-sm text-gray-500">Payées</div></div>
-                <div class="bg-white p-5 rounded-xl shadow-sm text-center"><div class="text-2xl font-extrabold text-yellow-600"><?= (int)$stats['pending_count'] ?></div><div class="text-sm text-gray-500">En attente</div></div>
-                <div class="bg-white p-5 rounded-xl shadow-sm text-center"><div class="text-2xl font-extrabold text-primary"><?= number_format((float)$stats['paid_total'], 0, ',', ' ') ?></div><div class="text-sm text-gray-500">FCFA encaissés</div></div>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div class="adm-card adm-kpi">
+                    <div class="adm-kpi-head">
+                        <span class="adm-kpi-label">Commandes</span>
+                        <span class="adm-kpi-icon adm-kpi-icon-blue"><i class="ph ph-receipt"></i></span>
+                    </div>
+                    <p class="adm-kpi-value"><?= (int)$stats['total'] ?></p>
+                    <p class="adm-kpi-foot">depuis le lancement</p>
+                </div>
+                <div class="adm-card adm-kpi">
+                    <div class="adm-kpi-head">
+                        <span class="adm-kpi-label">Payées</span>
+                        <span class="adm-kpi-icon adm-kpi-icon-green"><i class="ph ph-check-circle"></i></span>
+                    </div>
+                    <p class="adm-kpi-value"><?= (int)$stats['paid_count'] ?></p>
+                    <p class="adm-kpi-foot">paiements confirmés</p>
+                </div>
+                <div class="adm-card adm-kpi">
+                    <div class="adm-kpi-head">
+                        <span class="adm-kpi-label">En attente</span>
+                        <span class="adm-kpi-icon adm-kpi-icon-amber"><i class="ph ph-clock"></i></span>
+                    </div>
+                    <p class="adm-kpi-value"><?= (int)$stats['pending_count'] ?></p>
+                    <p class="adm-kpi-foot">à confirmer par le prestataire</p>
+                </div>
+                <div class="adm-card adm-kpi">
+                    <div class="adm-kpi-head">
+                        <span class="adm-kpi-label">Encaissé</span>
+                        <span class="adm-kpi-icon adm-kpi-icon-blue"><i class="ph ph-wallet"></i></span>
+                    </div>
+                    <p class="adm-kpi-value"><?= number_format((float)$stats['paid_total'], 0, ',', ' ') ?> <small>FCFA</small></p>
+                    <p class="adm-kpi-foot">montant total des ventes payées</p>
+                </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm p-4 mb-4 flex flex-wrap items-center gap-2">
-                <?php foreach (['all' => 'Toutes', 'paid' => 'Payées', 'pending' => 'En attente', 'failed' => 'Échouées', 'refunded' => 'Remboursées'] as $k => $label): ?>
-                <a href="manage_purchases.php?<?= htmlspecialchars(http_build_query(array_filter(['status' => $k, 'q' => $q], fn($v) => $v !== ''))) ?>" class="px-4 py-2 rounded-lg text-sm font-medium <?= $status_filter === $k ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' ?>"><?= $label ?></a>
-                <?php endforeach; ?>
+            <div class="adm-toolbar">
+                <nav class="adm-segmented" aria-label="Filtrer les ventes">
+                    <?php
+                    $tabs = [
+                        'all'      => 'Toutes',
+                        'paid'     => 'Payées',
+                        'pending'  => 'En attente',
+                        'failed'   => 'Échouées',
+                        'refunded' => 'Remboursées',
+                    ];
+                    foreach ($tabs as $k => $label): ?>
+                    <a href="<?= htmlspecialchars($lien($k)) ?>" class="<?= $status_filter === $k ? 'is-active' : '' ?>">
+                        <?= $label ?>
+                        <span class="text-gray-400"><?= (int)($k === 'all' ? $stats['total'] : $stats[$k . '_count']) ?></span>
+                    </a>
+                    <?php endforeach; ?>
+                </nav>
 
-                <form method="get" class="flex flex-wrap items-center gap-2 sm:ml-auto">
+                <div class="adm-toolbar-spacer"></div>
+
+                <form method="get" class="adm-search" role="search">
                     <input type="hidden" name="status" value="<?= htmlspecialchars($status_filter) ?>">
-                    <label for="purchase-search" class="sr-only">Rechercher un acheteur</label>
+                    <i class="ph ph-magnifying-glass"></i>
+                    <label class="sr-only" for="purchase-search">Rechercher un acheteur ou un contenu</label>
                     <input type="search" id="purchase-search" name="q" value="<?= htmlspecialchars($q) ?>"
-                           placeholder="Nom, e-mail ou contenu"
-                           class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-52 focus:ring-2 focus:ring-primary focus:border-primary">
-                    <button type="submit" class="inline-flex items-center gap-1.5 bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition">
-                        <i class="ph ph-magnifying-glass"></i> Chercher
-                    </button>
-                    <?php if ($q !== ''): ?>
-                    <a href="manage_purchases.php?status=<?= urlencode($status_filter) ?>" class="text-sm text-gray-500 hover:text-primary">Effacer</a>
-                    <?php endif; ?>
+                           placeholder="Nom, e-mail ou contenu…" autocomplete="off"
+                           oninput="debounceAdminSearch(this.form)">
                 </form>
             </div>
 
-            <?php if ($q !== ''): ?>
-            <p class="text-sm text-gray-500 mb-3">
-                <?= count($purchases) ?> résultat<?= count($purchases) > 1 ? 's' : '' ?> pour « <?= htmlspecialchars($q) ?> ».
-            </p>
+            <?php if ($is_filtered): ?>
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <p class="text-sm text-gray-600">
+                    <?= count($purchases) ?> résultat<?= count($purchases) > 1 ? 's' : '' ?>
+                    <?php if ($q !== ''): ?>pour « <strong><?= htmlspecialchars($q) ?></strong> »<?php endif; ?>
+                </p>
+                <a href="manage_purchases.php" class="adm-link"><i class="ph ph-x"></i> Effacer les filtres</a>
+            </div>
             <?php endif; ?>
 
-            <div class="bg-white rounded-xl shadow-sm overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead class="bg-gray-50 text-left text-sm font-semibold text-gray-600">
-                        <tr>
-                            <th class="px-4 py-3">Date</th>
-                            <th class="px-4 py-3">Contenu</th>
-                            <th class="px-4 py-3">Acheteur</th>
-                            <th class="px-4 py-3">Montant</th>
-                            <th class="px-4 py-3">Statut</th>
-                            <th class="px-4 py-3">Transaction</th>
-                            <th class="px-4 py-3 text-right">Lien</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        <?php if (!$purchases): ?>
-                        <tr><td colspan="7" class="px-4 py-10 text-center text-gray-400">Aucune commande pour le moment.</td></tr>
-                        <?php endif; ?>
-                        <?php foreach ($purchases as $pu): ?>
-                        <?php
-                        if (!empty($pu['id_file'])) {
-                            $content_title = $pu['file_name'] ?: 'Document supprimé';
-                            $content_sub   = trim('Document' . ($pu['post_title'] ? ' · ' . $pu['post_title'] : ''));
-                        } elseif (!empty($pu['id_course'])) {
-                            $content_title = $pu['course_title'] ?: 'Cours supprimé';
-                            $content_sub   = 'Cours complet';
-                        } else {
-                            $content_title = $pu['item_title'] ?: 'Chapitre supprimé';
-                            $content_sub   = trim('Chapitre' . ($pu['item_course_title'] ? ' · ' . $pu['item_course_title'] : ''));
-                        }
-                        ?>
-                        <tr>
-                            <td class="px-4 py-3 whitespace-nowrap text-gray-500"><?= date('d/m/Y H:i', strtotime($pu['created_at'])) ?></td>
-                            <td class="px-4 py-3">
-                                <div class="font-medium text-gray-800"><?= htmlspecialchars($content_title) ?></div>
-                                <div class="text-xs text-gray-400"><?= htmlspecialchars($content_sub) ?></div>
-                            </td>
-                            <td class="px-4 py-3">
-                                <div class="font-medium text-gray-800"><?= htmlspecialchars($pu['buyer_name'] ?? '') ?></div>
-                                <div class="text-xs text-gray-400"><?= htmlspecialchars($pu['buyer_email'] ?? '') ?> · <?= htmlspecialchars($pu['buyer_phone'] ?? '') ?></div>
-                            </td>
-                            <td class="px-4 py-3 font-semibold whitespace-nowrap"><?= number_format((float)$pu['amount'], 0, ',', ' ') ?> <?= htmlspecialchars($pu['currency']) ?></td>
-                            <td class="px-4 py-3">
-                                <?php
-                                $badge = [
-                                    'paid'     => 'bg-green-100 text-green-700',
-                                    'pending'  => 'bg-yellow-100 text-yellow-700',
-                                    'failed'   => 'bg-red-100 text-red-700',
-                                    'refunded' => 'bg-gray-100 text-gray-600',
-                                ][$pu['status']] ?? 'bg-gray-100 text-gray-600';
-                                ?>
-                                <span class="px-2 py-1 rounded-full text-xs font-semibold <?= $badge ?>"><?= htmlspecialchars($pu['status']) ?></span>
-                            </td>
-                            <td class="px-4 py-3 text-xs text-gray-500 break-all max-w-[180px]"><?= htmlspecialchars($pu['transaction_id'] ?? '—') ?></td>
-                            <td class="px-4 py-3 text-right whitespace-nowrap">
-                                <?php if ($pu['status'] === 'paid' && !empty($pu['download_token'])): ?>
-                                <form method="post" class="inline" onsubmit="return confirm('Renvoyer le lien de téléchargement à <?= htmlspecialchars($pu['buyer_email'] ?? 'cet acheteur', ENT_QUOTES) ?> ?')">
-                                    <?= csrf_field() ?>
-                                    <input type="hidden" name="action" value="resend_link">
-                                    <input type="hidden" name="id_purchase" value="<?= (int)$pu['id_purchase'] ?>">
-                                    <input type="hidden" name="status_filter" value="<?= htmlspecialchars($status_filter) ?>">
-                                    <input type="hidden" name="q" value="<?= htmlspecialchars($q) ?>">
-                                    <button type="submit" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-indigo-700 border border-gray-200 hover:border-primary px-3 py-1.5 rounded-lg transition">
-                                        <i class="ph ph-paper-plane-tilt"></i> Renvoyer
-                                    </button>
-                                </form>
-                                <?php else: ?>
-                                <span class="text-xs text-gray-300">—</span>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+            <div class="adm-card overflow-hidden">
+                <?php if (!$purchases): ?>
+                <div class="adm-empty">
+                    <i class="ph <?= $is_filtered ? 'ph-magnifying-glass' : 'ph-receipt' ?>"></i>
+                    <p class="adm-empty-title"><?= $is_filtered ? 'Aucune vente ne correspond' : 'Aucune vente pour le moment' ?></p>
+                    <p class="adm-empty-note">
+                        <?= $is_filtered
+                            ? 'Essayez un autre mot-clé ou revenez à toutes les commandes.'
+                            : 'Les achats de documents et de cours apparaîtront ici dès le premier paiement.' ?>
+                    </p>
+                    <?php if ($is_filtered): ?>
+                    <a href="manage_purchases.php" class="adm-btn adm-btn-secondary"><i class="ph ph-arrow-left"></i> Toutes les ventes</a>
+                    <?php endif; ?>
+                </div>
+                <?php else: ?>
+                <div class="overflow-x-auto">
+                    <table class="adm-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Contenu</th>
+                                <th>Acheteur</th>
+                                <th>Montant</th>
+                                <th>Statut</th>
+                                <th>Transaction</th>
+                                <th class="adm-col-actions">Lien</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($purchases as $pu):
+                                if (!empty($pu['id_file'])) {
+                                    $content_title = $pu['file_name'] ?: 'Document supprimé';
+                                    $content_sub   = trim('Document' . ($pu['post_title'] ? ' · ' . $pu['post_title'] : ''));
+                                } elseif (!empty($pu['id_course'])) {
+                                    $content_title = $pu['course_title'] ?: 'Cours supprimé';
+                                    $content_sub   = 'Cours complet';
+                                } else {
+                                    $content_title = $pu['item_title'] ?: 'Chapitre supprimé';
+                                    $content_sub   = trim('Chapitre' . ($pu['item_course_title'] ? ' · ' . $pu['item_course_title'] : ''));
+                                }
+                                $meta = $statut_meta[$pu['status']] ?? ['label' => ucfirst((string)$pu['status']), 'badge' => 'adm-badge-gray'];
+                                $acheteur = trim((string)($pu['buyer_name'] ?? '')) ?: 'Acheteur';
+                            ?>
+                            <tr>
+                                <td class="text-gray-500 whitespace-nowrap"><?= date('d/m/Y H:i', strtotime($pu['created_at'])) ?></td>
+                                <td style="max-width:20rem">
+                                    <p class="text-sm font-medium text-gray-900 adm-clamp-1" title="<?= htmlspecialchars($content_title) ?>"><?= htmlspecialchars($content_title) ?></p>
+                                    <p class="adm-table-sub adm-clamp-1"><?= htmlspecialchars($content_sub) ?></p>
+                                </td>
+                                <td>
+                                    <div class="flex items-center gap-2.5">
+                                        <span class="adm-avatar-xs"><?= htmlspecialchars($initials_of($acheteur)) ?></span>
+                                        <div class="min-w-0">
+                                            <p class="text-sm font-medium text-gray-900 whitespace-nowrap"><?= htmlspecialchars($acheteur) ?></p>
+                                            <p class="adm-table-sub adm-clamp-1">
+                                                <?= htmlspecialchars($pu['buyer_email'] ?? '') ?>
+                                                <?php if (!empty($pu['buyer_phone'])): ?> · <?= htmlspecialchars($pu['buyer_phone']) ?><?php endif; ?>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                    <?= number_format((float)$pu['amount'], 0, ',', ' ') ?> <span class="text-xs font-medium text-gray-500"><?= htmlspecialchars($pu['currency']) ?></span>
+                                </td>
+                                <td><span class="adm-badge <?= $meta['badge'] ?>"><?= $meta['label'] ?></span></td>
+                                <td>
+                                    <span class="text-xs text-gray-500" style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace" title="<?= htmlspecialchars($pu['transaction_id'] ?? '') ?>">
+                                        <?= htmlspecialchars(truncate((string)($pu['transaction_id'] ?? '—'), 18)) ?>
+                                    </span>
+                                </td>
+                                <td class="adm-col-actions">
+                                    <?php if ($pu['status'] === 'paid' && !empty($pu['download_token'])): ?>
+                                    <form method="post" class="inline" onsubmit="return confirm('Renvoyer le lien de téléchargement à <?= htmlspecialchars($pu['buyer_email'] ?? 'cet acheteur', ENT_QUOTES) ?> ?')">
+                                        <?= csrf_field() ?>
+                                        <input type="hidden" name="action" value="resend_link">
+                                        <input type="hidden" name="id_purchase" value="<?= (int)$pu['id_purchase'] ?>">
+                                        <input type="hidden" name="status_filter" value="<?= htmlspecialchars($status_filter) ?>">
+                                        <input type="hidden" name="q" value="<?= htmlspecialchars($q) ?>">
+                                        <button type="submit" class="adm-action adm-action-primary" title="Renvoyer le lien" aria-label="Renvoyer le lien de téléchargement">
+                                            <i class="ph ph-paper-plane-tilt"></i>
+                                        </button>
+                                    </form>
+                                    <?php else: ?>
+                                    <span class="text-xs text-gray-300">—</span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+                <?php endif; ?>
             </div>
+
             </div>
         </main>
     </div>
+
+    <script>
+    let adminSearchTimer = null;
+    function debounceAdminSearch(form) {
+        clearTimeout(adminSearchTimer);
+        adminSearchTimer = setTimeout(function () { form.submit(); }, 450);
+    }
+    </script>
 </body>
 </html>

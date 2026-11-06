@@ -152,8 +152,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         <?php include "_sidebar.php"; ?>
 
         <main class="admin-main flex-1 ml-64" id="main-content">
-            <?php $page_title = "Modifier l'article"; $page_icon = 'ph-pencil'; include "_topbar.php"; ?>
-            <div class="p-8 max-w-4xl">
+            <?php
+            $page_title = "Modifier l'article";
+            $page_subtitle = 'Mettez à jour le contenu, la catégorie ou le statut';
+            include "_topbar.php";
+            ?>
+            <div class="adm-container"><div class="adm-form-narrow">
 
             <?php if($error): ?>
             <div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2" role="alert"><i class="ph ph-warning-circle"></i> <?= htmlspecialchars($error) ?></div>
@@ -242,12 +246,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                         <p class="text-xs text-gray-500 mt-1">Laissez <strong>0</strong> pour un téléchargement gratuit.</p>
                     </div>
 
-                    <button type="submit" class="bg-primary hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition flex items-center gap-2">
+                    <button type="submit" class="adm-btn adm-btn-primary">
                         <i class="ph ph-floppy-disk"></i> Enregistrer
                     </button>
                 </form>
             </div>
-            </div>
+            </div></div>
         </main>
     </div>
 </body>
