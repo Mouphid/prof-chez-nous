@@ -307,7 +307,7 @@ $price_label = fn(float $n): string => $n > 0
     <title>Modifier le cours - Admin</title>
     <?php cdn_head(); ?>
 </head>
-<body class="bg-gray-50 font-sans leading-relaxed">
+<body class="admin-shell font-sans leading-relaxed">
     <?php skip_link() ?>
     <div class="flex min-h-screen">
         <?php include "_sidebar.php"; ?>

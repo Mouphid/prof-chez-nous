@@ -19,26 +19,76 @@ $role_labels = [
     'auteur'   => 'Auteur',
     'etudiant' => 'Étudiant',
 ];
-$role_label = $role_labels[$admin_role] ?? ucfirst((string) $admin_role);
+$role_label   = $role_labels[$admin_role] ?? ucfirst((string) $admin_role);
 $display_name = $admin_name ?? ($_SESSION['admin_name'] ?? 'Admin');
+
+// Initiales pour l'avatar (ex. « Marie Dupont » → MD)
+$name_parts = preg_split('/\s+/', trim($display_name)) ?: [$display_name];
+$initials = mb_strtoupper(mb_substr($name_parts[0], 0, 1));
+if (count($name_parts) > 1) {
+    $initials .= mb_strtoupper(mb_substr(end($name_parts), 0, 1));
+}
+
+// Pastille de notifications : commentaires en attente
+$topbar_pending = 0;
+if (has_permission('manage_comments')) {
+    try {
+        $topbar_pending = (int) $pdo->query("SELECT COUNT(*) FROM comments WHERE status='pending' OR status IS NULL")->fetchColumn();
+    } catch (PDOException $e) {
+        $topbar_pending = 0;
+    }
+}
+
+// La recherche en haut renvoie vers la liste des articles
+$topbar_search = basename($_SERVER['PHP_SELF'] ?? '') === 'manage_posts.php'
+    ? trim((string) ($_GET['q'] ?? ''))
+    : '';
 ?>
-<header class="bg-white border-b border-gray-200 px-6 sm:px-8 py-4 flex items-center justify-between gap-4 sticky top-0 z-30">
-    <div class="flex items-center gap-3 min-w-0">
-        <button type="button" class="admin-menu-btn items-center justify-center w-10 h-10 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition"
+<header class="adm-topbar px-4 sm:px-6 py-3 flex items-center gap-3 sm:gap-5">
+    <div class="flex items-center gap-3 min-w-0 shrink-0 lg:max-w-[15rem]">
+        <button type="button" class="admin-menu-btn items-center justify-center w-9 h-9 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition"
                 onclick="toggleAdminSidebar()" aria-controls="adminSidebar" aria-expanded="false" aria-label="Ouvrir le menu">
-            <i class="ph ph-list text-xl"></i>
+            <i class="ph ph-list text-lg"></i>
         </button>
-        <h1 class="text-lg sm:text-xl font-bold text-gray-900 flex items-center gap-2 min-w-0">
-            <i class="ph <?= htmlspecialchars($page_icon) ?> text-primary text-xl"></i>
+        <h1 class="text-base sm:text-lg font-semibold text-gray-900 flex items-center gap-2 min-w-0">
+            <i class="ph <?= htmlspecialchars($page_icon) ?> text-primary text-lg hidden sm:inline"></i>
             <span class="truncate"><?= htmlspecialchars($page_title) ?></span>
         </h1>
     </div>
-    <div class="flex items-center gap-3 shrink-0">
+
+    <?php if (has_permission('manage_posts')): ?>
+    <form class="adm-search hidden lg:block flex-1" action="manage_posts.php" method="get" role="search">
+        <i class="ph ph-magnifying-glass"></i>
+        <input type="search" name="q" value="<?= htmlspecialchars($topbar_search) ?>"
+               placeholder="Rechercher un article, un auteur…" aria-label="Rechercher dans les articles">
+        <kbd>Entrée</kbd>
+    </form>
+    <?php else: ?>
+    <div class="flex-1"></div>
+    <?php endif; ?>
+
+    <div class="flex items-center gap-1 sm:gap-2 ml-auto shrink-0">
         <?= $page_action ?>
-        <span class="hidden sm:inline text-sm text-gray-500"><?= htmlspecialchars($display_name) ?></span>
-        <span class="hidden md:inline bg-primary text-white text-xs font-semibold px-3 py-1 rounded-full"><?= htmlspecialchars($role_label) ?></span>
-        <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold" aria-hidden="true">
-            <?= htmlspecialchars(strtoupper(substr($display_name, 0, 1))) ?>
+
+        <?php if (has_permission('manage_comments')): ?>
+        <a href="manage_comments.php" class="adm-icon-btn" aria-label="Commentaires à valider<?= $topbar_pending > 0 ? ' (' . $topbar_pending . ')' : '' ?>">
+            <i class="ph ph-bell"></i>
+            <?php if ($topbar_pending > 0): ?><span class="adm-icon-dot"><?= $topbar_pending > 99 ? '99+' : $topbar_pending ?></span><?php endif; ?>
+        </a>
+        <?php endif; ?>
+
+        <?php if ($admin_role === 'admin'): ?>
+        <a href="send_newsletter.php" class="adm-icon-btn hidden sm:inline-flex" aria-label="Écrire une newsletter">
+            <i class="ph ph-envelope-simple"></i>
+        </a>
+        <?php endif; ?>
+
+        <div class="adm-profile">
+            <div class="adm-avatar" aria-hidden="true"><?= htmlspecialchars($initials) ?></div>
+            <div class="hidden md:block">
+                <p class="adm-profile-name"><?= htmlspecialchars($display_name) ?></p>
+                <p class="adm-profile-role"><?= htmlspecialchars($role_label) ?></p>
+            </div>
         </div>
     </div>
 </header>

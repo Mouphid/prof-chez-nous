@@ -6,23 +6,31 @@ if(!has_permission('manage_posts')){
     exit;
 }
 
+$q = trim((string)($_GET['q'] ?? ''));
+
+$sql = "SELECT p.*, u.name AS author_name, c.name AS category_name
+        FROM posts p
+        LEFT JOIN users u ON p.id_user = u.id_user
+        LEFT JOIN categories c ON p.id_category = c.id_category
+        WHERE 1=1";
+$params = [];
+
 if($_SESSION['admin_role'] === 'auteur'){
-    $stmt = $pdo->prepare("SELECT p.*, u.name AS author_name, c.name AS category_name
-                           FROM posts p
-                           LEFT JOIN users u ON p.id_user = u.id_user
-                           LEFT JOIN categories c ON p.id_category = c.id_category
-                           WHERE p.id_user = ?
-                           ORDER BY p.created_at DESC");
-    $stmt->execute([$_SESSION['admin_id']]);
-    $posts = $stmt->fetchAll();
-} else {
-    $stmt = $pdo->query("SELECT p.*, u.name AS author_name, c.name AS category_name
-                         FROM posts p
-                         LEFT JOIN users u ON p.id_user = u.id_user
-                         LEFT JOIN categories c ON p.id_category = c.id_category
-                         ORDER BY p.created_at DESC");
-    $posts = $stmt->fetchAll();
+    $sql .= " AND p.id_user = ?";
+    $params[] = $_SESSION['admin_id'];
 }
+
+if($q !== ''){
+    $sql .= " AND (p.title LIKE ? OR p.content LIKE ? OR u.name LIKE ? OR c.name LIKE ?)";
+    $like = '%' . $q . '%';
+    array_push($params, $like, $like, $like, $like);
+}
+
+$sql .= " ORDER BY p.created_at DESC";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
+$posts = $stmt->fetchAll();
 
 ?>
 <!DOCTYPE html>
@@ -33,7 +41,7 @@ if($_SESSION['admin_role'] === 'auteur'){
     <title>Articles - Admin</title>
     <?php cdn_head(); ?>
 </head>
-<body class="bg-gray-50 font-sans leading-relaxed">
+<body class="admin-shell font-sans leading-relaxed">
     <?php skip_link() ?>
     <div class="flex min-h-screen">
         <?php include "_sidebar.php"; ?>
@@ -43,13 +51,25 @@ if($_SESSION['admin_role'] === 'auteur'){
             $page_title = 'Articles';
             $page_icon = 'ph-newspaper';
             $page_action = has_permission('publish_articles')
-                ? '<a href="add_post.php" class="bg-primary hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition font-semibold flex items-center gap-2 text-sm"><i class="ph ph-plus"></i> Ajouter un article</a>'
+                ? '<a href="add_post.php" class="adm-btn adm-btn-primary"><i class="ph ph-plus"></i><span class="hidden sm:inline">Nouvel article</span></a>'
                 : '';
             include "_topbar.php";
             ?>
-            <div class="p-8">
+            <div class="p-6 sm:p-8">
 
-            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <form class="adm-search lg:hidden mb-4" action="manage_posts.php" method="get" role="search">
+                <i class="ph ph-magnifying-glass"></i>
+                <input type="search" name="q" value="<?= htmlspecialchars($q) ?>" placeholder="Rechercher un article…" aria-label="Rechercher dans les articles">
+            </form>
+
+            <?php if ($q !== ''): ?>
+            <div class="flex items-center justify-between gap-3 mb-4">
+                <p class="text-sm text-gray-600"><?= count($posts) ?> résultat<?= count($posts) > 1 ? 's' : '' ?> pour « <strong><?= htmlspecialchars($q) ?></strong> »</p>
+                <a href="manage_posts.php" class="adm-link"><i class="ph ph-x"></i> Effacer</a>
+            </div>
+            <?php endif; ?>
+
+            <div class="adm-card overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead class="bg-gray-50 text-left text-sm font-semibold text-gray-600">
