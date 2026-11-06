@@ -120,7 +120,7 @@ include "../includes/header.php";
                 <?php if (!empty($post['main_video'])): ?>
                 <div class="mt-8 rounded-xl overflow-hidden bg-black">
                     <video controls class="w-full">
-                        <source src="../uploads/video/<?= htmlspecialchars($post['main_video']) ?>" type="video/mp4">
+                        <source src="video.php?f=<?= urlencode($post['main_video']) ?>" type="video/mp4">
                         Votre navigateur ne supporte pas la vidéo.
                     </video>
                 </div>

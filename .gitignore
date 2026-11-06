@@ -3,13 +3,14 @@ logs/
 *.log
 
 # Uploads
+# Le contenu envoyé par l'admin n'est pas versionné, mais les fichiers de
+# protection (.htaccess) et les marqueurs de dossier (.gitkeep) le sont.
 uploads/*
 !uploads/index.html
-!uploads/images/.gitkeep
-!uploads/docs/.gitkeep
-!uploads/pdf/.gitkeep
-!uploads/video/.gitkeep
-!uploads/audio/.gitkeep
+!uploads/*/
+uploads/*/*
+!uploads/*/.gitkeep
+!uploads/*/.htaccess
 !uploads/word/.gitkeep
 !uploads/hero/.gitkeep
 

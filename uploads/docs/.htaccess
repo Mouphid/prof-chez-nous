@@ -1,0 +1,10 @@
+# Ces fichiers ne doivent jamais être servis directement.
+# Ils passent uniquement par download.php (documents) ou video.php (vidéos),
+# qui contrôlent les droits d'accès.
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

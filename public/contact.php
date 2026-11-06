@@ -24,18 +24,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             require_once __DIR__ . '/../config/mail.php';
             $mail = getMailer();
-            $to_email = defined('SITE_EMAIL') ? SITE_EMAIL : ($admin['email'] ?? '');
-            if ($to_email) {
-                $mail->addAddress($to_email, $admin['name'] ?? 'Admin');
-                $mail->addReplyTo($email, $name);
-                $mail->Subject = "[Contact] $subject";
-                $mail->Body = "Nom : $name\nEmail : $email\nSujet : $subject\n\nMessage :\n$message";
-                $mail->send();
+
+            $to_email = defined('SITE_EMAIL') && SITE_EMAIL !== ''
+                ? SITE_EMAIL
+                : ($admin['email'] ?? '');
+
+            if (!$to_email) {
+                throw new RuntimeException("Aucune adresse de destination n'est configurée.");
             }
+
+            $mail->addAddress($to_email, $admin['name'] ?? 'Joie Enseignante');
+            $mail->addReplyTo($email, $name);
+            $mail->Subject = "[Contact] $subject";
+            $mail->Body = "Nom : $name\nEmail : $email\nSujet : $subject\n\nMessage :\n$message";
+            $mail->send();
+
             flash('success', 'Votre message a été envoyé avec succès.');
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
+            // On prévient l'auteur honnêtement : le message n'est pas parti.
             error_log("Erreur envoi email contact: " . $e->getMessage());
-            flash('success', 'Votre message a été envoyé avec succès.');
+
+            $fallback = defined('SITE_EMAIL') && SITE_EMAIL !== '' ? SITE_EMAIL : 'notre adresse de contact';
+            flash('error', "L'envoi du message a échoué. Écrivez-nous directement à $fallback.");
         }
     }
     redirect('contact.php');

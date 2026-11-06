@@ -32,7 +32,7 @@ if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $mail = getMailer();
             $mail->addAddress($email, $user['name']);
             $mail->Subject = "Confirmez votre inscription - Joie Enseignante";
-            $link = "http://{$_SERVER['HTTP_HOST']}/JoieEnseignante/public/verify-email.php?token=" . urlencode($token);
+            $link = rtrim(SITE_URL, '/') . '/public/verify-email.php?token=' . urlencode($token);
             $mail->Body = "Bonjour {$user['name']},\n\nVoici un nouveau lien pour vérifier votre adresse email :\n$link\n\nCe lien est valable 24 heures.\n\nL'équipe Joie Enseignante";
             $mail->send();
             $success = true;

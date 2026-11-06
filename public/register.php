@@ -44,10 +44,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $mail = getMailer();
                 $mail->addAddress($email, $name);
                 $mail->Subject = "Confirmez votre inscription - Joie Enseignante";
-                $link = "http://{$_SERVER['HTTP_HOST']}/JoieEnseignante/public/verify-email.php?token=" . urlencode($token);
+                $link = rtrim(SITE_URL, '/') . '/public/verify-email.php?token=' . urlencode($token);
                 $mail->Body = "Bonjour $name,\n\nMerci de vous être inscrit sur Joie Enseignante.\n\nPour activer votre compte, cliquez sur le lien ci-dessous :\n$link\n\nCe lien est valable 24 heures.\n\nSi vous n'avez pas créé ce compte, ignorez cet email.\n\nL'équipe Joie Enseignante";
                 $mail->send();
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
                 error_log("Erreur envoi email vérification: " . $e->getMessage());
             }
 
