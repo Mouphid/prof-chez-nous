@@ -16,7 +16,7 @@ Blog académique pour un professeur universitaire spécialisé en littérature.
    - `config/config.php` lit les variables d'environnement `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS`
    - Installer PHPMailer : `composer install`
    - Emails : copier `config/mail_config.example.php` → `config/mail_config.php`
-   - Paiement : copier `config/payment_config.example.php` → `config/payment_config.php` (clés Kkiapay)
+   - Paiement : copier `config/payment_config.example.php` → `config/payment_config.php` (clés Kkiapay **ou** FedaPay, au choix)
 
 3. **Accès**
    - Site public : `/public/`
@@ -29,7 +29,7 @@ Blog académique pour un professeur universitaire spécialisé en littérature.
 
 5. **Documents gratuits / payants**
    - Dans **Nouveau post** ou **Modifier article**, un champ **Prix (FCFA)** est associé aux fichiers joints.
-   - `0` = gratuit (téléchargement direct) ; montant > 0 = paiement en ligne via Kkiapay.
+   - `0` = gratuit (téléchargement direct) ; montant > 0 = paiement en ligne. Le prestataire se choisit dans `config/payment_config.php` (`provider`) ; le reste du site ne change pas.
    - Les ventes se consultent dans **Admin → Ventes**.
 
 ---

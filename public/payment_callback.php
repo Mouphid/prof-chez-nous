@@ -1,6 +1,7 @@
 <?php
 /**
- * Retour de paiement Kkiapay + webhook.
+ * Retour de paiement + webhook.
+ * Le prestataire est choisi dans config/payment.php (Kkiapay, FedaPay, ...).
  * La transaction est TOUJOURS revérifiée côté serveur (anti-fraude).
  */
 require_once "../config/config.php";
@@ -49,12 +50,13 @@ if (!payment_is_configured()) {
     die("Le paiement en ligne n'est pas configuré.");
 }
 
-$result = kkiapay_verify_transaction($transaction);
+$result = payment_verify_transaction($transaction);
 $data   = $result['data'] ?? null;
 $ok     = $result['ok'] ?? false;
 
-if ($ok && is_array($data)) {
-    $paidAmount = (float)($data['amount'] ?? 0);
+if ($ok) {
+    // Le montant confirmé par le prestataire doit couvrir le prix de la commande.
+    $paidAmount = isset($result['amount']) ? (float)$result['amount'] : 0.0;
     if ($paidAmount + 0.01 < (float)$purchase['amount']) {
         $ok = false;
     }

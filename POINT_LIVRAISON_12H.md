@@ -29,16 +29,17 @@
 | Document **gratuit** | ✅ bouton « Télécharger » direct |
 | Document **payant** | ✅ bouton « Acheter — X FCFA » → page d'achat |
 | Prix par document | ✅ champ dans **Nouveau post** et **Modifier article** |
-| Paiement en ligne | ✅ module **Kkiapay** (`public/purchase.php` + `public/payment_callback.php`) |
+| Paiement en ligne | ✅ module **indépendant du prestataire** (`public/purchase.php` + `public/payment_callback.php`) — Kkiapay branché, connecteur FedaPay prêt à tester |
 | Vérification serveur | ✅ la transaction est revérifiée via l'API avant de délivrer le fichier (anti-fraude) |
 | Lien de téléchargement | ✅ jeton unique `download_token`, contrôle anti-rejeu |
 | Suivi des ventes | ✅ nouvel écran admin **Ventes** (`admin/manage_purchases.php`) |
-| Sans clés Kkiapay | ✅ message « paiement bientôt disponible » + lien de contact (aucune erreur) |
+| Sans clés de paiement | ✅ message « paiement bientôt disponible » + lien de contact (aucune erreur) |
+| Changement de prestataire | ✅ une seule fonction à modifier (`payment_verify_transaction`) ; la colonne `provider` en base garde l'historique |
 
 ### Contenu et promesses du PDF
 | Promesse | État |
 |---|---|
-| « questions fréquentes » | ✅ FAQ ajoutée sur la page contact, texte adapté au site réel |
+| « questions fréquentes » | ⏸ FAQ **retirée temporairement** de la page contact (composant `includes/faq-section.php` conservé) |
 | « commentaires validés par l'admin » | ✅ les commentaires arrivent en **attente** (`pending`) |
 | « mails depuis le domaine » | ✅ adresse `contact@joiedenseignante.com` (plus d'adresse Gmail en dur) |
 | « images allégées » | ✅ 5,4 Mo → 2,7 Mo (photos redimensionnées et compressées) |

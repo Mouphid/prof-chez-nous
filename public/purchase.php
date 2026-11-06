@@ -20,10 +20,17 @@ if (!$file || (float)$file['price'] <= 0) {
     exit;
 }
 
-$cfg = payment_config();
-$configured = payment_is_configured();
-$errors = [];
+$cfg      = payment_config();
+$provider = payment_provider();
+$errors   = [];
 $purchase = null;
+
+// Le paiement n'est proposé que si les clés sont présentes ET que le
+// prestataire peut encaisser directement sur le site (fenêtre intégrée).
+// Pour un prestataire à redirection (FedaPay), il faudra brancher ici
+// la création de la page de paiement ; en attendant, le site affiche
+// proprement « paiement bientôt disponible » plutôt qu'un bouton inactif.
+$paymentsReady = payment_is_configured() && payment_supports_widget();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['csrf_token']) || !verify_csrf($_POST['csrf_token'])) {
@@ -44,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ");
             $stmt_insert->execute([
                 $file_id, $name, $email, $phone,
-                (float)$file['price'], $cfg['currency'], $cfg['provider'],
+                (float)$file['price'], $cfg['currency'], $provider,
             ]);
             $purchase = [
                 'id'    => (int)$pdo->lastInsertId(),
@@ -87,7 +94,7 @@ include "../includes/header.php";
         </div>
         <?php endif; ?>
 
-        <?php if (!$configured): ?>
+        <?php if (!$paymentsReady): ?>
             <div class="bg-amber-50 text-amber-800 border border-amber-200 rounded-xl p-5 mb-6">
                 <p class="font-semibold mb-1"><i class="ph ph-info"></i> Paiement en ligne bientôt disponible</p>
                 <p class="text-sm">Le module de paiement n'est pas encore activé. Contactez-nous pour obtenir ce document.</p>
@@ -130,7 +137,7 @@ include "../includes/header.php";
     </div>
 </div>
 
-<?php if ($configured && $purchase): ?>
+<?php if ($paymentsReady && $purchase): ?>
 <script src="https://cdn.kkiapay.me/k.js"></script>
 <script>
 var achatId = <?= (int)$purchase['id'] ?>;
