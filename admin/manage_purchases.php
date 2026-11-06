@@ -16,9 +16,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'resen
         flash('error', 'Vente introuvable.');
     } else {
         $stmt = $pdo->prepare("
-            SELECT pu.*, f.file_name
+            SELECT pu.*,
+                   f.file_name,
+                   c.title AS course_title,
+                   ci.title AS item_title
             FROM purchases pu
             LEFT JOIN files f ON f.id_file = pu.id_file
+            LEFT JOIN courses c ON c.id_course = pu.id_course
+            LEFT JOIN course_items ci ON ci.id_item = pu.id_item
             WHERE pu.id_purchase = ? AND pu.status = 'paid'
         ");
         $stmt->execute([$id]);
@@ -27,11 +32,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'resen
         if (!$sale) {
             flash('error', "Cette vente est introuvable ou n'est pas payée.");
         } elseif (empty($sale['download_token'])) {
-            flash('error', "Cette vente n'a pas de lien de téléchargement.");
+            flash('error', "Cette vente n'a pas de lien d'accès.");
         } else {
             try {
                 require_once __DIR__ . '/../config/mail.php';
-                send_purchase_link_email($sale, $sale['file_name'] ?: 'Votre document');
+                if (!empty($sale['id_file'])) {
+                    send_purchase_link_email($sale, $sale['file_name'] ?: 'Votre document');
+                } else {
+                    $whole = !empty($sale['id_course']);
+                    $titre = $whole
+                        ? ($sale['course_title'] ?: 'Votre cours')
+                        : ($sale['item_title'] ?: 'Votre chapitre');
+                    send_course_access_email($sale, $titre, $whole);
+                }
                 flash('success', 'Lien renvoyé à ' . ($sale['buyer_email'] ?: 'l’acheteur') . '.');
             } catch (Throwable $e) {
                 error_log('Renvoi du lien — vente #' . $id . ' : ' . $e->getMessage());
@@ -72,8 +85,10 @@ if ($status_filter !== 'all') {
     $params[] = $status_filter;
 }
 if ($q !== '') {
-    $conds[] = '(pu.buyer_email LIKE ? OR pu.buyer_name LIKE ? OR f.file_name LIKE ?)';
+    $conds[] = '(pu.buyer_email LIKE ? OR pu.buyer_name LIKE ? OR f.file_name LIKE ? OR c.title LIKE ? OR ci.title LIKE ?)';
     $like = '%' . $q . '%';
+    $params[] = $like;
+    $params[] = $like;
     $params[] = $like;
     $params[] = $like;
     $params[] = $like;
@@ -81,10 +96,18 @@ if ($q !== '') {
 $where = $conds ? 'WHERE ' . implode(' AND ', $conds) : '';
 
 $stmt = $pdo->prepare("
-    SELECT pu.*, f.file_name, p.title AS post_title
+    SELECT pu.*,
+           f.file_name,
+           p.title AS post_title,
+           c.title AS course_title,
+           ci.title AS item_title,
+           cc.title AS item_course_title
     FROM purchases pu
     LEFT JOIN files f ON f.id_file = pu.id_file
     LEFT JOIN posts p ON p.id_post = f.id_post
+    LEFT JOIN courses c ON c.id_course = pu.id_course
+    LEFT JOIN course_items ci ON ci.id_item = pu.id_item
+    LEFT JOIN courses cc ON cc.id_course = ci.id_course
     $where
     ORDER BY pu.created_at DESC
     LIMIT 500
@@ -107,7 +130,7 @@ $stats = $pdo->query("
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ventes de documents - Admin</title>
+    <title>Ventes - Admin</title>
     <?php cdn_head(); ?>
 </head>
 <body class="bg-gray-50 font-sans leading-relaxed">
@@ -116,7 +139,7 @@ $stats = $pdo->query("
         <?php include "_sidebar.php"; ?>
 
         <main class="admin-main flex-1 ml-64" id="main-content">
-            <?php $page_title = 'Ventes de documents'; $page_icon = 'ph-shopping-cart'; include "_topbar.php"; ?>
+            <?php $page_title = 'Ventes'; $page_icon = 'ph-shopping-cart'; include "_topbar.php"; ?>
             <div class="p-8">
 
             <?php if (hasFlash('success')): ?>
@@ -146,7 +169,7 @@ $stats = $pdo->query("
                     <input type="hidden" name="status" value="<?= htmlspecialchars($status_filter) ?>">
                     <label for="purchase-search" class="sr-only">Rechercher un acheteur</label>
                     <input type="search" id="purchase-search" name="q" value="<?= htmlspecialchars($q) ?>"
-                           placeholder="Nom, e-mail ou document"
+                           placeholder="Nom, e-mail ou contenu"
                            class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-52 focus:ring-2 focus:ring-primary focus:border-primary">
                     <button type="submit" class="inline-flex items-center gap-1.5 bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition">
                         <i class="ph ph-magnifying-glass"></i> Chercher
@@ -168,7 +191,7 @@ $stats = $pdo->query("
                     <thead class="bg-gray-50 text-left text-sm font-semibold text-gray-600">
                         <tr>
                             <th class="px-4 py-3">Date</th>
-                            <th class="px-4 py-3">Document</th>
+                            <th class="px-4 py-3">Contenu</th>
                             <th class="px-4 py-3">Acheteur</th>
                             <th class="px-4 py-3">Montant</th>
                             <th class="px-4 py-3">Statut</th>
@@ -181,11 +204,23 @@ $stats = $pdo->query("
                         <tr><td colspan="7" class="px-4 py-10 text-center text-gray-400">Aucune commande pour le moment.</td></tr>
                         <?php endif; ?>
                         <?php foreach ($purchases as $pu): ?>
+                        <?php
+                        if (!empty($pu['id_file'])) {
+                            $content_title = $pu['file_name'] ?: 'Document supprimé';
+                            $content_sub   = trim('Document' . ($pu['post_title'] ? ' · ' . $pu['post_title'] : ''));
+                        } elseif (!empty($pu['id_course'])) {
+                            $content_title = $pu['course_title'] ?: 'Cours supprimé';
+                            $content_sub   = 'Cours complet';
+                        } else {
+                            $content_title = $pu['item_title'] ?: 'Chapitre supprimé';
+                            $content_sub   = trim('Chapitre' . ($pu['item_course_title'] ? ' · ' . $pu['item_course_title'] : ''));
+                        }
+                        ?>
                         <tr>
                             <td class="px-4 py-3 whitespace-nowrap text-gray-500"><?= date('d/m/Y H:i', strtotime($pu['created_at'])) ?></td>
                             <td class="px-4 py-3">
-                                <div class="font-medium text-gray-800"><?= htmlspecialchars($pu['file_name'] ?? 'Document supprimé') ?></div>
-                                <div class="text-xs text-gray-400"><?= htmlspecialchars($pu['post_title'] ?? '') ?></div>
+                                <div class="font-medium text-gray-800"><?= htmlspecialchars($content_title) ?></div>
+                                <div class="text-xs text-gray-400"><?= htmlspecialchars($content_sub) ?></div>
                             </td>
                             <td class="px-4 py-3">
                                 <div class="font-medium text-gray-800"><?= htmlspecialchars($pu['buyer_name'] ?? '') ?></div>
