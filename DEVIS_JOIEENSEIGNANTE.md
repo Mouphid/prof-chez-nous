@@ -4,8 +4,8 @@
 **Client :** Professeur de Littérature — Université de Cotonou, Bénin
 **Objet :** Hébergement, domaine `.com` et mise en ligne du site « Joie Enseignante » — durée 24 mois
 
-- **Date d'émission :** 28 septembre 2026
-- **Validité de l'offre :** 30 jours (jusqu'au 28 octobre 2026)
+- **Date d'émission :** 6 novembre 2026
+- **Validité de l'offre :** 30 jours (jusqu'au 6 décembre 2026)
 - **Devise :** Franc CFA (FCFA) — taux de référence 656 FCFA / 1 €
 
 ---

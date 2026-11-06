@@ -14,7 +14,6 @@
 1. **les achats** (hébergement, domaine, boîte mail) ;
 2. **la configuration serveur** (base, SSL, SMTP, sauvegardes) ;
 3. **les clés Kkiapay** pour activer les paiements réels ;
-4. **la régénération du PDF du devis** à partir du fichier corrigé.
 
 > ⚠️ Le vrai risque sur 12 h reste **la propagation DNS** après l'achat du domaine (1 h à 48 h). **À lancer en premier.**
 
@@ -45,6 +44,7 @@
 | « images allégées » | ✅ 5,4 Mo → 2,7 Mo (photos redimensionnées et compressées) |
 | « aucun identifiant par défaut » | ✅ écran **Mot de passe** dans l'admin |
 | « manuel d'administration » | ✅ `MANUEL_ADMINISTRATION.md` |
+| Devis corrigé | ✅ `DEVIS_JOIEENSEIGNANTE.pdf` régénéré : **94 250 FCFA**, 2 pages, dates à jour |
 | Newsletter | ✅ formulaire réparé (POST) + table `newsletter_subscribers` |
 | Domaine dans le code | ✅ `joiedenseignante.com` partout + `BASE_URL` corrigé |
 
