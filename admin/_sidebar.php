@@ -18,6 +18,9 @@ $active_map = [
     'manage_comments.php'   => 'comments',
     'manage_categories.php' => 'categories',
     'manage_purchases.php'  => 'purchases',
+    'manage_courses.php'    => 'courses',
+    'add_course.php'        => 'courses',
+    'edit_course.php'       => 'courses',
     'manage_users.php'      => 'users',
     'change_password.php'   => 'password',
 ];
@@ -63,6 +66,7 @@ function admin_nav_link(string $key, string $href, string $icon, string $label, 
 
             <?php if ($admin_role === 'admin'): ?>
                 <?php admin_nav_link('purchases', 'manage_purchases.php', 'ph-shopping-cart', 'Ventes', $active); ?>
+                <?php admin_nav_link('courses', 'manage_courses.php', 'ph-graduation-cap', 'Cours', $active); ?>
             <?php endif; ?>
 
             <?php if (has_permission('manage_users')): ?>

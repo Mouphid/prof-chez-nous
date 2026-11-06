@@ -31,6 +31,24 @@ function generateSlug($text) {
     return trim($text, '-');
 }
 
+/**
+ * Slug lisible pour un cours : conserve les lettres accentuées transposées.
+ * « Littérature Orale » → « litterature-orale ».
+ */
+function course_slug(string $text): string {
+    $text = trim($text);
+    if (function_exists('iconv')) {
+        $translit = @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $text);
+        if ($translit !== false) {
+            $text = $translit;
+        }
+    }
+    $text = strtolower($text);
+    $text = preg_replace('/[^a-z0-9]+/', '-', $text);
+    $text = trim((string)$text, '-');
+    return $text !== '' ? $text : 'cours';
+}
+
 function generateToken($length = 32) {
     if (function_exists('random_bytes')) return bin2hex(random_bytes($length));
     return substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length / 62))), 0, $length);
