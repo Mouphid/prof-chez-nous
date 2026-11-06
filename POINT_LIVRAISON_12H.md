@@ -17,6 +17,8 @@
 
 > ⚠️ Le vrai risque sur 12 h reste **la propagation DNS** après l'achat du domaine (1 h à 48 h). **À lancer en premier.**
 
+> 📌 Points non encore intégrés (sécurité, cours payants, newsletter, contenus provisoires) : voir `FONCTIONNALITES_A_INTEGRER.md`.
+
 ---
 
 ## 2. ✅ Corrections effectuées dans le code

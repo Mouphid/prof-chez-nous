@@ -2,6 +2,8 @@
 
 Blog académique pour un professeur universitaire spécialisé en littérature.
 
+> 📌 **Fonctionnalités pas encore intégrées :** voir `FONCTIONNALITES_A_INTEGRER.md` (liste de contrôle à mettre à jour à chaque ajout).
+
 ## Installation
 
 1. **Créer la base de données**
