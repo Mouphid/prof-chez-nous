@@ -118,9 +118,14 @@ if ($is_full_admin) {
         $sales['paid_files'] = (int)$pdo->query("SELECT COUNT(*) FROM files WHERE price > 0")->fetchColumn();
 
         $sales['recent'] = $pdo->query("
-            SELECT pu.buyer_name, pu.buyer_email, pu.amount, pu.paid_at, f.file_name
+            SELECT pu.buyer_name, pu.buyer_email, pu.amount, pu.paid_at,
+                   f.file_name,
+                   c.title AS course_title,
+                   ci.title AS item_title
             FROM purchases pu
             LEFT JOIN files f ON f.id_file = pu.id_file
+            LEFT JOIN courses c ON c.id_course = pu.id_course
+            LEFT JOIN course_items ci ON ci.id_item = pu.id_item
             WHERE pu.status='paid'
             ORDER BY pu.paid_at DESC
             LIMIT 5
@@ -450,12 +455,18 @@ $montant = fn(float $n): string => number_format($n, 0, ',', ' ') . ' FCFA';
                             <?php else: ?>
                             <div class="divide-y divide-gray-100">
                                 <?php foreach ($sales['recent'] as $sale): ?>
+                                <?php
+                                $sale_label = $sale['file_name']
+                                    ?: ($sale['course_title']
+                                        ? 'Cours · ' . $sale['course_title']
+                                        : ($sale['item_title'] ? 'Chapitre · ' . $sale['item_title'] : 'Contenu'));
+                                ?>
                                 <div class="px-6 py-3">
                                     <div class="flex items-center justify-between gap-3">
                                         <p class="text-sm font-medium text-gray-900 truncate"><?= htmlspecialchars($sale['buyer_name'] ?: 'Acheteur') ?></p>
                                         <p class="text-sm font-semibold text-gray-900 whitespace-nowrap"><?= $montant((float)$sale['amount']) ?></p>
                                     </div>
-                                    <p class="text-xs text-gray-500 truncate mt-0.5"><?= htmlspecialchars($sale['file_name'] ?? 'Document') ?> · <?= $sale['paid_at'] ? format_date($sale['paid_at']) : '' ?></p>
+                                    <p class="text-xs text-gray-500 truncate mt-0.5"><?= htmlspecialchars($sale_label) ?> · <?= $sale['paid_at'] ? format_date($sale['paid_at']) : '' ?></p>
                                 </div>
                                 <?php endforeach; ?>
                             </div>
