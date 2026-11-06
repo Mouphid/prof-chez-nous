@@ -66,6 +66,26 @@ function purchase_download_url(int $file_id, string $token): string
 }
 
 /**
+ * Construit l'adresse d'accès à un cours ou à un chapitre acheté.
+ * Le jeton est propre à la commande (colonne download_token).
+ */
+function course_purchase_url(array $purchase): string
+{
+    $token = (string)($purchase['download_token'] ?? '');
+    if ($token === '') {
+        return rtrim(SITE_URL, '/') . '/public/cours.php';
+    }
+
+    if (!empty($purchase['id_course'])) {
+        $url = rtrim(SITE_URL, '/') . '/public/course.php?id=' . (int)$purchase['id_course'];
+    } else {
+        $url = rtrim(SITE_URL, '/') . '/public/course.php?item=' . (int)$purchase['id_item'];
+    }
+
+    return $url . '&token=' . urlencode($token);
+}
+
+/**
  * Envoie à l'acheteur le lien de son document (B1).
  *
  * @param array  $purchase  ligne de la table purchases (id_file, buyer_name, buyer_email,
@@ -152,6 +172,101 @@ function build_purchase_email(array $purchase, string $file_name = 'Votre docume
         'to_email' => $email,
         'to_name'  => $nom,
         'subject'  => 'Votre document : ' . $file_name,
+        'html'     => $html,
+        'text'     => $text,
+        'link'     => $link,
+    ];
+}
+
+/**
+ * Envoie à l'acheteur le lien d'accès à un cours ou à un chapitre.
+ *
+ * @param array  $purchase    ligne de la table purchases
+ * @param string $title       titre du cours ou du chapitre
+ * @param bool   $whole_course true = cours complet, false = chapitre seul
+ * @throws RuntimeException si l'adresse, le jeton ou l'envoi posent problème
+ */
+function send_course_access_email(array $purchase, string $title, bool $whole_course = true): void
+{
+    $data = build_course_email($purchase, $title, $whole_course);
+
+    $mail = getMailer();
+    $mail->addAddress($data['to_email'], $data['to_name']);
+    $mail->isHTML(true);
+    $mail->Subject = $data['subject'];
+    $mail->Body    = $data['html'];
+    $mail->AltBody = $data['text'];
+
+    $mail->send();
+}
+
+/**
+ * Prépare le contenu de l'e-mail d'accès à un cours, sans l'envoyer.
+ *
+ * @return array{to_email:string,to_name:string,subject:string,html:string,text:string,link:string}
+ * @throws RuntimeException si l'adresse ou le jeton manque
+ */
+function build_course_email(array $purchase, string $title, bool $whole_course = true): array
+{
+    $email = trim((string)($purchase['buyer_email'] ?? ''));
+    if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        throw new RuntimeException("Adresse e-mail de l'acheteur invalide ou absente.");
+    }
+
+    $token = (string)($purchase['download_token'] ?? '');
+    if ($token === '') {
+        throw new RuntimeException("Cette commande n'a pas de lien d'accès.");
+    }
+
+    $link    = course_purchase_url($purchase);
+    $nom     = trim((string)($purchase['buyer_name'] ?? ''));
+    $bonjour = $nom !== '' ? 'Bonjour ' . $nom . ',' : 'Bonjour,';
+    $montant = number_format((float)($purchase['amount'] ?? 0), 0, ',', ' ')
+        . ' ' . (string)($purchase['currency'] ?? 'XOF');
+
+    $objet   = $whole_course ? 'Votre accès au cours' : 'Votre accès au chapitre';
+    $safe_title = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
+    $safe_link  = htmlspecialchars($link, ENT_QUOTES, 'UTF-8');
+
+    $html = '
+        <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;color:#1f2937;">
+            <p style="font-size:15px;">' . htmlspecialchars($bonjour, ENT_QUOTES, 'UTF-8') . '</p>
+            <p style="font-size:15px;line-height:1.6;">
+                Merci pour votre achat. Votre accès ' . ($whole_course ? 'au cours' : 'au chapitre') . ' <strong>' . $safe_title . '</strong>
+                est maintenant ouvert.
+            </p>
+            <p style="text-align:center;margin:28px 0;">
+                <a href="' . $safe_link . '" style="background:#2563eb;color:#ffffff;text-decoration:none;padding:12px 22px;border-radius:8px;font-weight:bold;display:inline-block;">
+                    Ouvrir ' . ($whole_course ? 'le cours' : 'le chapitre') . '
+                </a>
+            </p>
+            <p style="font-size:13px;color:#6b7280;line-height:1.6;">
+                Montant réglé : ' . htmlspecialchars($montant, ENT_QUOTES, 'UTF-8') . '<br>
+                Si le bouton ne fonctionne pas, copiez cette adresse dans votre navigateur :<br>
+                <span style="word-break:break-all;">' . $safe_link . '</span>
+            </p>
+            <p style="font-size:13px;color:#6b7280;line-height:1.6;">
+                Conservez cet e-mail : ce lien personnel vous permet de revenir sur ' . ($whole_course ? 'le cours' : 'ce chapitre') . '
+                à tout moment. Il ne faut pas le partager.
+            </p>
+            <p style="font-size:13px;color:#9ca3af;border-top:1px solid #e5e7eb;padding-top:12px;margin-top:24px;">
+                Joie Enseignante — ' . htmlspecialchars(SITE_URL, ENT_QUOTES, 'UTF-8') . '<br>
+                Une question ? Répondez simplement à cet e-mail.
+            </p>
+        </div>';
+
+    $text = $bonjour . "\n\n"
+        . "Merci pour votre achat. Votre accès " . ($whole_course ? "au cours" : "au chapitre")
+        . " « " . $title . " » est ouvert.\n\n"
+        . "Lien d'accès : " . $link . "\n\n"
+        . "Montant réglé : " . $montant . "\n\n"
+        . "Conservez cet e-mail : ce lien personnel vous permet de revenir sur le contenu.\n\n"
+        . "Joie Enseignante — " . SITE_URL . "\n";
+
+    return [
+        'to_email' => $email,
+        'to_name'  => $nom,
+        'subject'  => $objet . ' : ' . $title,
         'html'     => $html,
         'text'     => $text,
         'link'     => $link,

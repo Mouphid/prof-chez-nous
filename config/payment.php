@@ -107,7 +107,10 @@ function payment_is_configured(): bool {
 
 function payment_amount_label(float $amount): string {
     $cfg = payment_config();
-    return number_format($amount, 0, ',', ' ') . ' ' . $cfg['currency'];
+    $currency = strtoupper((string)($cfg['currency'] ?? 'XOF'));
+    // Les visiteurs connaissent « FCFA » ; XOF est le code international.
+    $label = $currency === 'XOF' ? 'FCFA' : $currency;
+    return number_format($amount, 0, ',', ' ') . ' ' . $label;
 }
 
 /**

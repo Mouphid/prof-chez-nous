@@ -6,8 +6,21 @@ require_once "../includes/courses.php";
 $id    = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $slug  = isset($_GET['slug']) ? trim((string)$_GET['slug']) : '';
 $token = isset($_GET['token']) ? trim((string)$_GET['token']) : '';
+$item_ref = isset($_GET['item']) ? (int)$_GET['item'] : 0;
 
 $course = course_find_published($pdo, $id, $slug);
+
+// Lien d'e-mail d'un chapitre acheté : on retrouve son cours.
+if (!$course && $item_ref > 0) {
+    $stmt = $pdo->prepare("
+        SELECT c.* FROM course_items ci
+        JOIN courses c ON c.id_course = ci.id_course
+        WHERE ci.id_item = ? AND c.status = 'published'
+        LIMIT 1
+    ");
+    $stmt->execute([$item_ref]);
+    $course = $stmt->fetch() ?: null;
+}
 
 if (!$course) {
     http_response_code(404);

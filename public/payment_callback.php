@@ -7,6 +7,37 @@
 require_once "../config/config.php";
 require_once "../config/payment.php";
 
+/**
+ * Adresse vers laquelle envoyer l'acheteur une fois le paiement confirmé.
+ * Trois cas : document, cours complet, chapitre seul.
+ */
+function purchase_return_url(array $purchase): string
+{
+    $token = urlencode((string)($purchase['download_token'] ?? ''));
+
+    if (!empty($purchase['id_file'])) {
+        return 'download.php?id=' . (int)$purchase['id_file'] . '&token=' . $token;
+    }
+    if (!empty($purchase['id_course'])) {
+        return 'course.php?id=' . (int)$purchase['id_course'] . '&token=' . $token;
+    }
+    return 'course.php?item=' . (int)$purchase['id_item'] . '&token=' . $token;
+}
+
+/**
+ * Adresse de la page de paiement, pour réessayer après un échec.
+ */
+function purchase_retry_url(array $purchase): string
+{
+    if (!empty($purchase['id_file'])) {
+        return 'purchase.php?id=' . (int)$purchase['id_file'];
+    }
+    if (!empty($purchase['id_course'])) {
+        return 'purchase_course.php?course=' . (int)$purchase['id_course'];
+    }
+    return 'purchase_course.php?item=' . (int)$purchase['id_item'];
+}
+
 $isWebhook = ($_SERVER['REQUEST_METHOD'] === 'POST');
 
 $purchaseId  = 0;
@@ -38,10 +69,10 @@ if (!$purchase) {
     die("Commande introuvable.");
 }
 
-// Déjà payé → redirection directe vers le téléchargement
+// Déjà payé → redirection directe vers le contenu
 if ($purchase['status'] === 'paid' && !empty($purchase['download_token'])) {
     if ($isWebhook) { echo 'ok'; exit; }
-    header("Location: download.php?id=" . (int)$purchase['id_file'] . "&token=" . urlencode($purchase['download_token']));
+    header("Location: " . purchase_return_url($purchase));
     exit;
 }
 
@@ -76,7 +107,7 @@ if (!$ok) {
         <i class="ph ph-x-circle text-5xl text-red-500"></i>
         <h1 class="text-xl font-bold text-gray-900 mt-4 mb-2">Paiement non confirmé</h1>
         <p class="text-gray-500 mb-6">La transaction n'a pas pu être vérifiée. Aucun montant n'a été débité ou le paiement est en attente.</p>
-        <a href="purchase.php?id=<?= (int)$purchase['id_file'] ?>" class="inline-flex items-center gap-2 bg-primary text-white font-semibold px-6 py-3 rounded-xl">Réessayer</a>
+        <a href="<?= htmlspecialchars(purchase_retry_url($purchase)) ?>" class="inline-flex items-center gap-2 bg-primary text-white font-semibold px-6 py-3 rounded-xl">Réessayer</a>
     </div>
     </body></html>
     <?php
@@ -109,19 +140,30 @@ $stmt->execute([$purchaseId]);
 $savedToken = $stmt->fetchColumn() ?: $token;
 
 // ─── B1 : envoi automatique du lien par e-mail ───
-// Un échec d'envoi ne doit jamais bloquer le téléchargement : on journalise
-// et l'acheteur garde la redirection immédiate vers son fichier.
+// Un échec d'envoi ne doit jamais bloquer l'accès : on journalise
+// et l'acheteur garde la redirection immédiate vers son contenu.
 if ($justPaid) {
-    $fileStmt = $pdo->prepare("SELECT file_name FROM files WHERE id_file = ?");
-    $fileStmt->execute([(int)$purchase['id_file']]);
-    $fileName = $fileStmt->fetchColumn() ?: 'Votre document';
-
     try {
         require_once __DIR__ . '/../config/mail.php';
-        send_purchase_link_email(
-            array_merge($purchase, ['download_token' => $savedToken]),
-            $fileName
-        );
+        $purchaseWithToken = array_merge($purchase, ['download_token' => $savedToken]);
+
+        if (!empty($purchase['id_file'])) {
+            $fileStmt = $pdo->prepare("SELECT file_name FROM files WHERE id_file = ?");
+            $fileStmt->execute([(int)$purchase['id_file']]);
+            $fileName = $fileStmt->fetchColumn() ?: 'Votre document';
+            send_purchase_link_email($purchaseWithToken, $fileName);
+        } else {
+            $whole = !empty($purchase['id_course']);
+            if ($whole) {
+                $titleStmt = $pdo->prepare("SELECT title FROM courses WHERE id_course = ?");
+                $titleStmt->execute([(int)$purchase['id_course']]);
+            } else {
+                $titleStmt = $pdo->prepare("SELECT title FROM course_items WHERE id_item = ?");
+                $titleStmt->execute([(int)$purchase['id_item']]);
+            }
+            $title = $titleStmt->fetchColumn() ?: ($whole ? 'Votre cours' : 'Votre chapitre');
+            send_course_access_email($purchaseWithToken, $title, $whole);
+        }
     } catch (Throwable $e) {
         error_log("Achat #{$purchaseId} : envoi du lien impossible — " . $e->getMessage());
     }
@@ -129,5 +171,5 @@ if ($justPaid) {
 
 if ($isWebhook) { echo 'ok'; exit; }
 
-header("Location: download.php?id=" . (int)$purchase['id_file'] . "&token=" . urlencode($savedToken));
+header("Location: " . purchase_return_url(array_merge($purchase, ['download_token' => $savedToken])));
 exit;
