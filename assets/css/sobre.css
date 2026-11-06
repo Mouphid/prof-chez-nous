@@ -2,30 +2,30 @@
    Chargée APRÈS tailwind.css ; redéfinit la palette et
    complète les classes manquantes sans reconstruire Tailwind. */
 
-/* ─── Palette publique : bleu de marque + accent orange ─── */
+/* ─── Palette publique : bleu doux + accent doré ─── */
 :root {
-    --color-primary-50:  #eff6ff;
-    --color-primary-100: #dbeafe;
-    --color-primary-200: #bfdbfe;
-    --color-primary-300: #93c5fd;
-    --color-primary-400: #60a5fa;
-    --color-primary-500: #2563eb;
-    --color-primary-600: #1d4ed8;
-    --color-primary-700: #1e40af;
-    --color-primary-800: #1e3a8a;
-    --color-primary-900: #1e3a5f;
+    --color-primary-50:  #f2f6fb;
+    --color-primary-100: #e2ebf5;
+    --color-primary-200: #c4d8eb;
+    --color-primary-300: #99bade;
+    --color-primary-400: #6995c4;
+    --color-primary-500: #3f74a8;
+    --color-primary-600: #32608c;
+    --color-primary-700: #2a5075;
+    --color-primary-800: #244360;
+    --color-primary-900: #1f3850;
     --color-primary:     var(--color-primary-600);
 
-    --color-accent-50:  #fff7ed;
-    --color-accent-100: #ffedd5;
-    --color-accent-200: #fed7aa;
-    --color-accent-300: #fdba74;
-    --color-accent-400: #fb923c;
-    --color-accent-500: #f97316;
-    --color-accent-600: #ea580c;
-    --color-accent-700: #c2410c;
-    --color-accent-800: #9a3412;
-    --color-accent-900: #7c2d12;
+    --color-accent-50:  #faf6f0;
+    --color-accent-100: #f6f1ea;
+    --color-accent-200: #ecdfce;
+    --color-accent-300: #dfc7a9;
+    --color-accent-400: #cfb697;
+    --color-accent-500: #b3936b;
+    --color-accent-600: #93734c;
+    --color-accent-700: #775c3d;
+    --color-accent-800: #5f4a31;
+    --color-accent-900: #4a3a27;
 
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
     --font-display: 'Inter', ui-sans-serif, system-ui, sans-serif;
@@ -233,7 +233,7 @@ a:hover .sbr-thumb { transform: scale(1.06); }
 .sbr-topbtn { position: fixed; right: 20px; bottom: 24px; z-index: 70; width: 46px; height: 46px;
     border-radius: 9999px; display: flex; align-items: center; justify-content: center;
     background: var(--color-primary-600); color: #fff; font-size: 1.1rem;
-    box-shadow: 0 12px 28px -8px rgba(37, 99, 235, 0.45);
+    box-shadow: 0 12px 28px -8px rgba(50, 96, 140, 0.40);
     opacity: 0; transform: translateY(14px); pointer-events: none;
     transition: opacity .3s ease, transform .3s ease, background .3s ease; }
 .sbr-topbtn.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
@@ -241,9 +241,9 @@ a:hover .sbr-thumb { transform: scale(1.06); }
 
 /* ═══ CARTES FONCTIONNALITÉS ═══ */
 .hover\:-translate-y-2:hover { transform: translateY(-0.5rem); }
-.shadow-primary-500\/10 { box-shadow: 0 4px 14px -2px rgba(249, 115, 22, 0.10); }
-.shadow-primary-500\/20 { box-shadow: 0 12px 30px -8px rgba(249, 115, 22, 0.20); }
-.hover\:shadow-primary-500\/10:hover { box-shadow: 0 18px 40px -12px rgba(249, 115, 22, 0.10); }
+.shadow-primary-500\/10 { box-shadow: 0 4px 14px -2px rgba(63, 116, 168, 0.10); }
+.shadow-primary-500\/20 { box-shadow: 0 12px 30px -8px rgba(63, 116, 168, 0.20); }
+.hover\:shadow-primary-500\/10:hover { box-shadow: 0 18px 40px -12px rgba(63, 116, 168, 0.10); }
 .rotate-3 { transform: rotate(3deg); }
 .group:hover .group-hover\:rotate-3 { transform: rotate(3deg); }
 .group:hover .group-hover\:translate-x-0 { transform: translateX(0); }
@@ -261,7 +261,7 @@ a:hover .sbr-thumb { transform: scale(1.06); }
 .dark .dark\:bg-dark-100\/40 { background-color: rgba(30, 41, 59, 0.4); }
 .peer:focus ~ .peer-focus\:text-primary { color: var(--color-primary-500); }
 .dark .dark\:focus\:border-accent-600:focus { border-color: var(--color-accent-600); }
-.dark .dark\:focus\:ring-accent-400\/60:focus { --tw-ring-color: rgba(251, 146, 60, 0.6); }
+.dark .dark\:focus\:ring-accent-400\/60:focus { --tw-ring-color: rgba(207, 182, 151, 0.6); }
 
 /* ═══ SURCOUCHE HERO ACCUEIL ═══ */
 .from-dark\/85 { --tw-gradient-from: rgba(15, 23, 42, 0.85); --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); }
@@ -340,7 +340,7 @@ a:hover .sbr-thumb { transform: scale(1.06); }
 .article-body p:last-child { margin-bottom: 0; }
 .article-body strong,
 .article-body b { color: #111827; font-weight: 600; }
-.article-body a { color: #1e40af; text-decoration: underline; text-underline-offset: 3px; }
+.article-body a { color: #2a5075; text-decoration: underline; text-underline-offset: 3px; }
 
 .article-body blockquote {
   margin: 1.25em 0;
@@ -652,6 +652,7 @@ body.admin-shell {
 }
 .adm-link:hover { text-decoration: underline; }
 .admin-shell .hover\:text-primary:hover { color: var(--adm-accent); }
+.admin-shell .text-primary { color: var(--adm-accent); }
 
 /* ─── KPI ─── */
 .adm-kpi-grid {

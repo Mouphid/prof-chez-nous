@@ -208,7 +208,7 @@ function payerMaintenant() {
         key: <?= json_encode($cfg['kkiapay']['public_key']) ?>,
         sandbox: <?= $cfg['sandbox'] ? 'true' : 'false' ?>,
         position: "center",
-        theme: "#2563eb",
+        theme: "#32608c",
         name: <?= json_encode($purchase['name']) ?>,
         email: <?= json_encode($purchase['email']) ?>,
         phone: <?= json_encode($purchase['phone']) ?>,

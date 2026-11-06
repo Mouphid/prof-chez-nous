@@ -68,7 +68,7 @@ if (!course_item_is_unlocked($course, $item, $purchase)) {
             .box { background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; max-width: 460px; padding: 32px; text-align: center; }
             h1 { font-size: 20px; color: #111827; margin: 0 0 8px; }
             p { font-size: 15px; line-height: 1.6; margin: 0 0 20px; }
-            a { display: inline-block; background: #2563eb; color: #fff; text-decoration: none; font-weight: 600; padding: 12px 20px; border-radius: 10px; }
+            a { display: inline-block; background: #32608c; color: #fff; text-decoration: none; font-weight: 600; padding: 12px 20px; border-radius: 10px; }
         </style>
     </head>
     <body>

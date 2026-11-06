@@ -181,7 +181,7 @@ function animation_styles() {
         .card-hover:hover { transform: translateY(-6px); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.12); }
 
         /* Gradient text */
-        .gradient-text { background: linear-gradient(135deg, #2563eb, #1e40af); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .gradient-text { background: linear-gradient(135deg, #32608c, #244360); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 
         /* Reduced motion */
         @media (prefers-reduced-motion: reduce) {
