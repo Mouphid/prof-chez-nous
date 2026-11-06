@@ -3,7 +3,8 @@
 
 // ─── Site ───
 define('SITE_NAME', 'Joie Enseignante');
-define('SITE_EMAIL', 'contact@joieenseignante.com');
+define('SITE_URL', 'https://joiedenseignante.com');
+define('SITE_EMAIL', 'contact@joiedenseignante.com');
 define('SITE_PHONE', '+229 XX XX XX XX');
 define('SITE_ADDRESS', 'Cotonou, Bénin');
 define('SITE_TAGLINE', 'Plateforme pédagogique collaborative pour enseignants et étudiants');
@@ -28,11 +29,11 @@ $hero_slides = [
 
 
 // ─── Réseaux sociaux ───
-define('SOCIAL_FACEBOOK', 'https://facebook.com/joieenseignante');
-define('SOCIAL_TWITTER', 'https://twitter.com/joieenseignante');
-define('SOCIAL_LINKEDIN', 'https://linkedin.com/company/joieenseignante');
-define('SOCIAL_YOUTUBE', 'https://youtube.com/@joieenseignante');
-define('SOCIAL_INSTAGRAM', 'https://instagram.com/joieenseignante');
+define('SOCIAL_FACEBOOK', 'https://facebook.com/joiedenseignante');
+define('SOCIAL_TWITTER', 'https://twitter.com/joiedenseignante');
+define('SOCIAL_LINKEDIN', 'https://linkedin.com/company/joiedenseignante');
+define('SOCIAL_YOUTUBE', 'https://youtube.com/@joiedenseignante');
+define('SOCIAL_INSTAGRAM', 'https://instagram.com/joiedenseignante');
 
 // ─── Dégradés ───
 define('GRADIENT_HERO', 'bg-hero-pattern');

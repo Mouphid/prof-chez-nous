@@ -50,6 +50,17 @@ else
     echo "✔ Base '$DB_NAME' présente"
 fi
 
+# ── 2bis. Migrations (prix des documents, newsletter) ────────
+if ! mysql --socket="$SOCK" -u root "$DB_NAME" -e "SHOW COLUMNS FROM files LIKE 'price'" 2>/dev/null | grep -q price; then
+    echo "• Application de sql/migration_paiement.sql..."
+    mysql --socket="$SOCK" -u root "$DB_NAME" < "$PROJET/sql/migration_paiement.sql"
+fi
+if ! mysql --socket="$SOCK" -u root "$DB_NAME" -e "SHOW TABLES LIKE 'newsletter_subscribers'" 2>/dev/null | grep -q newsletter; then
+    echo "• Application de sql/migration_newsletter.sql..."
+    mysql --socket="$SOCK" -u root "$DB_NAME" < "$PROJET/sql/migration_newsletter.sql"
+fi
+echo "✔ Migrations à jour"
+
 # ── 3. Serveur PHP ───────────────────────────────────────────
 if pgrep -f "php -S 127.0.0.1:8080" >/dev/null; then
     echo "✔ Serveur PHP déjà démarré"

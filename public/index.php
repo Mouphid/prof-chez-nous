@@ -299,8 +299,10 @@ include "../includes/header.php";
                     <i class="ph ph-envelope-simple text-2xl mb-3 block text-white/80"></i>
                     <h3 class="text-sm font-bold mb-2">Newsletter</h3>
                     <p class="text-xs text-white/70 mb-4">Recevez les dernières actualités directement dans votre boîte mail.</p>
-                    <form class="space-y-2">
-                        <input type="email" placeholder="Votre email" class="w-full px-3 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 text-sm focus:outline-none focus:ring-2 focus:ring-white/30 transition-all">
+                    <form class="space-y-2" action="newsletter_subscribe.php" method="post">
+                        <?= csrf_field() ?>
+                        <label for="nl-sidebar-email" class="sr-only">Adresse email</label>
+                        <input type="email" name="email" id="nl-sidebar-email" required placeholder="Votre email" class="w-full px-3 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 text-sm focus:outline-none focus:ring-2 focus:ring-white/30 transition-all">
                         <button type="submit" class="w-full bg-white text-primary-700 font-semibold py-2.5 rounded-xl text-sm hover:bg-gray-50 transition-all duration-300 shadow-sm">
                             S'abonner
                         </button>

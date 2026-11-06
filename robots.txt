@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /config/
+Disallow: /includes/
+Disallow: /sql/
+Disallow: /vendor/
+Disallow: /logs/
+Disallow: /public/purchase.php
+Disallow: /public/payment_callback.php
+
+Sitemap: https://joiedenseignante.com/sitemap.xml

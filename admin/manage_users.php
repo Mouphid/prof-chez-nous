@@ -88,49 +88,23 @@ if(isset($_GET['delete'])){
 $users = $pdo->query("SELECT * FROM users ORDER BY role ASC, name ASC")->fetchAll();
 $current_user_role = $_SESSION['admin_role'] ?? 'admin';
 
-$can_view_posts = has_permission('manage_posts');
-$can_view_comments = has_permission('manage_comments');
-$can_view_categories = has_permission('manage_categories');
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion Utilisateurs - Admin</title>
+    <title>Utilisateurs - Admin</title>
     <?php cdn_head(); ?>
 </head>
-<body class="bg-gray-100 font-sans leading-relaxed">
+<body class="bg-gray-50 font-sans leading-relaxed">
     <?php skip_link() ?>
     <div class="flex min-h-screen">
-        <aside class="w-64 bg-gray-900 text-white fixed h-full overflow-y-auto">
-            <div class="p-5 border-b border-gray-700">
-                <a href="dashboard.php" class="flex items-center gap-3"><img src="../img/logo.jpg" alt="Joie Enseignante" class="h-8 w-auto bg-white p-1 rounded"></a>
-            </div>
-            <nav class="p-4" aria-label="Menu admin">
-                <ul class="space-y-1">
-                    <li><a href="dashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-house w-5"></i> Dashboard</a></li>
-                    <?php if($can_view_posts): ?>
-                    <li><a href="manage_posts.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-file-text w-5"></i> Articles</a></li>
-                    <li><a href="add_post.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-plus w-5"></i> Nouveau post</a></li>
-                    <?php endif; ?>
-                    <?php if($can_view_comments): ?>
-                    <li><a href="manage_comments.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-chats w-5"></i> Commentaires</a></li>
-                    <?php endif; ?>
-                    <?php if($can_view_categories): ?>
-                    <li><a href="manage_categories.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-folder w-5"></i> Catégories</a></li>
-                    <?php endif; ?>
-                    <li><a href="manage_users.php" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-gray-700 text-white"><i class="ph ph-users w-5"></i> Utilisateurs</a></li>
-                    <li class="border-t border-gray-700 pt-3 mt-3">
-                        <a href="../public/index.php" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-arrow-square-out w-5"></i> Voir le site</a>
-                        <a href="logout.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-sign-out w-5"></i> Déconnexion</a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
+        <?php include "_sidebar.php"; ?>
 
-        <main class="flex-1 ml-64 p-8" id="main-content">
-            <h1 class="text-2xl font-bold text-gray-800 mb-8"><i class="ph ph-users text-primary mr-2"></i> Gestion des utilisateurs</h1>
+        <main class="admin-main flex-1 ml-64" id="main-content">
+            <?php $page_title = 'Utilisateurs'; $page_icon = 'ph-users'; include "_topbar.php"; ?>
+            <div class="p-8">
 
             <?php if($error): ?><div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2" role="alert"><i class="ph ph-warning-circle"></i> <?= htmlspecialchars($error) ?></div><?php endif; ?>
             <?php if($success): ?><div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2" role="alert"><i class="ph ph-check-circle"></i> <?= htmlspecialchars($success) ?></div><?php endif; ?>
@@ -176,18 +150,18 @@ $can_view_categories = has_permission('manage_categories');
                     <div class="flex gap-4">
                         <div class="flex-1">
                             <label for="user_name" class="block text-sm font-semibold text-gray-700 mb-1">Nom</label>
-                            <input type="text" id="user_name" name="name" placeholder="Nom complet" required class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
+                            <input type="text" id="user_name" name="name" placeholder="Nom complet" required class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
                         </div>
                         <div class="flex-1">
                             <label for="user_email" class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
-                            <input type="email" id="user_email" name="email" placeholder="email@exemple.com" required class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
+                            <input type="email" id="user_email" name="email" placeholder="email@exemple.com" required class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
                         </div>
                     </div>
                     <div class="flex gap-4">
                         <div class="flex-1">
                             <label for="user_password" class="block text-sm font-semibold text-gray-700 mb-1">Mot de passe</label>
                             <div class="relative">
-                                <input type="password" id="user_password" name="password" placeholder="••••••••" required class="w-full px-3 py-2 pr-10 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
+                                <input type="password" id="user_password" name="password" placeholder="••••••••" required class="w-full px-4 py-2.5 pr-10 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
                                 <button type="button" onclick="togglePassword(this)" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition" aria-label="Afficher le mot de passe">
                                     <i class="ph ph-eye"></i>
                                 </button>
@@ -195,7 +169,7 @@ $can_view_categories = has_permission('manage_categories');
                         </div>
                         <div class="flex-1">
                             <label for="user_role" class="block text-sm font-semibold text-gray-700 mb-1">Rôle</label>
-                            <select id="user_role" name="role" class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
+                            <select id="user_role" name="role" class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
                                 <option value="etudiant">Étudiant</option>
                                 <option value="auteur">Auteur</option>
                                 <option value="admin">Admin</option>
@@ -213,7 +187,7 @@ $can_view_categories = has_permission('manage_categories');
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead class="bg-gray-50 text-left text-sm font-semibold text-gray-600">
-                            <tr><th class="p-3">Nom</th><th class="p-3">Email</th><th class="p-3">Rôle</th><th class="p-3">Statut</th><th class="p-3">Actions</th></tr>
+                            <tr><th class="px-4 py-3">Nom</th><th class="px-4 py-3">Email</th><th class="px-4 py-3">Rôle</th><th class="px-4 py-3">Statut</th><th class="px-4 py-3">Actions</th></tr>
                         </thead>
                         <tbody>
                             <?php
@@ -223,9 +197,9 @@ $can_view_categories = has_permission('manage_categories');
                             <tr class="border-b border-gray-50 hover:bg-gray-50">
                                 <td class="p-3 font-medium"><?= htmlspecialchars($user['name']) ?></td>
                                 <td class="p-3 text-gray-600"><?= htmlspecialchars($user['email']) ?></td>
-                                <td class="p-3"><span class="text-xs font-semibold px-2 py-1 rounded-full <?= $role_colors[$user['role']] ?? 'bg-gray-100' ?>"><?= $role_labels[$user['role']] ?? $user['role'] ?></span></td>
-                                <td class="p-3"><span class="text-xs font-semibold px-2 py-1 rounded-full <?= $user['is_active'] ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' ?>"><?= $user['is_active'] ? 'Actif' : 'Inactif' ?></span></td>
-                                <td class="p-3">
+                                <td class="px-4 py-3"><span class="text-xs font-semibold px-2 py-1 rounded-full <?= $role_colors[$user['role']] ?? 'bg-gray-100' ?>"><?= $role_labels[$user['role']] ?? $user['role'] ?></span></td>
+                                <td class="px-4 py-3"><span class="text-xs font-semibold px-2 py-1 rounded-full <?= $user['is_active'] ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' ?>"><?= $user['is_active'] ? 'Actif' : 'Inactif' ?></span></td>
+                                <td class="px-4 py-3">
                                     <?php if($user['id_user'] !== $_SESSION['admin_id'] && ($current_user_role === 'admin' || ($current_user_role === 'auteur' && $user['role'] !== 'admin'))): ?>
                                     <form method="post" class="flex gap-2 items-center flex-wrap">
                                         <?= csrf_field() ?>
@@ -255,6 +229,7 @@ $can_view_categories = has_permission('manage_categories');
                         </tbody>
                     </table>
                 </div>
+            </div>
             </div>
         </main>
     </div>

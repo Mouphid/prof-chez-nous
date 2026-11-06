@@ -66,56 +66,18 @@ $now = date('Y-m-d H:i:s');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - <?= SITE_NAME ?></title>
+    <title>Tableau de bord - Admin</title>
     <?php cdn_head(); ?>
 </head>
 <body class="bg-gray-50 font-sans leading-relaxed">
     <?php skip_link() ?>
     <div class="flex min-h-screen">
         <!-- Sidebar -->
-        <aside class="w-64 bg-gray-900 text-white fixed h-full overflow-y-auto z-40">
-            <div class="p-5 border-b border-gray-700">
-                <a href="dashboard.php" class="flex items-center gap-3">
-                    <img src="../img/logo.jpg" alt="Joie Enseignante" class="h-8 w-auto bg-white p-1 rounded">
-                </a>
-            </div>
-            <nav class="p-4" aria-label="Menu admin">
-                <ul class="space-y-1">
-                    <li><a href="dashboard.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg bg-indigo-600 text-white text-sm font-medium"><i class="ph ph-gauge w-5"></i> Dashboard</a></li>
-                    <?php if ($can_view_posts): ?>
-                    <li><a href="manage_posts.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition text-sm"><i class="ph ph-newspaper w-5"></i> Articles</a></li>
-                    <li><a href="add_post.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition text-sm"><i class="ph ph-plus-circle w-5"></i> Nouveau post</a></li>
-                    <?php endif; ?>
-                    <?php if ($can_view_comments): ?>
-                    <li><a href="manage_comments.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition text-sm"><i class="ph ph-chats w-5"></i> Commentaires</a></li>
-                    <?php endif; ?>
-                    <?php if ($can_view_categories): ?>
-                    <li><a href="manage_categories.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition text-sm"><i class="ph ph-folder w-5"></i> Catégories</a></li>
-                    <?php endif; ?>
-                    <?php if ($can_view_users): ?>
-                    <li><a href="manage_users.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition text-sm"><i class="ph ph-users w-5"></i> Utilisateurs</a></li>
-                    <?php endif; ?>
-                    <li class="border-t border-gray-700 pt-3 mt-3 space-y-1">
-                        <a href="../public/index.php" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition text-sm"><i class="ph ph-arrow-square-out w-5"></i> Voir le site</a>
-                        <a href="logout.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition text-sm"><i class="ph ph-sign-out w-5"></i> Déconnexion</a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
+        <?php include "_sidebar.php"; ?>
 
         <!-- Main -->
-        <main class="flex-1 ml-64" id="main-content">
-            <!-- Top bar -->
-            <header class="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between sticky top-0 z-30">
-                <h1 class="text-xl font-bold text-gray-900"><i class="ph ph-gauge text-primary mr-2"></i> Tableau de bord</h1>
-                <div class="flex items-center gap-3">
-                    <span class="text-sm text-gray-500"><?= htmlspecialchars($admin['name'] ?? 'Admin') ?></span>
-                    <span class="bg-primary text-white text-xs font-semibold px-3 py-1 rounded-full"><?= $admin_role_label ?></span>
-                    <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold">
-                        <?= strtoupper(substr($admin['name'] ?? 'A', 0, 1)) ?>
-                    </div>
-                </div>
-            </header>
+        <main class="admin-main flex-1 ml-64" id="main-content">
+            <?php $page_title = 'Tableau de bord'; $page_icon = 'ph-gauge'; include "_topbar.php"; ?>
 
             <div class="p-8">
                 <!-- Welcome -->

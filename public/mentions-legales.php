@@ -21,7 +21,7 @@ include "../includes/header.php";
         <p class="text-gray-600 leading-relaxed">
             <strong class="text-primary">Joie Enseignante</strong><br>
             Plateforme pédagogique dédiée aux enseignants et étudiants.<br>
-            Email : contact@joieenseignante.com
+            Email : contact@joiedenseignante.com
         </p>
 
         <h2 class="text-xl font-bold text-gray-900 mt-8">2. Directeur de la publication</h2>

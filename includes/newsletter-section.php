@@ -20,9 +20,10 @@
                     Une sélection de ressources, cours et publications, une fois par semaine, directement dans votre boîte mail.
                 </p>
 
-                <form class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto" action="../public/contact.php" method="get" novalidate>
+                <form class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto" action="newsletter_subscribe.php" method="post" novalidate>
+                    <?= csrf_field() ?>
                     <label for="nl-email" class="sr-only">Adresse email</label>
-                    <input type="email" name="contact_email" id="nl-email" required placeholder="Votre adresse email"
+                    <input type="email" name="email" id="nl-email" required placeholder="Votre adresse email"
                         class="flex-1 px-5 py-4 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-white/50 text-sm focus:outline-none focus:ring-2 focus:ring-accent-400/60 focus:border-transparent backdrop-blur-md transition-all">
                     <button type="submit"
                         class="inline-flex items-center justify-center gap-2 bg-accent-500 hover:bg-accent-600 text-white font-bold px-8 py-4 rounded-2xl text-sm transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-accent-500/25 active:scale-[0.97] transform hover:-translate-y-0.5">

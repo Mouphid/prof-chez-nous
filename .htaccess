@@ -1,3 +1,7 @@
+# ============================================================
+# Joie Enseignante — configuration Apache
+# ============================================================
+
 # Bloquer l'accès aux dossiers sensibles
 RedirectMatch 403 ^/(config|includes|sql|vendor|logs)/.*$
 
@@ -12,18 +16,54 @@ RedirectMatch 403 ^/(config|includes|sql|vendor|logs)/.*$
 # Désactiver le listing des répertoires
 Options -Indexes
 
-# Headers de sécurité
+# ─── Forcer HTTPS ───
+# À conserver : une fois le certificat SSL actif sur OVH, tout le trafic
+# passe automatiquement en https://.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+</IfModule>
+
+# ─── Headers de sécurité ───
 <IfModule mod_headers.c>
     Header always set X-Frame-Options "DENY"
     Header always set X-Content-Type-Options "nosniff"
     Header always set X-XSS-Protection "1; mode=block"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+# ─── Compression ───
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+    AddOutputFilterByType DEFLATE application/javascript application/json
+    AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# ─── Cache des fichiers statiques ───
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg "access plus 30 days"
+    ExpiresByType image/png "access plus 30 days"
+    ExpiresByType image/webp "access plus 30 days"
+    ExpiresByType image/svg+xml "access plus 30 days"
+    ExpiresByType text/css "access plus 7 days"
+    ExpiresByType application/javascript "access plus 7 days"
+    ExpiresByType font/woff2 "access plus 30 days"
 </IfModule>
 
 # Bloquer l'exécution PHP dans uploads
 <IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^sitemap\.xml$ public/sitemap.php [L]
     RewriteRule ^uploads/.*\.(php|phtml|php3|php4|php5|phps)$ - [F,L]
 </IfModule>
 
 # Empêcher l'accès au dossier _debug_backup
 RedirectMatch 403 ^/_debug_backup/.*$
+
+# Page 404 personnalisée
+ErrorDocument 404 /public/404.php

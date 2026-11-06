@@ -252,3 +252,42 @@ a:hover .sbr-thumb { transform: scale(1.06); }
 .dark .dark\:bg-accent-900\/10 { background-color: rgba(120, 53, 15, 0.10); }
 .dark .dark\:bg-primary-900\/10 { background-color: rgba(30, 64, 175, 0.10); }
 .gradient-text { background-image: linear-gradient(90deg, var(--color-primary-500), var(--color-accent-500)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+/* ═══ DOCUMENTS & PAIEMENT (compléments) ═══ */
+.mt-20 { margin-top: 5rem; }
+.py-10 { padding-top: 2.5rem; padding-bottom: 2.5rem; }
+.break-all { word-break: break-all; }
+.max-w-\[180px\] { max-width: 180px; }
+.border-amber-200 { border-color: #fde68a; }
+.text-amber-800 { color: #92400e; }
+.border-emerald-200 { border-color: #a7f3d0; }
+.text-emerald-800 { color: #065f46; }
+.hover\:bg-primary-100:hover { background-color: var(--color-primary-100); }
+.hover\:bg-primary-700:hover { background-color: var(--color-primary-700); }
+
+/* ═══ ADMIN : menu latéral responsive ═══ */
+.admin-main { min-width: 0; }
+.admin-menu-btn { display: none; }
+.admin-overlay { display: none; }
+
+@media (max-width: 1023px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.35);
+  }
+  .admin-sidebar.is-open { transform: translateX(0); }
+  .admin-main { margin-left: 0 !important; }
+  .admin-menu-btn { display: inline-flex; }
+  .admin-overlay.is-visible {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+    z-index: 35;
+  }
+}
+
+@media (min-width: 1024px) {
+  .admin-sidebar { transform: none; }
+  .admin-overlay { display: none !important; }
+}

@@ -10,11 +10,11 @@
 $faq_title = $faq_title ?? 'Questions fréquentes';
 $faq_subtitle = $faq_subtitle ?? 'Retrouvez les réponses aux questions les plus courantes.';
 $faq_items = $faq_items ?? [
-    ['Comment créer un compte ?', 'Rendez-vous sur la page d\'inscription, remplissez le formulaire avec vos informations et validez votre email. L\'inscription est gratuite et prend moins de 2 minutes.'],
-    ['Puis-je télécharger des ressources ?', 'Oui, les utilisateurs inscrits peuvent télécharger les ressources attachées aux articles. Le nombre de téléchargements dépend de votre abonnement.'],
-    ['Comment partager mes propres ressources ?', 'Pour publier des articles et ressources, vous devez avoir un compte avec le rôle auteur. Contactez l\'administration pour obtenir ce statut.'],
-    ['Les ressources sont-elles gratuites ?', 'Une grande partie des ressources sont gratuites. Certains contenus premium sont réservés aux abonnés.'],
-    ['Puis-je commenter les articles ?', 'Absolument ! Une fois connecté, vous pouvez commenter tous les articles publiés et échanger avec la communauté.'],
+    ['Faut-il créer un compte pour télécharger un document ?', 'Non. Les documents gratuits se téléchargent directement, sans inscription.'],
+    ['Comment télécharger une publication en PDF ?', 'Ouvrez l\'article concerné : la liste des documents apparaît en bas de page. Cliquez sur « Télécharger » pour un document gratuit.'],
+    ['Certains documents sont-ils payants ?', 'Oui. Certains documents sont marqués « payant ». Le prix est affiché en FCFA et le paiement se fait en ligne par Mobile Money ou carte bancaire. Après paiement, le téléchargement se lance automatiquement.'],
+    ['Quels moyens de paiement sont acceptés ?', 'Le paiement en ligne est assuré par Kkiapay (Mobile Money et carte bancaire). Le compte marchand est en cours d\'activation : en attendant, contactez-nous pour obtenir un document payant.'],
+    ['Puis-je commenter les articles ?', 'Oui, les commentaires sont ouverts à tous. Chaque commentaire est relu par l\'administrateur avant d\'être publié.'],
     ['Comment contacter le support ?', 'Utilisez le formulaire de contact ou écrivez-nous directement à ' . SITE_EMAIL . '. Nous vous répondrons dans les plus brefs délais.'],
 ];
 ?>

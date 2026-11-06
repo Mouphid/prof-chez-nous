@@ -4,7 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?? SITE_NAME ?></title>
-    <meta name="description" content="<?= SITE_TAGLINE ?>">
+    <meta name="description" content="<?= htmlspecialchars($page_description ?? SITE_TAGLINE) ?>">
+    <?php
+    $__canonical = SITE_URL . ($_SERVER['REQUEST_URI'] ?? '/');
+    $__og_image  = $page_image ?? (SITE_URL . '/img/bg/hero-1.jpg');
+    ?>
+    <link rel="canonical" href="<?= htmlspecialchars($__canonical) ?>">
+    <meta property="og:site_name" content="<?= htmlspecialchars(SITE_NAME) ?>">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="<?= htmlspecialchars($page_title ?? SITE_NAME) ?>">
+    <meta property="og:description" content="<?= htmlspecialchars($page_description ?? SITE_TAGLINE) ?>">
+    <meta property="og:url" content="<?= htmlspecialchars($__canonical) ?>">
+    <meta property="og:image" content="<?= htmlspecialchars($__og_image) ?>">
+    <meta property="og:locale" content="fr_FR">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?= htmlspecialchars($page_title ?? SITE_NAME) ?>">
+    <meta name="twitter:description" content="<?= htmlspecialchars($page_description ?? SITE_TAGLINE) ?>">
+    <meta name="twitter:image" content="<?= htmlspecialchars($__og_image) ?>">
     <?php cdn_head(); animation_styles(); ?>
     <script>if(localStorage.getItem('theme')==='dark'||(!localStorage.getItem('theme')&&window.matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');</script>
 </head>

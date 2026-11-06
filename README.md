@@ -5,21 +5,32 @@ Blog académique pour un professeur universitaire spécialisé en littérature.
 ## Installation
 
 1. **Créer la base de données**
-   - Nom : `joieenseignante`
-   - Importez le fichier SQL
+   - Importer `sql/export_production.sql`
+   - Puis appliquer les migrations :
+     ```bash
+     mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_paiement.sql
+     mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_newsletter.sql
+     ```
 
 2. **Configuration**
-   - Fichier : `config/config.php`
-   - Utilisateur : `root`
-   - Mot de passe : vide (défaut XAMPP)
+   - `config/config.php` lit les variables d'environnement `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS`
+   - Installer PHPMailer : `composer install`
+   - Emails : copier `config/mail_config.example.php` → `config/mail_config.php`
+   - Paiement : copier `config/payment_config.example.php` → `config/payment_config.php` (clés Kkiapay)
 
 3. **Accès**
-   - Blog public : `http://localhost/JoieEnseignante/public/`
-   - Admin : `http://localhost/JoieEnseignante/admin/`
+   - Site public : `/public/`
+   - Admin : `/admin/login.php`
+   - Le site est prévu pour être déployé **à la racine du domaine** (`BASE_URL` = `/`)
 
 4. **Comptes**
-   - **Admin** : compte du professeur créé via l'import (`prof@joieenseignante.com`), mot de passe défini au déploiement
-   - **Utilisateurs** : s'inscrivent via `/public/register.php`
+   - **Admin** : `prof@joieenseignante.com` (mot de passe défini à l'import) → **à changer immédiatement** via l'écran **Mot de passe**
+   - **Visiteurs** : pas d'inscription (option retenue : site géré par l'administrateur seul)
+
+5. **Documents gratuits / payants**
+   - Dans **Nouveau post** ou **Modifier article**, un champ **Prix (FCFA)** est associé aux fichiers joints.
+   - `0` = gratuit (téléchargement direct) ; montant > 0 = paiement en ligne via Kkiapay.
+   - Les ventes se consultent dans **Admin → Ventes**.
 
 ---
 

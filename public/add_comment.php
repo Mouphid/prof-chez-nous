@@ -39,14 +39,15 @@ try {
     $author_email = $_SESSION['user_email'] ?? ('visiteur_' . $token);
     $id_user = $_SESSION['user_id'] ?? null;
 
-    $stmt = $pdo->prepare("INSERT INTO comments (id_post, id_user, author_name, author_email, content, token_hash, status, created_at) VALUES (?, ?, ?, ?, ?, ?, 'visible', NOW())");
+    $stmt = $pdo->prepare("INSERT INTO comments (id_post, id_user, author_name, author_email, content, token_hash, status, created_at) VALUES (?, ?, ?, ?, ?, ?, 'pending', NOW())");
     $stmt->execute([$id_post, $id_user, $author_name, $author_email, $content, $token]);
 
     $id_comment = $pdo->lastInsertId();
 
     echo json_encode([
         'success' => true,
-        'message' => 'Commentaire publié avec succès !',
+        'pending' => true,
+        'message' => 'Merci ! Votre commentaire sera publié après validation par l\'administrateur.',
         'id_comment' => $id_comment,
         'token' => $token,
         'author_name' => $author_name

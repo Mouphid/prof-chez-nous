@@ -24,8 +24,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             require_once __DIR__ . '/../config/mail.php';
             $mail = getMailer();
-            if ($admin) {
-                $mail->addAddress('sequoiaempire@gmail.com', $admin['name'] ?? 'Admin');
+            $to_email = defined('SITE_EMAIL') ? SITE_EMAIL : ($admin['email'] ?? '');
+            if ($to_email) {
+                $mail->addAddress($to_email, $admin['name'] ?? 'Admin');
                 $mail->addReplyTo($email, $name);
                 $mail->Subject = "[Contact] $subject";
                 $mail->Body = "Nom : $name\nEmail : $email\nSujet : $subject\n\nMessage :\n$message";
@@ -88,7 +89,8 @@ include "../includes/header.php";
                             <select id="contact_subject" name="subject" required class="w-full appearance-none cursor-pointer border border-gray-300 dark:border-dark-100 dark:bg-dark-100/40 dark:text-white rounded-lg pl-10 pr-10 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary dark:focus:ring-accent-400/60 dark:focus:border-accent-600 transition-colors duration-300">
                                 <option value="" class="dark:bg-dark-100">Sélectionnez un sujet</option>
                                 <option value="question">Question générale</option>
-                                <option value="inscription">Problème d'inscription</option>
+                                <option value="document">Question sur un document</option>
+                                <option value="paiement">Problème de paiement</option>
                                 <option value="ressource">Problème de téléchargement</option>
                                 <option value="suggestion">Suggestion</option>
                                 <option value="autre">Autre</option>
@@ -117,7 +119,7 @@ include "../includes/header.php";
                 <ul class="space-y-4">
                     <li class="flex items-start gap-3">
                         <div class="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center text-primary flex-shrink-0"><i class="ph ph-envelope"></i></div>
-                        <div><strong class="text-sm">Email</strong><p class="text-sm text-gray-500">contact@joieenseignante.com</p></div>
+                        <div><strong class="text-sm">Email</strong><p class="text-sm text-gray-500"><?= htmlspecialchars(SITE_EMAIL) ?></p></div>
                     </li>
                     <li class="flex items-start gap-3">
                         <div class="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center text-primary flex-shrink-0"><i class="ph ph-phone"></i></div>
@@ -143,5 +145,6 @@ include "../includes/header.php";
     </div>
 </div>
 
+<?php include "../includes/faq-section.php"; ?>
 <?php include "../includes/newsletter-section.php"; ?>
 <?php include "../includes/footer.php"; ?>

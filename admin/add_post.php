@@ -71,6 +71,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $allowed_types = ['pdf','doc','docx','xls','xlsx','mp3','mp4','jpg','jpeg','png','gif'];
             $upload_base = "../uploads/";
 
+            // Prix appliqué aux fichiers ajoutés (0 = gratuit)
+            $file_price = isset($_POST['file_price']) ? (float)$_POST['file_price'] : 0;
+            if ($file_price < 0) { $file_price = 0; }
+            $file_is_free = $file_price > 0 ? 0 : 1;
+
             $mime_map = [
                 'pdf'  => ['application/pdf'],
                 'doc'  => ['application/msword'],
@@ -106,9 +111,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $dest_path = $upload_base.$type_folder.'/'.$new_name;
                     move_uploaded_file($tmp_name, $dest_path);
 
+                    // Type accepté par la colonne `file_type` (enum)
+                    $db_type = 'other';
+                    if ($type_folder === 'pdf') { $db_type = 'pdf'; }
+                    elseif ($type_folder === 'images') { $db_type = 'image'; }
+                    elseif ($type_folder === 'video') { $db_type = 'video'; }
+                    elseif ($type_folder === 'word') { $db_type = 'doc'; }
+
                     $file_size = filesize($dest_path);
-                    $stmt_file = $pdo->prepare("INSERT INTO files (id_post, file_name, file_type, file_path, file_size) VALUES (?, ?, ?, ?, ?)");
-                    $stmt_file->execute([$post_id, $new_name, $type_folder, $dest_path, $file_size]);
+                    $relative_path = 'uploads/' . $type_folder . '/' . $new_name;
+                    $stmt_file = $pdo->prepare("INSERT INTO files (id_post, file_name, file_type, file_path, file_size, price, is_free) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                    $stmt_file->execute([$post_id, $new_name, $db_type, $relative_path, $file_size, $file_price, $file_is_free]);
                 }
             }
         }
@@ -118,49 +131,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$can_view_comments = has_permission('manage_comments');
-$can_view_categories = has_permission('manage_categories');
-$can_view_users = has_permission('manage_users');
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nouveau post - Admin</title>
+    <title>Ajouter un article - Admin</title>
     <?php cdn_head(); ?>
 </head>
-<body class="bg-gray-100 font-sans leading-relaxed">
+<body class="bg-gray-50 font-sans leading-relaxed">
     <?php skip_link() ?>
     <div class="flex min-h-screen">
-        <aside class="w-64 bg-gray-900 text-white fixed h-full overflow-y-auto">
-            <div class="p-5 border-b border-gray-700">
-                <a href="dashboard.php" class="flex items-center gap-3"><img src="../img/logo.jpg" alt="Joie Enseignante" class="h-8 w-auto bg-white p-1 rounded"></a>
-            </div>
-            <nav class="p-4" aria-label="Menu admin">
-                <ul class="space-y-1">
-                    <li><a href="dashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-house w-5"></i> Dashboard</a></li>
-                    <li><a href="manage_posts.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-file-text w-5"></i> Articles</a></li>
-                    <li><a href="add_post.php" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-gray-700 text-white"><i class="ph ph-plus w-5"></i> Nouveau post</a></li>
-                    <?php if($can_view_comments): ?>
-                    <li><a href="manage_comments.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-chats w-5"></i> Commentaires</a></li>
-                    <?php endif; ?>
-                    <?php if($can_view_categories): ?>
-                    <li><a href="manage_categories.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-folder w-5"></i> Catégories</a></li>
-                    <?php endif; ?>
-                    <?php if($can_view_users): ?>
-                    <li><a href="manage_users.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-users w-5"></i> Utilisateurs</a></li>
-                    <?php endif; ?>
-                    <li class="border-t border-gray-700 pt-3 mt-3">
-                        <a href="../public/index.php" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-arrow-square-out w-5"></i> Voir le site</a>
-                        <a href="logout.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-sign-out w-5"></i> Déconnexion</a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
+        <?php include "_sidebar.php"; ?>
 
-        <main class="flex-1 ml-64 p-8 max-w-4xl" id="main-content">
-            <h1 class="text-2xl font-bold text-gray-800 mb-8"><i class="ph ph-plus-circle text-primary mr-2"></i> Ajouter un nouveau post</h1>
+        <main class="admin-main flex-1 ml-64" id="main-content">
+            <?php $page_title = 'Ajouter un article'; $page_icon = 'ph-plus-circle'; include "_topbar.php"; ?>
+            <div class="p-8 max-w-4xl">
 
             <?php if ($error): ?>
             <div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2" role="alert"><i class="ph ph-warning-circle"></i> <?= htmlspecialchars($error) ?></div>
@@ -233,10 +220,17 @@ $can_view_users = has_permission('manage_users');
                         <input type="file" id="add_files" name="files[]" multiple class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-indigo-50 file:text-primary file:font-semibold hover:file:bg-indigo-100">
                     </div>
 
+                    <div>
+                        <label for="add_file_price" class="block text-sm font-semibold text-gray-700 mb-1">Prix des fichiers joints (FCFA)</label>
+                        <input type="number" id="add_file_price" name="file_price" min="0" step="1" value="0" class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
+                        <p class="text-xs text-gray-500 mt-1">Laissez <strong>0</strong> pour un téléchargement gratuit. Un montant supérieur active le paiement en ligne.</p>
+                    </div>
+
                     <button type="submit" class="bg-primary hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition flex items-center gap-2">
                         <i class="ph ph-plus"></i> Ajouter le post
                     </button>
                 </form>
+            </div>
             </div>
         </main>
     </div>

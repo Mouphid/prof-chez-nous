@@ -72,17 +72,14 @@ if ($user_id) {
 }
 $user_liked = $has_liked->fetchColumn() > 0;
 
-$page_title = htmlspecialchars($post['title']);
+$page_title = $post['title'];
+$page_description = !empty($post['excerpt']) ? $post['excerpt'] : truncate(strip_tags($post['content']), 160);
+$page_image = !empty($post['main_image']) ? SITE_URL . '/uploads/images/' . $post['main_image'] : null;
 
 $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
 
 include "../includes/header.php";
 ?>
-    <meta property="og:title" content="<?= $page_title ?>">
-    <meta property="og:description" content="<?= truncate(strip_tags($post['content']), 200) ?>">
-    <?php if (!empty($post['main_image'])): ?>
-    <meta property="og:image" content="../uploads/images/<?= htmlspecialchars($post['main_image']) ?>">
-    <?php endif; ?>
 
     <section class="max-w-4xl mx-auto px-4 py-8 animate-fade-in" id="main-content">
         <article class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -126,6 +123,43 @@ include "../includes/header.php";
                         <i class="ph ph-arrow-square-out"></i> Voir le lien externe
                     </a>
                 </div>
+                <?php endif; ?>
+
+                <?php if (!empty($files)): ?>
+                <section class="mt-8" aria-label="Documents à télécharger">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4"><i class="ph ph-paperclip text-primary"></i> Documents</h2>
+                    <div class="space-y-3">
+                        <?php foreach ($files as $file):
+                            $is_paid = ((float)$file['price'] > 0);
+                            $size_label = !empty($file['file_size']) ? round($file['file_size'] / 1024) . ' Ko' : '';
+                            if ($file['file_type'] === 'pdf') { $file_icon = 'ph-file-pdf'; }
+                            elseif (in_array($file['file_type'], ['doc', 'word'])) { $file_icon = 'ph-file-doc'; }
+                            elseif ($file['file_type'] === 'image' || $file['file_type'] === 'images') { $file_icon = 'ph-image'; }
+                            else { $file_icon = 'ph-file'; }
+                        ?>
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-gray-50 border border-gray-200 rounded-xl">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 flex-shrink-0 rounded-lg bg-primary-100 text-primary-800 flex items-center justify-center">
+                                    <i class="ph <?= $file_icon ?> text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-gray-900"><?= htmlspecialchars($file['file_name']) ?></p>
+                                    <p class="text-xs text-gray-500"><?= $size_label ?><?= $size_label && $is_paid ? ' · ' : '' ?><?= $is_paid ? 'Document payant' : 'Gratuit' ?></p>
+                                </div>
+                            </div>
+                            <?php if ($is_paid): ?>
+                            <a href="purchase.php?id=<?= (int)$file['id_file'] ?>" class="inline-flex items-center justify-center gap-2 bg-accent-500 hover:bg-accent-600 text-white font-semibold px-5 py-2.5 rounded-lg transition">
+                                <i class="ph ph-shopping-cart"></i> Acheter — <?= number_format((float)$file['price'], 0, ',', ' ') ?> FCFA
+                            </a>
+                            <?php else: ?>
+                            <a href="download.php?id=<?= (int)$file['id_file'] ?>" class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-indigo-700 text-white font-semibold px-5 py-2.5 rounded-lg transition">
+                                <i class="ph ph-download-simple"></i> Télécharger
+                            </a>
+                            <?php endif; ?>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </section>
                 <?php endif; ?>
 
                 <div class="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 p-6 bg-gray-50 rounded-xl border border-gray-200">
@@ -289,7 +323,7 @@ include "../includes/header.php";
                     if (data.token) { localStorage.setItem('comment_token_' + data.id_comment, data.token); }
                     msg.innerHTML = '<div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg flex items-center gap-2"><i class="ph ph-check-circle"></i> ' + data.message + '</div>';
                     this.reset();
-                    setTimeout(() => location.reload(), 1500);
+                    if (!data.pending) { setTimeout(() => location.reload(), 1500); }
                 } else {
                     msg.innerHTML = '<div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg flex items-center gap-2"><i class="ph ph-x-circle"></i> ' + (data.message || 'Erreur') + '</div>';
                 }

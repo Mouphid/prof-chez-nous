@@ -37,55 +37,25 @@ $stats = [
     'hidden' => $pdo->query("SELECT COUNT(*) FROM comments WHERE status = 'hidden'")->fetchColumn()
 ];
 
-$can_view_posts = has_permission('manage_posts');
-$can_view_categories = has_permission('manage_categories');
-$can_view_users = has_permission('manage_users');
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion Commentaires - Admin</title>
+    <title>Commentaires - Admin</title>
     <?php cdn_head(); ?>
 </head>
-<body class="bg-gray-100 font-sans leading-relaxed">
+<body class="bg-gray-50 font-sans leading-relaxed">
     <?php skip_link() ?>
     <div class="flex min-h-screen">
         <!-- Sidebar -->
-        <aside class="w-64 bg-gray-900 text-white fixed h-full overflow-y-auto">
-            <div class="p-5 border-b border-gray-700">
-                <a href="dashboard.php" class="flex items-center gap-3">
-                    <img src="../img/logo.jpg" alt="Joie Enseignante" class="h-8 w-auto bg-white p-1 rounded">
-                </a>
-            </div>
-            <nav class="p-4" aria-label="Menu admin">
-                <ul class="space-y-1">
-                    <li><a href="dashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-house w-5"></i> Dashboard</a></li>
-                    <?php if($can_view_posts): ?>
-                    <li><a href="manage_posts.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-file-text w-5"></i> Articles</a></li>
-                    <li><a href="add_post.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-plus w-5"></i> Nouveau post</a></li>
-                    <?php endif; ?>
-                    <li><a href="manage_comments.php" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-gray-700 text-white"><i class="ph ph-chats w-5"></i> Commentaires</a></li>
-                    <?php if($can_view_categories): ?>
-                    <li><a href="manage_categories.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-folder w-5"></i> Catégories</a></li>
-                    <?php endif; ?>
-                    <?php if($can_view_users): ?>
-                    <li><a href="manage_users.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-users w-5"></i> Utilisateurs</a></li>
-                    <?php endif; ?>
-                    <li class="border-t border-gray-700 pt-3 mt-3">
-                        <a href="../public/index.php" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-arrow-square-out w-5"></i> Voir le site</a>
-                        <a href="logout.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition"><i class="ph ph-sign-out w-5"></i> Déconnexion</a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
+        <?php include "_sidebar.php"; ?>
 
         <!-- Main -->
-        <main class="flex-1 ml-64 p-8" id="main-content">
-            <div class="flex justify-between items-center mb-8">
-                <h1 class="text-2xl font-bold text-gray-800"><i class="ph ph-chats text-primary mr-2"></i> Gestion des Commentaires</h1>
-            </div>
+        <main class="admin-main flex-1 ml-64" id="main-content">
+            <?php $page_title = 'Commentaires'; $page_icon = 'ph-chats'; include "_topbar.php"; ?>
+            <div class="p-8">
 
             <!-- Stats -->
             <div class="grid grid-cols-4 gap-4 mb-8">
@@ -144,6 +114,7 @@ $can_view_users = has_permission('manage_users');
                 <?php if(!$has_items): ?>
                 <div class="p-10 text-center text-gray-400"><i class="ph ph-chats text-3xl block mb-2"></i> Aucun commentaire trouvé.</div>
                 <?php endif; ?>
+            </div>
             </div>
         </main>
     </div>

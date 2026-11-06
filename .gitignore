@@ -32,6 +32,9 @@ Thumbs.db
 # SMTP credentials
 config/mail_config.php
 
+# Payment credentials (Kkiapay)
+config/payment_config.php
+
 # Cache
 cache/
 temp/

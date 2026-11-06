@@ -1,133 +1,85 @@
-# 📋 DEVIS — Blog « JoieEnseignante »
+# 📋 DEVIS N° JE-2026-002 — Abonnement 2 ans « Joie Enseignante »
 
-**Professeur de Littérature — Université de Cotonou**
+**Prestataire :** Adonis — Développeur Web indépendant
+**Client :** Professeur de Littérature — Université de Cotonou, Bénin
+**Objet :** Hébergement, domaine `.com` et mise en ligne du site « Joie Enseignante » — durée 24 mois
 
-- **Préparé par :** Adonis (Développeur)
-- **Date :** 22 septembre 2026
-- **Validité de l'offre :** 30 jours
-- **Devise :** Franc CFA (FCFA)
-
----
-
-## 1. Ce que vous achetez (rien de caché)
-
-| Ce que je mets en place | À qui va l'argent | Pourquoi |
-|---|---|---|
-| **Hébergement** (le « terrain » du site, location serveur) | OVHcloud (entreprise française) | Pour que votre blog soit visible sur Internet |
-| **Nom de domaine** (votre adresse internet) | Afriregister (Bénin) pour le `.bj` · OVH pour le `.com` | Pour que chacun puisse trouver votre site |
-| **Mise en ligne** (installation + sécurité + configuration) | Adonis (moi-même) | Pour que le site fonctionne et soit protégé |
-
-> Aucun frais supplémentaire sur l'année. Les montants ci-dessous sont **toutes charges comprises**.
-
-> 📌 **Deux adresses possibles, vous choisirez :**
-> - **`.bj`** → `joieenseignante.bj` — votre nom exact, adresse 100 % béninoise 🇧🇯
-> - **`.com`** → `joiedenseignante.com` — internationale (votre 1ᵉʳ choix était déjà pris)
+- **Date d'émission :** 28 septembre 2026
+- **Validité de l'offre :** 30 jours (jusqu'au 28 octobre 2026)
+- **Devise :** Franc CFA (FCFA) — taux de référence 656 FCFA / 1 €
 
 ---
 
-## 2. Option A — Pour 1 AN
+## 1. Option retenue par le client  ✅
 
-### 🔵 Avec le domaine `.bj`  →  **38 700 FCFA**
+### 🔴 DÉCISION CLIENT — Option **`.com`** — **2 AN** → **94 250 FCFA**
 
-| # | Poste | Décomposition | Montant |
+| # | Poste | Décomposition (TTC) | Montant |
 |---|---|---|---|
-| 1 | Hébergement Pro OVH — 12 mois | 28,66 € × 656 F/€ = 18 806 F | **18 800 F** |
-| 2 | Domaine `.bj` — 1 an | Tarif Afriregister officiel | **9 900 F** |
-| 3 | Mise en ligne + sécurité | Mon travail : installation, base de données, SSL, protection | **10 000 F** |
-| | **TOTAL** | **18 800 + 9 900 + 10 000** | **= 38 700 F** |
-
-✅ **Le calcul à vérifier :** 18 800 + 9 900 = 28 700 → + 10 000 = **38 700 FCFA**
-
-### 🔴 Avec le domaine `.com`  →  **28 800 FCFA**
-
-| # | Poste | Décomposition | Montant |
-|---|---|---|---|
-| 1 | Hébergement Pro OVH — 12 mois | 28,66 € × 656 F/€ = 18 806 F | **18 800 F** |
-| 2 | Domaine `.com` — 1 an | **Offert** avec l'hébergement OVH | **0 F** |
-| 3 | Mise en ligne + sécurité | Mon travail : installation, base de données, SSL, protection | **10 000 F** |
-| | **TOTAL** | **18 800 + 0 + 10 000** | **= 28 800 F** |
-
-✅ **Le calcul à vérifier :** 18 800 + 10 000 = **28 800 FCFA** (le domaine est gratuit cette année)
-
----
-
-## 3. Option B — Pour 2 ANS  ✅ *le plus avantageux*
-
-### 🔵 Avec le domaine `.bj`  →  **105 200 FCFA**
-
-| # | Poste | Décomposition | Montant |
-|---|---|---|---|
-| 1 | Hébergement Pro OVH — 24 mois | 114,91 € × 656 F/€ = 75 362 F | **75 400 F** |
-| 2 | Domaine `.bj` — 2 ans | 2 × 9 900 F (9 900 F par an) | **19 800 F** |
+| 1 | Hébergement Pro OVHcloud — 24 mois | 114,91 € × 656 F = 75 381 F (arr. 15) | **75 400 F** |
+| 2 | Domaine `.com` — an 1 offert + an 2 | 0 F + 13,49 € × 656 F = 8 849 F (arr. 15) | **8 850 F** |
 | 3 | Mise en ligne + sécurité | Installation, base de données, SSL, protection | **10 000 F** |
-| | **TOTAL** | **75 400 + 19 800 + 10 000** | **= 105 200 F** |
+| | **TOTAL ABONNEMENT 2 ANS** | | **= 94 250 FCFA** |
 
-✅ **Le calcul à vérifier :** 75 400 + 19 800 = 95 200 → + 10 000 = **105 200 FCFA**
+✅ **Vérification :** 75 400 + 8 850 + 10 000 = **94 250 FCFA**
+📆 **Équivalent mensuel :** 94 250 ÷ 24 = **≈ 3 927 FCFA / mois**
 
-### 🔴 Avec le domaine `.com`  →  **94 250 FCFA**
-
-| # | Poste | Décomposition | Montant |
-|---|---|---|---|
-| 1 | Hébergement Pro OVH — 24 mois | 114,91 € × 656 F/€ = 75 362 F | **75 400 F** |
-| 2 | Domaine `.com` (an 1 offert + an 2) | 0 F + 13,49 € × 656 F = 8 850 F | **8 850 F** |
-| 3 | Mise en ligne + sécurité | Installation, base de données, SSL, protection | **10 000 F** |
-| | **TOTAL** | **75 400 + 8 850 + 10 000** | **= 94 250 F** |
-
-✅ **Le calcul à vérifier :** 75 400 + 8 850 = 84 250 → + 10 000 = **94 250 FCFA**
+> 💡 **Adresse enregistrée :** `joiedenseignante.com` — le nom `joieenseignante.com` est déjà réservé par un tiers (vérifié).
 
 ---
 
-## 4. Pourquoi 2 ans est plus intéressant que 1 an ?
+## 2. Ce qui est inclus (pour 2 ans complets)
 
-Comparez sur 2 ans, pour chaque choix de domaine :
-
-| Scénario | 1 an + renouveler (An 2) | Prendre 2 ans d'un coup | Économie |
-|---|---|---|---|
-| **Avec `.bj`** | 38 700 + ~104 300 F ≈ **143 000 F** | **105 200 F** ✅ | ≈ 37 800 F |
-| **Avec `.com`** | 28 800 + ~103 250 F ≈ **132 050 F** | **94 250 F** ✅ | ≈ 37 800 F |
-
-> 💡 Le prix promo OVH ne dure que la 1ʳᵉ année. Après, l'hébergement repasse à son prix normal (~94 400 F/an). Prendre 2 ans **bloque le tarif avantageux** et vous fait économiser ~37 800 F.
-
----
-
-## 5. Mensualités équivalentes (pour mieux visualiser)
-
-| Choix du domaine | Durée | Total | Équivalent par mois |
-|---|---|---|---|
-| 🔵 `.bj` | **1 an** | 38 700 F | **≈ 3 225 F / mois** (38 700 ÷ 12) |
-| 🔴 `.com` | **1 an** | 28 800 F | **≈ 2 400 F / mois** (28 800 ÷ 12) |
-| 🔵 `.bj` | **2 ans** | 105 200 F | **≈ 4 383 F / mois** (105 200 ÷ 24) |
-| 🔴 `.com` | **2 ans** | 94 250 F | **≈ 3 927 F / mois** (94 250 ÷ 24) |
-
----
-
-## 6. Ce qui est inclus dans toutes les options
-
-✅ Mise en ligne complète du blog (délai 3 à 5 jours)
-✅ L'hébergement (serveur + sécurité anti-attaques + sauvegardes automatiques)
-✅ Votre adresse internet (domaine `.bj` ou `.com`)
-✅ Certificat SSL (le petit « cadenas 🔒 » qui rassure vos visiteurs)
-✅ Base de données du site (articles, commentaires, comptes)
+✅ Nom de domaine `.com` (an 1 offert par OVHcloud, an 2 payé dans le devis)
+✅ Hébergement mutualisé **Pro OVHcloud** pendant 24 mois
+    - 250 Go d'espace disque · certificat SSL gratuit inclus · sauvegardes
+✅ Mise en ligne complète du site (délai 3 à 5 jours après paiement)
+✅ Base de données (articles, commentaires, comptes, likes)
 ✅ Correction des failles de sécurité repérées avant l'ouverture
-✅ Mon assistance pendant la durée de l'offre
+✅ Assistance technique pendant la durée de l'abonnement
+✅ Le Client peut publier lui-même articles et ressources (interface d'administration)
 
 ---
 
-## 7. Votre choix
+## 3. Conditions de paiement
 
-**Choisissez l'adresse, puis la durée :**
-
-- ☐ **`.bj` — 1 an — 38 700 FCFA**
-- ☐ **`.com` — 1 an — 28 800 FCFA**
-- ☐ **`.bj` — 2 ans — 105 200 FCFA** ✅
-- ☐ **`.com` — 2 ans — 94 250 FCFA** ✅
-
-Signature du client : ______________________  Date : ______________
+- **Paiement :** 100 % avant la mise en ligne (**94 250 F à la signature**)
+- **Mode de paiement :** à définir (espèces / virement / Mobile Money)
 
 ---
 
-### Conditions
-- **Paiement :** 100 % avant la mise en ligne.
+## 4. Engagement de renouvellement (année 3 à prévoir)
+
+| Poste | Estimateur année 3 (hors promo) | Montant estimé |
+|---|---|---|
+| Hébergement Pro OVHcloud — 12 mois | ~7,99 €/mois × 656 F | **~62 900 F/an** |
+| Domaine `.com` — 1 an | 13,49 € × 656 F | **8 850 F** |
+| | **Total renouvellement an 3** | **~71 750 F/an** |
+
+> ⚠️ Le tarif promo OVHcloud ne dure que la 1ʳᵉ année. Prendre 2 ans **bloque le tarif avantageux**. Le renouvellement (année 3) repasse au tarif normal — montants donnés à titre indicatif et susceptibles de varier.
+
+---
+
+## 5. Signature
+
+**Le Choix :** `joiedenseignante.com` — 2 ans — **94 250 FCFA**
+
+**Le Client**                            **Le Prestataire**
+Nom : ___________________________        Nom : Adonis
+Signature : ______________________        Signature : ______________________
+Date : ____ / ____ / 2026                 Date : ____ / ____ / 2026
+
+---
+
+## 6. Conditions générales (résumé)
+
+- **Paiement :** 100 % avant mise en ligne.
 - **Délai de mise en ligne :** 3 à 5 jours après réception du paiement.
-- Cette offre ne comprend pas la création de nouveaux articles (le professeur continue de publier lui-même).
-- L'adresse `.com` proposée est `joiedenseignante.com` (le nom `joieenseignante.com` est déjà pris).
+- **Périmètre :** hébergement, domaine, mise en ligne et assistance. La création d'articles reste à la charge du Client (il publie lui-même).
+- **Propriétés :** les contenus publiés (articles, images) appartiennent au Client ; l'hébergement et le domaine restent gérés par le Prestataire pendant l'abonnement.
+- **Résiliation :** toute la durée est payable d'avance ; aucun remboursement partiel sauf manquement du Prestataire.
+- **Loi applicable :** République du Bénin.
+
+---
+
+*Devis établi en un seul exemplaire et valable uniquement s'il comporte la signature des deux parties.*

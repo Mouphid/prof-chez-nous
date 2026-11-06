@@ -72,8 +72,8 @@ if ($doc_root !== '' && str_starts_with($project_root, $doc_root)) {
     $relative = substr($project_root, strlen($doc_root));
     define('BASE_URL', rtrim($relative, '/') . '/');
 } else {
-    // Fallback: depuis un sous-dossier connu
-    define('BASE_URL', '/JoieEnseignante/');
+    // Fallback : déploiement à la racine du domaine
+    define('BASE_URL', '/');
 }
 
 require_once __DIR__ . '/theme.php';
