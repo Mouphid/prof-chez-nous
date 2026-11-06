@@ -34,12 +34,30 @@ if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
 }
 
 try {
-    $stmt = $pdo->prepare("
-        INSERT INTO newsletter_subscribers (email, status, created_at)
-        VALUES (?, 'active', NOW())
-        ON DUPLICATE KEY UPDATE status = 'active'
-    ");
+    $stmt = $pdo->prepare("SELECT id_subscriber, unsubscribe_token FROM newsletter_subscribers WHERE email = ? LIMIT 1");
     $stmt->execute([$email]);
+    $existing = $stmt->fetch();
+
+    $token = bin2hex(random_bytes(32));
+
+    if ($existing) {
+        // Réinscription : on réactive le compte sans changer son jeton s'il existe déjà.
+        $token = (string)($existing['unsubscribe_token'] ?? '');
+        if ($token === '') {
+            $token = bin2hex(random_bytes(32));
+        }
+        $pdo->prepare("
+            UPDATE newsletter_subscribers
+            SET status = 'active', unsubscribed_at = NULL, unsubscribe_token = ?
+            WHERE id_subscriber = ?
+        ")->execute([$token, (int)$existing['id_subscriber']]);
+    } else {
+        $pdo->prepare("
+            INSERT INTO newsletter_subscribers (email, status, unsubscribe_token, created_at)
+            VALUES (?, 'active', ?, NOW())
+        ")->execute([$email, $token]);
+    }
+
     flash('success', 'Merci ! Votre adresse est bien inscrite à la newsletter.');
 } catch (PDOException $e) {
     error_log("newsletter_subscribe: " . $e->getMessage());

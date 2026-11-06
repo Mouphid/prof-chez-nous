@@ -425,3 +425,142 @@ function build_recovery_email(array $purchases): array
         'links'    => array_column($items, 'link'),
     ];
 }
+
+/**
+ * Adresse personnelle de désinscription d'un abonné.
+ */
+function newsletter_unsubscribe_url(string $token): string
+{
+    return rtrim(SITE_URL, '/') . '/public/desinscription.php?token=' . urlencode($token);
+}
+
+/**
+ * Prépare un message de newsletter pour un abonné, sans l'envoyer.
+ * Le texte saisi dans l'admin est transformé en paragraphes : il est échappé,
+ * donc on ne peut pas y injecter de code HTML.
+ *
+ * @return array{to_email:string,to_name:string,subject:string,html:string,text:string,unsubscribe_url:string}
+ * @throws RuntimeException si l'adresse ou le jeton manque
+ */
+function build_newsletter_email(array $subscriber, string $subject, string $body_text): array
+{
+    $email = trim((string)($subscriber['email'] ?? ''));
+    if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        throw new RuntimeException("Adresse e-mail d'abonné invalide ou absente.");
+    }
+
+    $token = (string)($subscriber['unsubscribe_token'] ?? '');
+    if ($token === '') {
+        throw new RuntimeException("Cet abonné n'a pas de lien de désinscription.");
+    }
+
+    $subject = trim($subject);
+    if ($subject === '') {
+        $subject = 'Newsletter Joie Enseignante';
+    }
+
+    $unsub = newsletter_unsubscribe_url($token);
+    $safe_subject = htmlspecialchars($subject, ENT_QUOTES, 'UTF-8');
+
+    // Un paragraphe par double saut de ligne, retour à la ligne simple conservé.
+    $paragraphs = '';
+    $text_body  = '';
+    $blocs = preg_split('/\R{2,}/u', trim($body_text)) ?: [];
+    foreach ($blocs as $bloc) {
+        $bloc = trim($bloc);
+        if ($bloc === '') {
+            continue;
+        }
+        $paragraphs .= '<p style="font-size:15px;line-height:1.7;margin:0 0 16px;">'
+            . nl2br(htmlspecialchars($bloc, ENT_QUOTES, 'UTF-8'), false)
+            . '</p>';
+        $text_body .= $bloc . "\n\n";
+    }
+
+    $html = '
+        <div style="font-family:Arial,Helvetica,sans-serif;max-width:600px;margin:0 auto;color:#1f2937;">
+            <p style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6b7280;margin:0 0 18px;">
+                Lettre pédagogique — Joie Enseignante
+            </p>
+            <h1 style="font-size:22px;line-height:1.35;margin:0 0 22px;color:#111827;">' . $safe_subject . '</h1>
+            ' . $paragraphs . '
+            <p style="font-size:13px;color:#9ca3af;border-top:1px solid #e5e7eb;padding-top:14px;margin-top:28px;line-height:1.6;">
+                Vous recevez cet e-mail parce que votre adresse est inscrite à la newsletter de Joie Enseignante.<br>
+                <a href="' . htmlspecialchars($unsub, ENT_QUOTES, 'UTF-8') . '" style="color:#2563eb;">Se désinscrire</a>
+                · <a href="' . htmlspecialchars(SITE_URL, ENT_QUOTES, 'UTF-8') . '" style="color:#2563eb;">joiedenseignante.com</a>
+                · <a href="mailto:' . htmlspecialchars(SITE_EMAIL, ENT_QUOTES, 'UTF-8') . '" style="color:#2563eb;">Nous écrire</a>
+            </p>
+        </div>';
+
+    $text = $subject . "\n\n"
+        . $text_body
+        . "—\n"
+        . "Vous recevez cet e-mail parce que votre adresse est inscrite à la newsletter de Joie Enseignante.\n"
+        . "Se désinscrire : " . $unsub . "\n"
+        . "Nous écrire : " . SITE_EMAIL . "\n"
+        . "Joie Enseignante — " . SITE_URL . "\n";
+
+    return [
+        'to_email'        => $email,
+        'to_name'         => '',
+        'subject'         => $subject,
+        'html'            => $html,
+        'text'            => $text,
+        'unsubscribe_url' => $unsub,
+    ];
+}
+
+/**
+ * Envoie un message de newsletter à une liste d'abonnés.
+ * Un seul serveur SMTP est ouvert pour tout l'envoi.
+ *
+ * @param array<int,array> $subscribers lignes de newsletter_subscribers
+ * @return array{sent:int,failed:int,total:int,first_error:?string}
+ * @throws RuntimeException si la configuration SMTP manque
+ */
+function send_newsletter_to_subscribers(array $subscribers, string $subject, string $body_text): array
+{
+    $total = count($subscribers);
+    if ($total === 0) {
+        return ['sent' => 0, 'failed' => 0, 'total' => 0, 'first_error' => null];
+    }
+
+    $mail  = getMailer();
+    $sent  = 0;
+    $failed = 0;
+    $first_error = null;
+
+    foreach ($subscribers as $subscriber) {
+        try {
+            $data = build_newsletter_email($subscriber, $subject, $body_text);
+
+            $mail->clearAllRecipients();
+            $mail->clearCustomHeaders();
+            $mail->addAddress($data['to_email']);
+            $mail->isHTML(true);
+            $mail->Subject = $data['subject'];
+            $mail->Body    = $data['html'];
+            $mail->AltBody = $data['text'];
+            $mail->addCustomHeader(
+                'List-Unsubscribe',
+                '<' . $data['unsubscribe_url'] . '>, <mailto:' . SITE_EMAIL . '?subject=Desinscription>'
+            );
+
+            $mail->send();
+            $sent++;
+        } catch (Throwable $e) {
+            $failed++;
+            if ($first_error === null) {
+                $first_error = $e->getMessage();
+            }
+            error_log('Newsletter — envoi à ' . ($subscriber['email'] ?? '?') . ' : ' . $e->getMessage());
+        }
+    }
+
+    return [
+        'sent'        => $sent,
+        'failed'      => $failed,
+        'total'       => $total,
+        'first_error' => $first_error,
+    ];
+}

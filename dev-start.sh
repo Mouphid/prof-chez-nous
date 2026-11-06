@@ -59,6 +59,10 @@ if ! mysql --socket="$SOCK" -u root "$DB_NAME" -e "SHOW TABLES LIKE 'newsletter_
     echo "• Application de sql/migration_newsletter.sql..."
     mysql --socket="$SOCK" -u root "$DB_NAME" < "$PROJET/sql/migration_newsletter.sql"
 fi
+if ! mysql --socket="$SOCK" -u root "$DB_NAME" -e "SHOW COLUMNS FROM newsletter_subscribers LIKE 'unsubscribe_token'" 2>/dev/null | grep -q unsubscribe_token; then
+    echo "• Application de sql/migration_newsletter_suite.sql..."
+    mysql --socket="$SOCK" -u root "$DB_NAME" < "$PROJET/sql/migration_newsletter_suite.sql"
+fi
 if ! mysql --socket="$SOCK" -u root "$DB_NAME" -e "SHOW TABLES LIKE 'courses'" 2>/dev/null | grep -q courses; then
     echo "• Application de sql/migration_cours.sql..."
     mysql --socket="$SOCK" -u root "$DB_NAME" < "$PROJET/sql/migration_cours.sql"

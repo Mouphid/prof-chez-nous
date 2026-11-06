@@ -298,6 +298,7 @@ $montant = fn(float $n): string => number_format($n, 0, ',', ' ') . ' FCFA';
                         <p class="text-xs font-semibold uppercase tracking-wider text-gray-500">Abonnés newsletter</p>
                         <p class="text-2xl font-bold text-gray-900 mt-1"><?= (int)$sales['subscribers'] ?></p>
                         <p class="text-xs text-gray-500 mt-2">adresses actives</p>
+                        <a href="manage_newsletter.php" class="inline-flex items-center gap-1 text-xs text-primary hover:underline font-semibold mt-2">Gérer <i class="ph ph-arrow-right"></i></a>
                     </div>
                     <?php endif; ?>
 
