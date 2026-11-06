@@ -145,6 +145,5 @@ include "../includes/header.php";
     </div>
 </div>
 
-<?php include "../includes/faq-section.php"; ?>
 <?php include "../includes/newsletter-section.php"; ?>
 <?php include "../includes/footer.php"; ?>
