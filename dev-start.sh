@@ -65,6 +65,10 @@ if ! mysql --socket="$SOCK" -u root "$DB_NAME" -e "SHOW TABLES LIKE 'courses'" 2
     echo "• Reprise des cours de démonstration..."
     mysql --socket="$SOCK" -u root "$DB_NAME" < "$PROJET/sql/seed_cours_demo.sql"
 fi
+if ! mysql --socket="$SOCK" -u root "$DB_NAME" -e "SHOW TABLES LIKE 'purchase_recovery_requests'" 2>/dev/null | grep -q purchase_recovery; then
+    echo "• Application de sql/migration_recuperation.sql..."
+    mysql --socket="$SOCK" -u root "$DB_NAME" < "$PROJET/sql/migration_recuperation.sql"
+fi
 echo "✔ Migrations à jour"
 
 # ── 3. Serveur PHP ───────────────────────────────────────────

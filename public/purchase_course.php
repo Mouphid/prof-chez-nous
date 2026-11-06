@@ -188,6 +188,7 @@ include "../includes/header.php";
                 <p class="text-xs text-gray-500 dark:text-dark-300">
                     <i class="ph ph-info"></i>
                     Après le paiement, un lien privé vous est envoyé par e-mail. Aucun compte à créer.
+                    Si vous perdez cet e-mail, <a href="retrouver-mon-achat.php" class="text-primary hover:underline">retrouvez votre achat</a>.
                 </p>
                 <button type="submit" class="inline-flex items-center gap-2 bg-primary hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl transition">
                     <i class="ph ph-arrow-right"></i> Continuer vers le paiement

@@ -56,6 +56,14 @@ function getMailer(): PHPMailer {
 }
 
 /**
+ * Adresse de la page « Retrouver mon achat ».
+ */
+function recovery_url(): string
+{
+    return rtrim(SITE_URL, '/') . '/public/retrouver-mon-achat.php';
+}
+
+/**
  * Construit l'adresse de téléchargement d'un document acheté.
  * Le jeton est propre à la commande (colonne download_token).
  */
@@ -153,7 +161,8 @@ function build_purchase_email(array $purchase, string $file_name = 'Votre docume
                 <span style="word-break:break-all;">' . $safe_link . '</span>
             </p>
             <p style="font-size:13px;color:#6b7280;line-height:1.6;">
-                Conservez cet e-mail : ce lien personnel vous permet de retélécharger le document.
+                Conservez cet e-mail : ce lien personnel vous permet de retélécharger le document.<br>
+                Perdu ce lien plus tard ? <a href="' . htmlspecialchars(recovery_url(), ENT_QUOTES, 'UTF-8') . '" style="color:#2563eb;">Retrouver mon achat</a>.
             </p>
             <p style="font-size:13px;color:#9ca3af;border-top:1px solid #e5e7eb;padding-top:12px;margin-top:24px;">
                 Joie Enseignante — ' . htmlspecialchars(SITE_URL, ENT_QUOTES, 'UTF-8') . '<br>
@@ -166,6 +175,7 @@ function build_purchase_email(array $purchase, string $file_name = 'Votre docume
         . "Téléchargement : " . $link . "\n\n"
         . "Montant réglé : " . $montant . "\n\n"
         . "Conservez cet e-mail : ce lien personnel vous permet de retélécharger le document.\n\n"
+        . "Retrouver tous vos liens : " . recovery_url() . "\n\n"
         . "Joie Enseignante — " . SITE_URL . "\n";
 
     return [
@@ -247,7 +257,8 @@ function build_course_email(array $purchase, string $title, bool $whole_course =
             </p>
             <p style="font-size:13px;color:#6b7280;line-height:1.6;">
                 Conservez cet e-mail : ce lien personnel vous permet de revenir sur ' . ($whole_course ? 'le cours' : 'ce chapitre') . '
-                à tout moment. Il ne faut pas le partager.
+                à tout moment. Il ne faut pas le partager.<br>
+                Perdu ce lien plus tard ? <a href="' . htmlspecialchars(recovery_url(), ENT_QUOTES, 'UTF-8') . '" style="color:#2563eb;">Retrouver mon achat</a>.
             </p>
             <p style="font-size:13px;color:#9ca3af;border-top:1px solid #e5e7eb;padding-top:12px;margin-top:24px;">
                 Joie Enseignante — ' . htmlspecialchars(SITE_URL, ENT_QUOTES, 'UTF-8') . '<br>
@@ -261,6 +272,7 @@ function build_course_email(array $purchase, string $title, bool $whole_course =
         . "Lien d'accès : " . $link . "\n\n"
         . "Montant réglé : " . $montant . "\n\n"
         . "Conservez cet e-mail : ce lien personnel vous permet de revenir sur le contenu.\n\n"
+        . "Retrouver tous vos liens : " . recovery_url() . "\n\n"
         . "Joie Enseignante — " . SITE_URL . "\n";
 
     return [
@@ -270,5 +282,146 @@ function build_course_email(array $purchase, string $title, bool $whole_course =
         'html'     => $html,
         'text'     => $text,
         'link'     => $link,
+    ];
+}
+
+/**
+ * Envoie en un seul e-mail tous les liens d'accès retrouvés pour une adresse.
+ *
+ * @param array<int,array> $purchases lignes de purchases (avec file_name,
+ *                                                 course_title ou item_title)
+ * @throws RuntimeException si l'adresse, un lien ou l'envoi posent problème
+ */
+function send_recovery_email(array $purchases): void
+{
+    $data = build_recovery_email($purchases);
+
+    $mail = getMailer();
+    $mail->addAddress($data['to_email'], $data['to_name']);
+    $mail->isHTML(true);
+    $mail->Subject = $data['subject'];
+    $mail->Body    = $data['html'];
+    $mail->AltBody = $data['text'];
+
+    $mail->send();
+}
+
+/**
+ * Prépare l'e-mail « Retrouver mon achat », sans l'envoyer.
+ * Un seul message regroupe tous les achats payés de l'adresse.
+ *
+ * @return array{to_email:string,to_name:string,subject:string,html:string,text:string,links:array<int,string>}
+ * @throws RuntimeException si l'adresse ou les liens manquent
+ */
+function build_recovery_email(array $purchases): array
+{
+    $email = '';
+    $nom   = '';
+    $items = [];
+
+    foreach ($purchases as $purchase) {
+        $token = (string)($purchase['download_token'] ?? '');
+        if ($token === '') {
+            continue;
+        }
+
+        if ($email === '') {
+            $email = trim((string)($purchase['buyer_email'] ?? ''));
+        }
+        if ($nom === '') {
+            $nom = trim((string)($purchase['buyer_name'] ?? ''));
+        }
+
+        if (!empty($purchase['id_file'])) {
+            $items[] = [
+                'kind'  => 'Document',
+                'title' => (string)(($purchase['file_name'] ?? '') ?: 'Votre document'),
+                'link'  => purchase_download_url((int)$purchase['id_file'], $token),
+                'date'  => (string)($purchase['paid_at'] ?? $purchase['created_at'] ?? ''),
+            ];
+        } elseif (!empty($purchase['id_course'])) {
+            $items[] = [
+                'kind'  => 'Cours complet',
+                'title' => (string)(($purchase['course_title'] ?? '') ?: 'Votre cours'),
+                'link'  => course_purchase_url($purchase),
+                'date'  => (string)($purchase['paid_at'] ?? $purchase['created_at'] ?? ''),
+            ];
+        } elseif (!empty($purchase['id_item'])) {
+            $items[] = [
+                'kind'  => 'Chapitre',
+                'title' => (string)(($purchase['item_title'] ?? '') ?: 'Votre chapitre'),
+                'link'  => course_purchase_url($purchase),
+                'date'  => (string)($purchase['paid_at'] ?? $purchase['created_at'] ?? ''),
+            ];
+        }
+    }
+
+    if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        throw new RuntimeException("Adresse e-mail de l'acheteur invalide ou absente.");
+    }
+    if (!$items) {
+        throw new RuntimeException("Aucun lien d'accès n'est disponible pour cette adresse.");
+    }
+
+    $bonjour = $nom !== '' ? 'Bonjour ' . $nom . ',' : 'Bonjour,';
+    $safe_bonjour = htmlspecialchars($bonjour, ENT_QUOTES, 'UTF-8');
+
+    $html_items = '';
+    $text_items = '';
+    foreach ($items as $item) {
+        $safe_title = htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8');
+        $safe_kind  = htmlspecialchars($item['kind'], ENT_QUOTES, 'UTF-8');
+        $safe_link  = htmlspecialchars($item['link'], ENT_QUOTES, 'UTF-8');
+        $date       = $item['date'] !== '' ? format_date($item['date']) : '';
+        $date_html  = $date !== ''
+            ? ' <span style="color:#9ca3af;">· achat du ' . htmlspecialchars($date, ENT_QUOTES, 'UTF-8') . '</span>'
+            : '';
+
+        $html_items .= '
+            <div style="border:1px solid #e5e7eb;border-radius:10px;padding:16px 18px;margin:0 0 12px;">
+                <p style="margin:0 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:#6b7280;">' . $safe_kind . '</p>
+                <p style="margin:0 0 4px;font-size:16px;font-weight:bold;color:#111827;">' . $safe_title . '</p>
+                <p style="margin:0 0 12px;font-size:12px;color:#9ca3af;">Lien personnel, à ne pas partager.' . $date_html . '</p>
+                <a href="' . $safe_link . '" style="background:#2563eb;color:#ffffff;text-decoration:none;padding:10px 18px;border-radius:8px;font-weight:bold;display:inline-block;font-size:14px;">
+                    Ouvrir
+                </a>
+            </div>';
+
+        $text_items .= '• ' . $item['kind'] . ' — ' . $item['title']
+            . ($date !== '' ? ' (achat du ' . $date . ')' : '') . "\n"
+            . '  ' . $item['link'] . "\n\n";
+    }
+
+    $html = '
+        <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;color:#1f2937;">
+            <p style="font-size:15px;">' . $safe_bonjour . '</p>
+            <p style="font-size:15px;line-height:1.6;">
+                Vous avez demandé à retrouver vos achats. Voici les accès liés à cette adresse e-mail.
+            </p>
+            ' . $html_items . '
+            <p style="font-size:13px;color:#6b7280;line-height:1.6;">
+                Ces liens sont personnels : ne les partagez pas. Si vous n\'êtes pas à l\'origine de cette demande,
+                vous pouvez ignorer cet e-mail.
+            </p>
+            <p style="font-size:13px;color:#9ca3af;border-top:1px solid #e5e7eb;padding-top:12px;margin-top:24px;">
+                Joie Enseignante — ' . htmlspecialchars(SITE_URL, ENT_QUOTES, 'UTF-8') . '<br>
+                Une question ? Écrivez-nous à ' . htmlspecialchars(SITE_EMAIL, ENT_QUOTES, 'UTF-8') . '.
+            </p>
+        </div>';
+
+    $text = $bonjour . "\n\n"
+        . "Vous avez demandé à retrouver vos achats. Voici les accès liés à cette adresse e-mail.\n\n"
+        . $text_items
+        . "Ces liens sont personnels : ne les partagez pas.\n"
+        . "Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet e-mail.\n\n"
+        . "Joie Enseignante — " . SITE_URL . "\n";
+
+    return [
+        'to_email' => $email,
+        'to_name'  => $nom,
+        'subject'  => 'Vos liens d\'accès — Joie Enseignante',
+        'html'     => $html,
+        'text'     => $text,
+        'links'    => array_column($items, 'link'),
     ];
 }

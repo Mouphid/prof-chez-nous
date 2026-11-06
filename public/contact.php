@@ -143,6 +143,17 @@ include "../includes/header.php";
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <h3 class="font-semibold text-gray-900 mb-4"><i class="ph ph-key text-primary"></i> Vous avez perdu votre lien ?</h3>
+                <p class="text-sm text-gray-500 mb-4">
+                    Indiquez l'adresse utilisée lors de l'achat : nous vous renvoyons
+                    vos liens de téléchargement et d'accès aux cours.
+                </p>
+                <a href="retrouver-mon-achat.php" class="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
+                    <i class="ph ph-arrow-right"></i> Retrouver mon achat
+                </a>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                 <h3 class="font-semibold text-gray-900 mb-4"><i class="ph ph-share-network text-primary"></i> Suivez-nous</h3>
                 <div class="flex gap-3">
                     <a href="#" class="w-10 h-10 bg-gray-100 hover:bg-primary-100 hover:text-primary rounded-lg flex items-center justify-center transition text-gray-600"><i class="ph ph-facebook-logo"></i></a>

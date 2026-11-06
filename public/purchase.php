@@ -129,6 +129,11 @@ include "../includes/header.php";
                         <input type="tel" id="buyer_phone" name="buyer_phone" required placeholder="+229 ..." class="w-full border border-gray-300 dark:border-dark-100 dark:bg-dark-100/40 dark:text-white rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary">
                     </div>
                 </div>
+                <p class="text-xs text-gray-500 dark:text-dark-300">
+                    <i class="ph ph-info"></i>
+                    Après le paiement, un lien privé vous est envoyé par e-mail. Aucun compte à créer.
+                    Si vous perdez cet e-mail, <a href="retrouver-mon-achat.php" class="text-primary hover:underline">retrouvez votre achat</a>.
+                </p>
                 <button type="submit" class="inline-flex items-center gap-2 bg-primary hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl transition">
                     <i class="ph ph-arrow-right"></i> Continuer vers le paiement
                 </button>

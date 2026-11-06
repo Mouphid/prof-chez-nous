@@ -22,6 +22,7 @@
                     <li><a href="../public/index.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-house text-gray-400 dark:text-dark-200"></i> Accueil</a></li>
                     <li><a href="../public/publications.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-book text-gray-400 dark:text-dark-200"></i> Publications</a></li>
                     <li><a href="../public/cours.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-graduation-cap text-gray-400 dark:text-dark-200"></i> Cours</a></li>
+                    <li><a href="../public/retrouver-mon-achat.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-key text-gray-400 dark:text-dark-200"></i> Retrouver mon achat</a></li>
                     <li><a href="../public/biography.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-user-circle text-gray-400 dark:text-dark-200"></i> Biographie</a></li>
                     <li><a href="../public/contact.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-envelope text-gray-400 dark:text-dark-200"></i> Contact</a></li>
                 </ul>
