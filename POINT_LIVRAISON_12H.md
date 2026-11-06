@@ -50,6 +50,15 @@
 - ✅ lecture des vidéos avec déplacement dans la vidéo (requêtes partielles / Range) ;
 - ✅ un cours déjà vendu ne peut pas être supprimé (mise en brouillon possible, les acheteurs gardent l'accès).
 
+### Retrouver un achat (6 nov. 2026)
+- ✅ page **Retrouver mon achat** : l'acheteur saisit son adresse e-mail et reçoit à nouveau **tous ses liens**
+  (documents, cours complets, chapitres) dans **un seul message** ;
+- ✅ aucun compte à créer, le lien reçu sert de clé d'accès ;
+- ✅ **limite anti-abus** : 3 demandes par heure et par adresse, 10 par heure et par connexion ;
+- ✅ message toujours identique : le site **ne révèle jamais** si une adresse a acheté quelque chose ;
+- ✅ lien présent dans le pied de page, sur la page Contact, sur les pages d'achat et dans les e-mails d'achat ;
+- ✅ les adresses ne sont pas stockées en clair dans le journal anti-abus (empreintes seulement).
+
 ### Contenu et promesses du PDF
 | Promesse | État |
 |---|---|
@@ -118,12 +127,14 @@ Après l'import de `sql/export_production.sql`, exécuter dans l'ordre :
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_paiement.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_newsletter.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_cours.sql
+mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_recuperation.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/seed_cours_demo.sql
 ```
 
 - `migration_paiement.sql` : colonnes `price` / `is_free` sur `files` + table `purchases` ;
 - `migration_newsletter.sql` : table `newsletter_subscribers` ;
 - `migration_cours.sql` : tables `courses` et `course_items` + lien des achats vers un cours ou un chapitre ;
+- `migration_recuperation.sql` : table `purchase_recovery_requests` (limite anti-abus de « Retrouver mon achat ») ;
 - `seed_cours_demo.sql` (facultatif) : reprise des 3 cours de démonstration, **gratuits au départ**.
   Les prix se règlent ensuite dans Admin → Cours.
 
@@ -174,6 +185,8 @@ mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/seed_cours_demo.sql
       doit répondre **403** ;
 - [ ] **Tester les cours** : cours gratuit, chapitre en aperçu, achat du cours complet, achat d'un chapitre,
       puis ouverture du lien reçu par e-mail ;
+- [ ] **Tester « Retrouver mon achat »** : adresse inconnue (message neutre), adresse connue (un e-mail avec tous les liens),
+      puis 4 demandes d'affilée (la 4e doit être bloquée une heure) ;
 - [ ] **Tester l'e-mail d'achat** avec une vraie adresse, puis le bouton **Renvoyer** depuis Ventes ;
 - [ ] Tester : accueil, article, PDF gratuit, achat payant, commentaire, contact, admin, ventes.
 
@@ -219,7 +232,8 @@ Le PDF remis au client contient des incohérences (TVA à 14,74 %, « net à pay
 2. **Emails** : sans SPF/DKIM, le formulaire de contact part en spam.
 3. **Kkiapay** : l'activation du compte marchand peut prendre du temps ; le site reste utilisable sans.
 4. **Migration oubliée** : sans `migration_paiement.sql`, les pages articles affichent une erreur (colonne `price` absente) ;
-   sans `migration_cours.sql`, la page **Cours** et l'admin des cours échouent.
+   sans `migration_cours.sql`, la page **Cours** et l'admin des cours échouent ;
+   sans `migration_recuperation.sql`, « Retrouver mon achat » fonctionne mais sans limite anti-abus en base.
 5. **Paiement** : la mise en ligne est prévue « après réception du paiement » (article 3 des conditions).
 6. **Protection des fichiers** : si OVH n'applique pas les `.htaccess` (option `AllowOverride`),
    les PDF pourraient rester accessibles par adresse directe. **Tester le 403** juste après l'upload ;
@@ -249,9 +263,11 @@ Le PDF remis au client contient des incohérences (TVA à 14,74 %, « net à pay
 **Ajoutés**
 - `sql/migration_paiement.sql`, `sql/migration_newsletter.sql`
 - `sql/migration_cours.sql`, `sql/seed_cours_demo.sql`
+- `sql/migration_recuperation.sql` (limite anti-abus de « Retrouver mon achat »)
 - `config/payment.php`, `config/payment_config.example.php`
 - `public/purchase.php`, `public/payment_callback.php`, `public/newsletter_subscribe.php`
 - `public/purchase_course.php`, `public/course.php`, `public/course_file.php`
+- `public/retrouver-mon-achat.php`
 - `includes/courses.php`
 - `public/video.php` (diffusion protégée des vidéos d'articles)
 - `uploads/pdf/.htaccess`, `uploads/docs/.htaccess`, `uploads/audio/.htaccess`, `uploads/video/.htaccess`
@@ -263,7 +279,8 @@ Le PDF remis au client contient des incohérences (TVA à 14,74 %, « net à pay
 
 **Modifiés**
 - `public/download.php`, `public/post.php`, `public/contact.php`, `public/index.php`
-- `public/cours.php`, `public/payment_callback.php`
+- `public/cours.php`, `public/payment_callback.php`, `public/purchase.php`, `public/purchase_course.php`
+- `includes/footer.php`
 - `public/register.php`, `public/resend-verification.php`
 - `public/add_comment.php`, `includes/faq-section.php`, `includes/newsletter-section.php`, `includes/header.php`, `includes/functions.php`
 - `admin/dashboard.php`, `admin/add_post.php`, `admin/edit_post.php`, `admin/delete_file.php`, `admin/manage_purchases.php`, `admin/_sidebar.php`

@@ -68,10 +68,20 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 - **Fichiers :** `admin/manage_purchases.php`, `config/mail.php`
 - ⚠️ **Envoi réel en attente du SMTP** (voir G4).
 
-### B3. Page « Retrouver mon achat » ⏳ (optionnel)
-- **À faire :** formulaire e-mail → renvoi du lien. Évite les demandes manuelles.
-- **Durée :** 1 h
-- **Dépend de :** B1
+### B3. Page « Retrouver mon achat » ✅ Fait (6 nov. 2026)
+- **Réalisé :** page `public/retrouver-mon-achat.php` : l'acheteur saisit l'adresse utilisée au paiement
+  et reçoit **un seul e-mail** regroupant tous ses liens (documents, cours complets, chapitres).
+- **Sans compte :** le lien reçu reste la clé d'accès ; aucun mot de passe à retenir.
+- **Anti-abus :**
+  - 3 demandes par heure pour une même adresse, 10 par heure pour une même connexion ;
+  - table `purchase_recovery_requests` : seules des empreintes (hash) sont stockées, jamais l'adresse en clair ;
+  - piège à robots (champ caché) ;
+  - message toujours identique : le site ne révèle jamais si une adresse a acheté quelque chose.
+- **Liens d'accès :** pied de page, page Contact, pages d'achat et e-mails d'achat.
+- **Fichiers :** `public/retrouver-mon-achat.php`, `config/mail.php`, `sql/migration_recuperation.sql`,
+  `includes/footer.php`, `public/contact.php`, `public/purchase.php`, `public/purchase_course.php`
+- ⚠️ **Envoi réel en attente du SMTP** (voir G4), comme pour B1/B2.
+- **Commit :** à venir
 
 ### B4. Inscription / Connexion : **on garde** ✅ Décision du 6 nov. 2026
 - **Décision :** ne pas masquer. Les comptes vont servir plus tard aux **contributeurs
@@ -231,5 +241,6 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 | 6 nov. 2026 | Tableau de bord admin professionnel | `c1043a3` | oui | revenus, ventes, à traiter, responsive |
 | 6 nov. 2026 | Envoi automatique du lien d'achat par e-mail (B1) | à venir | oui (contenu), envoi réel : SMTP | `build_purchase_email()` + `payment_callback.php` |
 | 6 nov. 2026 | Renvoi du lien + recherche dans Ventes (B2) | à venir | oui (interface), envoi réel : SMTP | `admin/manage_purchases.php` |
+| 6 nov. 2026 | Page « Retrouver mon achat » (B3) | à venir | oui (local), envoi réel : SMTP | `public/retrouver-mon-achat.php`, limite anti-abus |
 | | | | | |
 | | | | | |
