@@ -30,12 +30,6 @@
                         S'abonner <i class="ph ph-arrow-right"></i>
                     </button>
                 </form>
-
-                <ul class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-6 text-xs text-primary-100/80">
-                    <li class="inline-flex items-center gap-1.5"><i class="ph ph-check-circle text-accent-400"></i> Sans spam</li>
-                    <li class="inline-flex items-center gap-1.5"><i class="ph ph-check-circle text-accent-400"></i> 1 email / semaine</li>
-                    <li class="inline-flex items-center gap-1.5"><i class="ph ph-check-circle text-accent-400"></i> Désinscription en 1 clic</li>
-                </ul>
             </div>
         </div>
     </div>
