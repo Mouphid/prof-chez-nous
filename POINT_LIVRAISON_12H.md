@@ -1,14 +1,14 @@
 # 🚦 POINT DE LIVRAISON — J-12H (mis à jour)
 
 **Projet :** Joie Enseignante — `joiedenseignante.com`
-**Dernière mise à jour :** 5 novembre 2026
+**Dernière mise à jour :** 6 novembre 2026
 **Objectif :** mise en ligne et livraison sous 12 heures
 
 ---
 
 ## 1. Verdict en 30 secondes
 
-✅ **Le code est prêt.** Toutes les promesses du document client sont maintenant couvertes, ainsi que le système **document gratuit / document payant**.
+✅ **Le code est prêt.** Toutes les promesses du document client sont maintenant couvertes, ainsi que le système **document gratuit / payant** et les **cours en ligne payants** (cours complet ou chapitre, avec aperçu gratuit).
 
 ⏳ Il reste uniquement :
 1. **les achats** (hébergement, domaine, boîte mail) ;
@@ -39,6 +39,16 @@
 | Renvoi du lien | ✅ bouton **Renvoyer** sur chaque vente payée, avec message de succès ou d'erreur honnête |
 | Sans clés de paiement | ✅ message « paiement bientôt disponible » + lien de contact (aucune erreur) |
 | Changement de prestataire | ✅ une seule fonction à modifier (`payment_verify_transaction`) ; la colonne `provider` en base garde l'historique |
+
+### Cours en ligne (6 nov. 2026)
+- ✅ **Admin → Cours** : créer un cours, ses chapitres, envoyer un PDF et/ou une vidéo, fixer un prix ;
+- ✅ chaque cours peut être **gratuit ou payant** ; chaque chapitre peut être vendu **seul** ou offert en **aperçu gratuit** ;
+- ✅ page publique **Cours** alimentée par la base + **fiche détaillée** pour chaque cours ;
+- ✅ achat du **cours complet** ou d'un **chapitre seul**, sans compte ;
+- ✅ après paiement, **e-mail avec lien privé** ; bouton **Renvoyer** dans Admin → Ventes ;
+- ✅ fichiers servis par `public/course_file.php` ; accès direct à `uploads/cours/...` bloqué ;
+- ✅ lecture des vidéos avec déplacement dans la vidéo (requêtes partielles / Range) ;
+- ✅ un cours déjà vendu ne peut pas être supprimé (mise en brouillon possible, les acheteurs gardent l'accès).
 
 ### Contenu et promesses du PDF
 | Promesse | État |
@@ -107,10 +117,15 @@ Après l'import de `sql/export_production.sql`, exécuter dans l'ordre :
 ```bash
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_paiement.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_newsletter.sql
+mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_cours.sql
+mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/seed_cours_demo.sql
 ```
 
 - `migration_paiement.sql` : colonnes `price` / `is_free` sur `files` + table `purchases` ;
-- `migration_newsletter.sql` : table `newsletter_subscribers`.
+- `migration_newsletter.sql` : table `newsletter_subscribers` ;
+- `migration_cours.sql` : tables `courses` et `course_items` + lien des achats vers un cours ou un chapitre ;
+- `seed_cours_demo.sql` (facultatif) : reprise des 3 cours de démonstration, **gratuits au départ**.
+  Les prix se règlent ensuite dans Admin → Cours.
 
 > Le script local `dev-start.sh` applique automatiquement ces migrations si elles manquent.
 
@@ -141,7 +156,7 @@ mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_newsletter.sql
 ### Configuration serveur
 - [ ] PHP **8.3** + extensions `pdo_mysql`, `fileinfo`, `mbstring`, `openssl`, `gd`, `curl` ;
 - [ ] MySQL 8 : base + utilisateur dédié (pas `root`) ;
-- [ ] Importer `sql/export_production.sql` **puis les 2 migrations** (§3) ;
+- [ ] Importer `sql/export_production.sql` **puis les migrations** (§3) ;
 - [ ] Variables d'environnement `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS` ;
 - [ ] `composer install` (installe PHPMailer dans `vendor/`) ;
 - [ ] Uploader le code (sans `.git`, avec `vendor/`) ;
@@ -155,6 +170,10 @@ mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_newsletter.sql
 - [ ] **Vérifier la protection des fichiers** : `https://joiedenseignante.com/uploads/pdf/<un-fichier>.pdf`
       doit répondre **403**. Tester aussi un document via `download.php` (doit fonctionner) ;
 - [ ] **Vérifier la lecture d'une vidéo d'article** : elle doit se lancer et se déplacer normalement ;
+- [ ] **Vérifier la protection des fichiers de cours** : `https://joiedenseignante.com/uploads/cours/pdf/<un-fichier>.pdf`
+      doit répondre **403** ;
+- [ ] **Tester les cours** : cours gratuit, chapitre en aperçu, achat du cours complet, achat d'un chapitre,
+      puis ouverture du lien reçu par e-mail ;
 - [ ] **Tester l'e-mail d'achat** avec une vraie adresse, puis le bouton **Renvoyer** depuis Ventes ;
 - [ ] Tester : accueil, article, PDF gratuit, achat payant, commentaire, contact, admin, ventes.
 
@@ -199,7 +218,8 @@ Le PDF remis au client contient des incohérences (TVA à 14,74 %, « net à pay
 1. **DNS** : 1 h à 48 h → acheter le domaine immédiatement.
 2. **Emails** : sans SPF/DKIM, le formulaire de contact part en spam.
 3. **Kkiapay** : l'activation du compte marchand peut prendre du temps ; le site reste utilisable sans.
-4. **Migration oubliée** : sans `migration_paiement.sql`, les pages articles affichent une erreur (colonne `price` absente).
+4. **Migration oubliée** : sans `migration_paiement.sql`, les pages articles affichent une erreur (colonne `price` absente) ;
+   sans `migration_cours.sql`, la page **Cours** et l'admin des cours échouent.
 5. **Paiement** : la mise en ligne est prévue « après réception du paiement » (article 3 des conditions).
 6. **Protection des fichiers** : si OVH n'applique pas les `.htaccess` (option `AllowOverride`),
    les PDF pourraient rester accessibles par adresse directe. **Tester le 403** juste après l'upload ;
@@ -228,20 +248,26 @@ Le PDF remis au client contient des incohérences (TVA à 14,74 %, « net à pay
 
 **Ajoutés**
 - `sql/migration_paiement.sql`, `sql/migration_newsletter.sql`
+- `sql/migration_cours.sql`, `sql/seed_cours_demo.sql`
 - `config/payment.php`, `config/payment_config.example.php`
 - `public/purchase.php`, `public/payment_callback.php`, `public/newsletter_subscribe.php`
+- `public/purchase_course.php`, `public/course.php`, `public/course_file.php`
+- `includes/courses.php`
 - `public/video.php` (diffusion protégée des vidéos d'articles)
 - `uploads/pdf/.htaccess`, `uploads/docs/.htaccess`, `uploads/audio/.htaccess`, `uploads/video/.htaccess`
+- `uploads/cours/pdf/.htaccess`, `uploads/cours/video/.htaccess`
 - `public/sitemap.php`, `public/404.php`
 - `admin/change_password.php`, `admin/manage_purchases.php`
+- `admin/manage_courses.php`, `admin/add_course.php`, `admin/edit_course.php`, `admin/delete_course.php`
 - `MANUEL_ADMINISTRATION.md`, `robots.txt`
 
 **Modifiés**
 - `public/download.php`, `public/post.php`, `public/contact.php`, `public/index.php`
+- `public/cours.php`, `public/payment_callback.php`
 - `public/register.php`, `public/resend-verification.php`
-- `public/add_comment.php`, `includes/faq-section.php`, `includes/newsletter-section.php`, `includes/header.php`
-- `admin/dashboard.php`, `admin/add_post.php`, `admin/edit_post.php`, `admin/delete_file.php`
-- `config/theme.php`, `config/config.php`, `config/mail.php`, `.gitignore`, `.htaccess`, `dev-start.sh`, `DEVIS_JOIEENSEIGNANTE.md`
+- `public/add_comment.php`, `includes/faq-section.php`, `includes/newsletter-section.php`, `includes/header.php`, `includes/functions.php`
+- `admin/dashboard.php`, `admin/add_post.php`, `admin/edit_post.php`, `admin/delete_file.php`, `admin/manage_purchases.php`, `admin/_sidebar.php`
+- `config/theme.php`, `config/config.php`, `config/mail.php`, `config/payment.php`, `.gitignore`, `.htaccess`, `dev-start.sh`, `DEVIS_JOIEENSEIGNANTE.md`
 
 ---
 

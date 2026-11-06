@@ -103,27 +103,37 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 
 ## C. Phase 2 — Cours en ligne payants
 
-> Décision de principe : **sans compte**, lien privé après paiement (à confirmer).
+> Décision validée : **sans compte**, lien privé envoyé par e-mail après paiement.
 
-### C1. Table `courses` + écran d'administration ⏳
-- **Constat :** `public/cours.php` contient 3 cours écrits en dur. Aucune table, aucun prix, aucun fichier rattaché.
-- **À faire :** table `courses` (titre, description, chapitres, PDF/vidéo, prix, gratuit/payant),
-  écran admin **Cours** (créer / modifier / supprimer).
-- **Durée :** 1 à 2 jours
+### C1. Table `courses` + écran d'administration ✅ Fait (6 nov. 2026)
+- **Fait :** tables `courses` et `course_items` (chapitres avec PDF et vidéo, prix, aperçu gratuit) ;
+  `purchases` accepte désormais un document, un cours complet ou un chapitre.
+- **Admin :** `manage_courses.php`, `add_course.php`, `edit_course.php`, `delete_course.php`
+  (création, modification, upload et remplacement des fichiers, suppression bloquée si déjà vendu).
+- **Fichiers :** `sql/migration_cours.sql`, `sql/seed_cours_demo.sql`
+- **Commits :** `ab065b3`, `4688d7e`
 
-### C2. Table `course_purchases` + accès par jeton ⏳
-- **À faire :** réutiliser le modèle de `purchases` : statut payé, jeton d'accès, contrôle anti-rejeu.
-- **Durée :** 1 jour
-- **Dépend de :** C1
+### C2. Vente du cours ou d'un chapitre ✅ Fait (6 nov. 2026)
+- **Fait :** page `purchase_course.php` pour acheter le cours complet ou un chapitre seul.
+- **Sécurité :** le prix est relu en base, la transaction est revérifiée côté serveur
+  et une transaction ne peut pas servir deux fois.
+- **Commit :** `b85530b`
 
-### C3. Protéger les vidéos ✅ Fait pour les vidéos d'articles (6 nov. 2026)
-- **Correction :** `uploads/video` n'est plus accessible directement ; la lecture passe par
-  `public/video.php`, qui vérifie que la vidéo appartient à un article visible.
-- **Reste à faire :** pour les **vidéos de cours payants**, ajouter le contrôle du jeton d'achat
-  (même logique que `download.php`). À traiter avec C2.
-- **Commit :** `c1043a3`
+### C3. Accès protégé aux fichiers ✅ Fait (6 nov. 2026)
+- **Vidéos d'articles :** `public/video.php` (fait précédemment).
+- **Cours :** PDF et vidéos passent par `public/course_file.php`, qui vérifie si le chapitre
+  est gratuit, en aperçu, ou acheté. Lecture partielle des vidéos prise en charge.
+- **Protection :** `uploads/cours/pdf` et `uploads/cours/video` interdits en accès direct (`.htaccess`).
+- **Commits :** `938e4c2`, `b85530b`
 
-### C4. Espace « Mes cours » ⏸ (seulement si nécessaire plus tard)
+### C4. E-mail d'accès et suivi des ventes ✅ Fait (6 nov. 2026)
+- **Fait :** e-mail automatique avec lien privé (`build_course_email()`, `send_course_access_email()`).
+- **Admin :** les ventes de cours apparaissent dans Admin → Ventes, avec recherche
+  (nom, e-mail, contenu) et bouton « Renvoyer ».
+- **Sans compte :** le lien reçu par e-mail sert de clé d'accès.
+- **Commit :** `8c3ebea`
+
+### C5. Espace « Mes cours » ⏸ (seulement si nécessaire plus tard)
 - **À faire :** comptes visiteurs + historique d'achats.
 - **Décision :** uniquement si le volume de clients le justifie.
 
@@ -205,9 +215,9 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 | Sujet | Options | Décision | Date |
 |---|---|---|---|
 | Comptes visiteurs | Masquer définitivement / garder pour plus tard | **On garde** : futurs professeurs contributeurs (B6) | 6 nov. 2026 |
-| Cours payants | Lien privé sans compte / espace « Mes cours » | _à décider_ | |
+| Cours payants | Lien privé sans compte / espace « Mes cours » | **Lien privé sans compte** (e-mail + jeton) | 6 nov. 2026 |
 | Prestataire de paiement | Kkiapay / FedaPay / autre | _en comparaison_ | |
-| Vidéos | Liens signés / service privé | Vidéos d'articles protégées par `video.php` ; reste le jeton pour les cours payants | 6 nov. 2026 |
+| Vidéos | Liens signés / service privé | Vidéos d'articles : `video.php` ; cours : `course_file.php` avec contrôle d'achat | 6 nov. 2026 |
 
 ---
 
