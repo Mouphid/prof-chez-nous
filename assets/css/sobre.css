@@ -1699,3 +1699,27 @@ body.admin-shell {
 /* ─── Largeur des formulaires dans le conteneur unique ─── */
 .adm-form-narrow { max-width: 56rem; }
 .adm-form-wide   { max-width: 72rem; }
+
+/* ═══════════════════════════════════════════════════════════
+   PUBLIC — CONTENUS PLUS LARGES ET MENU MOBILE OPAQUE
+   ═══════════════════════════════════════════════════════════ */
+/* On élargit les conteneurs de toutes les pages publiques,
+   sans reconstruire Tailwind. */
+.max-w-7xl { max-width: 90rem; }   /* 1280 → 1440 px */
+.max-w-5xl { max-width: 76rem; }   /* 1024 → 1216 px */
+.max-w-4xl { max-width: 66rem; }   /*  896 → 1056 px */
+
+/* Menu mobile : fond plein, sans transparence, avec séparation nette */
+#mobileNav {
+    position: relative;
+    z-index: 60;
+    background-color: #ffffff;
+    border-bottom: 1px solid #f1f1f1;
+    border-radius: 0 0 1rem 1rem;
+    box-shadow: 0 22px 34px -22px rgba(15, 23, 42, 0.35);
+}
+.dark #mobileNav {
+    background-color: #0f172a;
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 22px 34px -22px rgba(0, 0, 0, 0.65);
+}
