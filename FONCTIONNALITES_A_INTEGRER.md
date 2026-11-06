@@ -151,19 +151,21 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 
 ## D. Newsletter
 
-### D1. Envoi réel des e-mails ⏳
-- **Constat :** `newsletter_subscribe.php` enregistre seulement l'adresse. Aucun envoi, aucun contenu.
-- **Durée :** 1/2 journée
-- **Dépend de :** SMTP
+### D1. Envoi réel des e-mails ✅ Fait (6 nov. 2026)
+- **Fait :** écran `admin/send_newsletter.php` : rédaction, **aperçu avant envoi**, envoi réel aux abonnés actifs, historique dans la table `newsletter_campaigns`.
+- **Détail :** message en texte simple (pas de HTML), un paragraphe par double saut de ligne ; chaque e-mail contient le lien de désinscription.
+- **Dépend de :** SMTP (à configurer en production ; sans SMTP, l'erreur est affichée clairement).
+- **Commit :** `470f596`
 
-### D2. Lien de désinscription ⏳
-- **À faire :** jeton de désinscription dans chaque e-mail + page de confirmation.
-- **Durée :** 2 h
-- **Dépend de :** D1
+### D2. Lien de désinscription ✅ Fait (6 nov. 2026)
+- **Fait :** jeton unique de 64 caractères par abonné (`unsubscribe_token`), page publique `public/desinscription.php`, confirmation obligatoire (POST + jeton de sécurité), adresse masquée, page non indexée par les moteurs.
+- **Détail :** la réinscription réactive l'adresse sans changer son jeton ; le lien déjà utilisé affiche « déjà désinscrit ».
+- **Commit :** `470f596`
 
-### D3. Écran admin + export ⏳
-- **À faire :** liste des abonnés, nombre, export CSV.
-- **Durée :** 2 h
+### D3. Écran admin + export ✅ Fait (6 nov. 2026)
+- **Fait :** `admin/manage_newsletter.php` : nombre total / actifs / désinscrits, filtres, recherche, pagination (50 par page), désinscrire ou réactiver, 5 derniers envois.
+- **Export :** `admin/export_subscribers.php` en CSV (UTF-8 avec BOM, séparateur `;`, protection contre les formules Excel), en respectant les filtres.
+- **Commit :** `470f596`
 
 ---
 
@@ -172,7 +174,7 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 | # | Fonctionnalité | État | Durée | Détail |
 |---|---|---|---|---|
 | E1 | Écran **Réglages du site** | ⏳ | 1/2 journée | téléphone, adresse, réseaux sociaux sont écrits dans `config/theme.php` |
-| E2 | **Export CSV** (ventes, abonnés) | ⏳ | 1 h | aucun export actuellement |
+| E2 | **Export CSV** (ventes, abonnés) | 🔄 | 1 h | ✅ abonnés newsletter fait (`admin/export_subscribers.php`) ; export des ventes à ajouter |
 | E3 | **Journal des actions** | ⏳ | 1 jour | savoir qui a modifié quoi |
 | E4 | **Sauvegardes automatiques** | ⏳ | serveur | à configurer chez OVH |
 | E5 | **Versions des articles** | ⏳ | 1 jour | revenir à une ancienne version |
@@ -220,6 +222,23 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 
 ---
 
+## H. Newsletter : envoi réel, désinscription et export ✅ Fait (6 nov. 2026)
+
+- **Objectif :** envoyer une lettre aux abonnés depuis l'administration, avec un lien de désinscription fiable.
+- **Réalisé :**
+  - inscription avec **jeton unique** de désinscription ; réinscription qui réactive sans créer de doublon ;
+  - écran **Newsletter** : total, actifs, désinscrits, filtres, recherche, pagination, désinscrire/réactiver ;
+  - **export CSV** des abonnés (UTF-8 avec BOM, séparateur `;`, lisible dans Excel) ;
+  - écran **Écrire une newsletter** : sujet, message texte, **aperçu**, envoi réel ;
+  - **historique des envois** dans `newsletter_campaigns` (destinataires, envoyés, échecs) ;
+  - page publique `public/desinscription.php` : confirmation obligatoire, adresse masquée, non indexée ;
+  - lien de désinscription automatique dans chaque e-mail ;
+  - erreurs honnêtes si le SMTP n'est pas configuré.
+- **Migration :** `sql/migration_newsletter_suite.sql`
+- **Commit :** `470f596`
+
+---
+
 ## Décisions à prendre
 
 | Sujet | Options | Décision | Date |
@@ -239,8 +258,9 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 | 6 nov. 2026 | Protection des documents et des vidéos | `c1043a3` | oui (local), à revérifier sur Apache | `.htaccess` + `video.php` |
 | 6 nov. 2026 | Message d'erreur honnête sur le contact | `c1043a3` | oui | plus de faux « message envoyé » |
 | 6 nov. 2026 | Tableau de bord admin professionnel | `c1043a3` | oui | revenus, ventes, à traiter, responsive |
-| 6 nov. 2026 | Envoi automatique du lien d'achat par e-mail (B1) | à venir | oui (contenu), envoi réel : SMTP | `build_purchase_email()` + `payment_callback.php` |
-| 6 nov. 2026 | Renvoi du lien + recherche dans Ventes (B2) | à venir | oui (interface), envoi réel : SMTP | `admin/manage_purchases.php` |
-| 6 nov. 2026 | Page « Retrouver mon achat » (B3) | à venir | oui (local), envoi réel : SMTP | `public/retrouver-mon-achat.php`, limite anti-abus |
+| 6 nov. 2026 | Envoi automatique du lien d'achat par e-mail (B1) | `b61c8b3` | oui (contenu), envoi réel : SMTP | `build_purchase_email()` + `payment_callback.php` |
+| 6 nov. 2026 | Renvoi du lien + recherche dans Ventes (B2) | `b61c8b3` | oui (interface), envoi réel : SMTP | `admin/manage_purchases.php` |
+| 6 nov. 2026 | Page « Retrouver mon achat » (B3) | `93209d4` | oui (local), envoi réel : SMTP | `public/retrouver-mon-achat.php`, limite anti-abus |
+| 6 nov. 2026 | Newsletter : envoi, désinscription, écran admin, export CSV (D1–D3) | `470f596` | oui (local), envoi réel : SMTP | `send_newsletter.php`, `desinscription.php`, `manage_newsletter.php` |
 | | | | | |
 | | | | | |

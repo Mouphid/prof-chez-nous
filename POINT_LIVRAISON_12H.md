@@ -15,6 +15,8 @@
 2. **la configuration serveur** (base, SSL, SMTP, sauvegardes) ;
 3. **les clés Kkiapay** pour activer les paiements réels ;
 
+> ✅ La **newsletter** est maintenant complète dans le code : envoi réel, lien de désinscription, écran admin et export CSV.
+
 > ⚠️ Le vrai risque sur 12 h reste **la propagation DNS** après l'achat du domaine (1 h à 48 h). **À lancer en premier.**
 
 > 📌 Points non encore intégrés (sécurité, cours payants, newsletter, contenus provisoires) : voir `FONCTIONNALITES_A_INTEGRER.md`.
@@ -58,6 +60,17 @@
 - ✅ message toujours identique : le site **ne révèle jamais** si une adresse a acheté quelque chose ;
 - ✅ lien présent dans le pied de page, sur la page Contact, sur les pages d'achat et dans les e-mails d'achat ;
 - ✅ les adresses ne sont pas stockées en clair dans le journal anti-abus (empreintes seulement).
+
+### Newsletter (6 nov. 2026)
+- ✅ **Admin → Newsletter** : total, abonnés actifs, désinscrits, filtres, recherche, pagination (50 par page) ;
+- ✅ **désinscrire / réactiver** une adresse depuis l'admin ;
+- ✅ **export CSV** des abonnés (UTF-8 avec accents, séparateur `;`, lisible dans Excel) ;
+- ✅ écran **Écrire une newsletter** : sujet, message en texte simple, **aperçu avant envoi**, envoi réel ;
+- ✅ **historique des envois** : date, sujet, destinataires, envoyés, échecs ;
+- ✅ **lien de désinscription** unique dans chaque e-mail + page publique avec confirmation ;
+- ✅ adresse **partiellement masquée** sur la page de désinscription, page non indexée par Google ;
+- ✅ message d'erreur **honnête** si le SMTP n'est pas encore configuré ;
+- ✅ migration `sql/migration_newsletter_suite.sql` appliquée automatiquement par `dev-start.sh`.
 
 ### Contenu et promesses du PDF
 | Promesse | État |
@@ -126,6 +139,7 @@ Après l'import de `sql/export_production.sql`, exécuter dans l'ordre :
 ```bash
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_paiement.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_newsletter.sql
+mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_newsletter_suite.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_cours.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_recuperation.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/seed_cours_demo.sql
@@ -133,6 +147,7 @@ mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/seed_cours_demo.sql
 
 - `migration_paiement.sql` : colonnes `price` / `is_free` sur `files` + table `purchases` ;
 - `migration_newsletter.sql` : table `newsletter_subscribers` ;
+- `migration_newsletter_suite.sql` : jeton de désinscription, date de désinscription, table `newsletter_campaigns` ;
 - `migration_cours.sql` : tables `courses` et `course_items` + lien des achats vers un cours ou un chapitre ;
 - `migration_recuperation.sql` : table `purchase_recovery_requests` (limite anti-abus de « Retrouver mon achat ») ;
 - `seed_cours_demo.sql` (facultatif) : reprise des 3 cours de démonstration, **gratuits au départ**.
@@ -232,6 +247,7 @@ Le PDF remis au client contient des incohérences (TVA à 14,74 %, « net à pay
 2. **Emails** : sans SPF/DKIM, le formulaire de contact part en spam.
 3. **Kkiapay** : l'activation du compte marchand peut prendre du temps ; le site reste utilisable sans.
 4. **Migration oubliée** : sans `migration_paiement.sql`, les pages articles affichent une erreur (colonne `price` absente) ;
+   sans `migration_newsletter_suite.sql`, l'envoi de la newsletter et la page de désinscription échouent ;
    sans `migration_cours.sql`, la page **Cours** et l'admin des cours échouent ;
    sans `migration_recuperation.sql`, « Retrouver mon achat » fonctionne mais sans limite anti-abus en base.
 5. **Paiement** : la mise en ligne est prévue « après réception du paiement » (article 3 des conditions).
@@ -262,10 +278,13 @@ Le PDF remis au client contient des incohérences (TVA à 14,74 %, « net à pay
 
 **Ajoutés**
 - `sql/migration_paiement.sql`, `sql/migration_newsletter.sql`
+- `sql/migration_newsletter_suite.sql` (jeton de désinscription + historique des envois)
 - `sql/migration_cours.sql`, `sql/seed_cours_demo.sql`
 - `sql/migration_recuperation.sql` (limite anti-abus de « Retrouver mon achat »)
 - `config/payment.php`, `config/payment_config.example.php`
 - `public/purchase.php`, `public/payment_callback.php`, `public/newsletter_subscribe.php`
+- `public/desinscription.php` (page publique de désinscription)
+- `admin/manage_newsletter.php`, `admin/send_newsletter.php`, `admin/export_subscribers.php`
 - `public/purchase_course.php`, `public/course.php`, `public/course_file.php`
 - `public/retrouver-mon-achat.php`
 - `includes/courses.php`

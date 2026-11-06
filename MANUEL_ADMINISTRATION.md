@@ -114,7 +114,22 @@ Sans SPF/DKIM, les messages risquent d'arriver en spam.
 
 ---
 
-## 9. Sauvegardes
+## 9. Envoyer la newsletter
+
+1. Menu → **Newsletter** : voir le nombre d'abonnés actifs, filtrer et rechercher une adresse.
+2. Bouton **Exporter en CSV** : ouvre la liste dans Excel (une ligne par abonné).
+3. Bouton **Écrire un message** : saisir un sujet et un message en texte simple.
+4. Cliquer sur **Aperçu avant envoi** pour relire, puis **Envoyer maintenant**.
+5. L'historique des derniers envois s'affiche en bas de la page Newsletter.
+
+> Chaque e-mail contient automatiquement un lien de désinscription personnel.
+> Une adresse désinscrite ne reçoit plus la newsletter, mais continue à recevoir
+> les liens liés à ses achats.
+> L'envoi réel nécessite le **SMTP** configuré (section 8).
+
+---
+
+## 10. Sauvegardes
 
 - **Automatique** : activer les sauvegardes quotidiennes dans l'espace client OVH (hébergement + base de données).
 - **Manuelle avant chaque grosse modification** :
@@ -125,7 +140,7 @@ Conserver au moins une sauvegarde sur un support différent du serveur (ordinate
 
 ---
 
-## 10. En cas de problème
+## 11. En cas de problème
 
 | Symptôme | Que faire |
 |---|---|
@@ -137,7 +152,7 @@ Conserver au moins une sauvegarde sur un support différent du serveur (ordinate
 
 ---
 
-## 11. Rôles et accès
+## 12. Rôles et accès
 
 - **Administrateur** : accès complet (articles, commentaires, catégories, utilisateurs, ventes, mot de passe).
 - **Auteur** : articles et commentaires uniquement.
@@ -147,4 +162,4 @@ Pour donner un accès : **Utilisateurs → Ajouter un utilisateur**.
 
 ---
 
-*Document remis avec le site. Version du 5 novembre 2026.*
+*Document remis avec le site. Version du 6 novembre 2026.*
