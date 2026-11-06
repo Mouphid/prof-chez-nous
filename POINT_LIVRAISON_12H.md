@@ -58,6 +58,15 @@
 - ✅ fond, champs de formulaire, tableaux et titres d'onglet uniformisés ;
 - ✅ **menu repliable sur téléphone** : bouton ☰, fond assombri, fermeture au clic ou avec la touche Échap ; le contenu ne déborde plus horizontalement.
 
+**Tableau de bord refondu (6 nov. 2026)**
+- ✅ indicateurs métier : **revenus du mois**, ventes payées, abonnés newsletter, documents payants ;
+- ✅ comparaison avec le mois précédent ;
+- ✅ bloc **« À traiter »** : commentaires à valider, brouillons, articles programmés ;
+- ✅ bloc **« Dernières ventes »** : acheteur, document, montant, date ;
+- ✅ listes : derniers articles, commentaires récents, articles les plus lus ;
+- ✅ statuts en français (Publié / Brouillon / Programmé) et mise en page responsive ;
+- ✅ un **auteur** ne voit que ses propres contenus.
+
 ### Sécurité et référencement
 - ✅ HTTPS forcé + HSTS + `Permissions-Policy` + compression + cache dans `.htaccess` ;
 - ✅ balises **Open Graph** / Twitter / canonique sur toutes les pages ;
@@ -65,8 +74,26 @@
 - ✅ page **404** personnalisée ;
 - ✅ `.gitignore` protège `config/payment_config.php` et `config/mail_config.php`.
 
-### Options retenues
-- ✅ **Option 1** : pas de comptes visiteurs. Les pages `register.php`, `login.php`, `profile.php`, `my_downloads.php`, `my_comments.php` redirigent déjà vers l'accueil.
+**Protection des documents et des vidéos (6 nov. 2026)**
+- ✅ accès direct à `uploads/pdf`, `uploads/docs`, `uploads/audio` et `uploads/video` **bloqué**
+  (règle générale dans `.htaccess` + un `.htaccess` dans chaque dossier) ;
+- ✅ les PDF passent uniquement par `public/download.php`, qui vérifie le droit d'accès ;
+- ✅ les vidéos d'articles passent par `public/video.php` : le fichier n'est servi que s'il
+  appartient à un article visible, avec lecture et déplacement dans la vidéo ;
+- ✅ `uploads/images` reste public (photos des articles) ;
+- ✅ message d'erreur **honnête** si l'envoi du formulaire de contact échoue, au lieu d'un faux succès ;
+- ✅ erreur claire au démarrage si PHPMailer ou le SMTP n'est pas configuré ;
+- ✅ lien de vérification d'e-mail corrigé : plus de `/JoieEnseignante/` en dur.
+
+> ⚠️ **À vérifier en production :** ouvrir `https://joiedenseignante.com/uploads/pdf/<un-fichier>.pdf`
+> doit afficher **403 (accès refusé)**. Le serveur local `php -S` ne lit pas les `.htaccess`,
+> ce contrôle n'est donc possible qu'en ligne, sur Apache/OVH.
+
+### Comptes et contributeurs
+- ✅ **Option 1 maintenue pour les acheteurs** : aucun compte n'est demandé pour acheter un document.
+- ✅ Les pages `register.php`, `login.php`, `profile.php`, `my_downloads.php`, `my_comments.php`
+  restent **dans le code mais désactivées** (redirection vers l'accueil). Elles serviront aux
+  **professeurs contributeurs** (voir `FONCTIONNALITES_A_INTEGRER.md`, point B6).
 - ✅ Le professeur peut rendre **chaque document gratuit ou payant**.
 
 ---
@@ -123,6 +150,9 @@ mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_newsletter.sql
 - [ ] Activer les **sauvegardes automatiques** OVH + une sauvegarde manuelle ;
 - [ ] **Changer le mot de passe admin** via l'écran **Mot de passe** ;
 - [ ] Créer `config/payment_config.php` avec les clés Kkiapay (§4) ;
+- [ ] **Vérifier la protection des fichiers** : `https://joiedenseignante.com/uploads/pdf/<un-fichier>.pdf`
+      doit répondre **403**. Tester aussi un document via `download.php` (doit fonctionner) ;
+- [ ] **Vérifier la lecture d'une vidéo d'article** : elle doit se lancer et se déplacer normalement ;
 - [ ] Tester : accueil, article, PDF gratuit, achat payant, commentaire, contact, admin, ventes.
 
 ---
@@ -168,6 +198,9 @@ Le PDF remis au client contient des incohérences (TVA à 14,74 %, « net à pay
 3. **Kkiapay** : l'activation du compte marchand peut prendre du temps ; le site reste utilisable sans.
 4. **Migration oubliée** : sans `migration_paiement.sql`, les pages articles affichent une erreur (colonne `price` absente).
 5. **Paiement** : la mise en ligne est prévue « après réception du paiement » (article 3 des conditions).
+6. **Protection des fichiers** : si OVH n'applique pas les `.htaccess` (option `AllowOverride`),
+   les PDF pourraient rester accessibles par adresse directe. **Tester le 403** juste après l'upload ;
+   en cas d'échec, demander à OVH d'activer `AllowOverride All`.
 
 ---
 
@@ -178,6 +211,7 @@ Le PDF remis au client contient des incohérences (TVA à 14,74 %, « net à pay
 - migrations exécutées ;
 - SSL + SMTP configurés ;
 - mot de passe admin changé ;
+- protection des fichiers vérifiée (403 sur `/uploads/pdf/...`) ;
 - devis corrigé validé.
 
 **⛔ NO-GO si :**
@@ -193,15 +227,18 @@ Le PDF remis au client contient des incohérences (TVA à 14,74 %, « net à pay
 - `sql/migration_paiement.sql`, `sql/migration_newsletter.sql`
 - `config/payment.php`, `config/payment_config.example.php`
 - `public/purchase.php`, `public/payment_callback.php`, `public/newsletter_subscribe.php`
+- `public/video.php` (diffusion protégée des vidéos d'articles)
+- `uploads/pdf/.htaccess`, `uploads/docs/.htaccess`, `uploads/audio/.htaccess`, `uploads/video/.htaccess`
 - `public/sitemap.php`, `public/404.php`
 - `admin/change_password.php`, `admin/manage_purchases.php`
 - `MANUEL_ADMINISTRATION.md`, `robots.txt`
 
 **Modifiés**
 - `public/download.php`, `public/post.php`, `public/contact.php`, `public/index.php`
+- `public/register.php`, `public/resend-verification.php`
 - `public/add_comment.php`, `includes/faq-section.php`, `includes/newsletter-section.php`, `includes/header.php`
-- `admin/add_post.php`, `admin/edit_post.php`, `admin/delete_file.php`
-- `config/theme.php`, `config/config.php`, `.gitignore`, `.htaccess`, `dev-start.sh`, `DEVIS_JOIEENSEIGNANTE.md`
+- `admin/dashboard.php`, `admin/add_post.php`, `admin/edit_post.php`, `admin/delete_file.php`
+- `config/theme.php`, `config/config.php`, `config/mail.php`, `.gitignore`, `.htaccess`, `dev-start.sh`, `DEVIS_JOIEENSEIGNANTE.md`
 
 ---
 

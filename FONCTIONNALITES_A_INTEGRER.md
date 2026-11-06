@@ -19,22 +19,26 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 
 ## A. Priorité 1 — Avant la mise en ligne (sécurité)
 
-### A1. Protéger les fichiers de `uploads/` ⏳
-- **Constat :** tous les fichiers sont accessibles par une adresse directe. Test effectué :
-  `http://127.0.0.1:8080/uploads/pdf/article 4.pdf` → **HTTP 200, 5,7 Mo téléchargés**.
-  Cela contourne complètement le paiement.
-- **À faire :** empêcher l'accès direct aux dossiers `uploads/pdf`, `uploads/docs`, `uploads/video`
-  (règle serveur `.htaccess` + contrôle dans `download.php`), et garder `uploads/images` public.
-- **Fichiers :** `.htaccess`, `public/download.php`, `uploads/`
-- **Durée :** 30 min à 1 h
-- **Dépend de :** rien
+### A1. Protéger les fichiers de `uploads/` ✅ Fait (6 nov. 2026)
+- **Constat initial :** les fichiers étaient accessibles par une adresse directe
+  (`/uploads/pdf/article 4.pdf` → **HTTP 200, 5,7 Mo**), ce qui contournait le paiement.
+- **Correction :** accès direct bloqué pour `uploads/pdf`, `uploads/docs`, `uploads/audio`
+  et `uploads/video`, à deux niveaux : règle générale dans `.htaccess` + fichier `.htaccess`
+  dans chaque dossier. `uploads/images` reste public.
+- **Vidéos :** servies par `public/video.php`, uniquement si elles appartiennent à un article
+  visible, avec support des requêtes partielles (lecture et déplacement dans la vidéo).
+- **Fichiers :** `.htaccess`, `uploads/*/.htaccess`, `public/video.php`, `public/post.php`
+- **Commit :** `c1043a3`
+- ⚠️ **À vérifier en production (Apache/OVH) :**
+  `curl -I https://joiedenseignante.com/uploads/pdf/<un-fichier>.pdf` doit renvoyer **403**.
+  Le serveur local de test (`php -S`) ignore les `.htaccess` : ce contrôle ne peut se faire qu'en ligne.
 
-### A2. Message honnête si l'e-mail de contact échoue ⏳
-- **Constat :** `public/contact.php` affiche « Votre message a été envoyé avec succès » même quand l'envoi échoue.
-- **À faire :** afficher une erreur claire (« l'envoi a échoué, écrivez-nous à contact@… ») et journaliser.
+### A2. Message honnête si l'e-mail de contact échoue ✅ Fait (6 nov. 2026)
+- **Constat initial :** le site affichait « Votre message a été envoyé avec succès » même quand l'envoi échouait.
+- **Correction :** message d'erreur explicite avec l'adresse de secours, erreur journalisée ;
+  `config/mail.php` lève maintenant une erreur claire si PHPMailer ou le SMTP manque.
 - **Fichiers :** `public/contact.php`, `config/mail.php`
-- **Durée :** 15 min
-- **Dépend de :** rien
+- **Commit :** `c1043a3`
 
 ---
 
@@ -60,20 +64,31 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 - **Durée :** 1 h
 - **Dépend de :** B1
 
-### B4. Masquer Inscription / Connexion ⏸
-- **Constat :** le menu affiche encore « Inscription » et « Connexion » (`includes/navbar.php`),
-  alors que l'option retenue est **sans compte visiteur**. Les pages `register.php`, `login.php`,
-  `profile.php`, `my_downloads.php`, `verify-email.php` existent toujours.
-  Base actuelle : **1 seul compte (admin)**.
-- **Décision à prendre :** masquer les liens et désactiver l'inscription, ou assumer les comptes.
-- **Durée :** 30 min
-- **Dépend de :** ta décision
+### B4. Inscription / Connexion : **on garde** ✅ Décision du 6 nov. 2026
+- **Décision :** ne pas masquer. Les comptes vont servir plus tard aux **contributeurs
+  professionnels** (autres professeurs) : voir B6.
+- **Déjà corrigé :** le lien de vérification d'e-mail ne contient plus de chemin en dur
+  (`/JoieEnseignante/…`) ; il utilise `SITE_URL`.
+- **Fichiers :** `public/register.php`, `public/resend-verification.php`
 
 ### B5. Mot de passe oublié (admin) ⏳
 - **Constat :** aucune page de récupération. Si le mot de passe admin est perdu, l'accès est bloqué.
 - **À faire :** lien de réinitialisation par e-mail.
 - **Durée :** 1 à 2 h
 - **Dépend de :** SMTP
+
+### B6. Espace contributeurs professionnels ⏳ (évolution prévue)
+- **Objectif :** permettre à d'autres professeurs de créer des contenus professionnels
+  et d'interagir (articles, cours, commentaires), avec validation par l'administrateur.
+- **À faire :**
+  1. rôles clairs : **admin**, **professeur contributeur**, **lecteur** ;
+  2. inscription sur invitation ou validation manuelle du compte ;
+  3. espace « Mes contenus » (l'auteur ne voit que ses articles — déjà corrigé dans le tableau de bord) ;
+  4. modération des publications et des commentaires ;
+  5. charte de publication et page de profil publique.
+- **Durée :** 2 à 3 jours
+- **Dépend de :** SMTP, décision sur la validation des comptes
+- **Fichiers :** `public/register.php`, `admin/manage_users.php`, `admin/config_admin.php`, `admin/dashboard.php`
 
 ---
 
@@ -92,11 +107,12 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 - **Durée :** 1 jour
 - **Dépend de :** C1
 
-### C3. Protéger les vidéos ⏳
-- **Constat :** `post.php` sert la vidéo par une adresse directe (`../uploads/video/...`).
-- **À faire :** liens signés à durée limitée **ou** service de vidéo privée (Vimeo privé, Bunny Stream).
-- **Durée :** 1 jour (liens signés) ou abonnement externe
-- **Dépend de :** A1
+### C3. Protéger les vidéos ✅ Fait pour les vidéos d'articles (6 nov. 2026)
+- **Correction :** `uploads/video` n'est plus accessible directement ; la lecture passe par
+  `public/video.php`, qui vérifie que la vidéo appartient à un article visible.
+- **Reste à faire :** pour les **vidéos de cours payants**, ajouter le contrôle du jeton d'achat
+  (même logique que `download.php`). À traiter avec C2.
+- **Commit :** `c1043a3`
 
 ### C4. Espace « Mes cours » ⏸ (seulement si nécessaire plus tard)
 - **À faire :** comptes visiteurs + historique d'achats.
@@ -159,14 +175,30 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 
 ---
 
+## H. Tableau de bord admin plus professionnel ✅ Fait (6 nov. 2026)
+
+- **Objectif :** donner une vue de pilotage, pas seulement des compteurs.
+- **Réalisé :**
+  - indicateurs métier : **revenus du mois**, ventes payées, abonnés newsletter, documents payants ;
+  - comparaison avec le mois précédent ;
+  - bloc **« À traiter »** : commentaires à valider, brouillons, articles programmés ;
+  - bloc **« Dernières ventes »** avec acheteur, document, montant et date ;
+  - listes : derniers articles, commentaires récents, articles les plus lus ;
+  - statuts traduits en français (Publié / Brouillon / Programmé) ;
+  - mise en page cohérente, responsive, sans débordement sur téléphone ;
+  - un **auteur** ne voit que ses propres contenus (correction de confidentialité).
+- **Commit :** `c1043a3`
+
+---
+
 ## Décisions à prendre
 
 | Sujet | Options | Décision | Date |
 |---|---|---|---|
-| Comptes visiteurs | Masquer définitivement / garder pour plus tard | _à décider_ | |
+| Comptes visiteurs | Masquer définitivement / garder pour plus tard | **On garde** : futurs professeurs contributeurs (B6) | 6 nov. 2026 |
 | Cours payants | Lien privé sans compte / espace « Mes cours » | _à décider_ | |
 | Prestataire de paiement | Kkiapay / FedaPay / autre | _en comparaison_ | |
-| Vidéos | Liens signés / service privé | _à décider_ | |
+| Vidéos | Liens signés / service privé | Vidéos d'articles protégées par `video.php` ; reste le jeton pour les cours payants | 6 nov. 2026 |
 
 ---
 
@@ -175,5 +207,8 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 | Date | Fonctionnalité | Commit | Vérifié | Notes |
 |---|---|---|---|---|
 | 6 nov. 2026 | Paiement indépendant du prestataire (couche neutre) | `8b5933c` | oui | connecteurs Kkiapay + FedaPay |
+| 6 nov. 2026 | Protection des documents et des vidéos | `c1043a3` | oui (local), à revérifier sur Apache | `.htaccess` + `video.php` |
+| 6 nov. 2026 | Message d'erreur honnête sur le contact | `c1043a3` | oui | plus de faux « message envoyé » |
+| 6 nov. 2026 | Tableau de bord admin professionnel | `c1043a3` | oui | revenus, ventes, à traiter, responsive |
 | | | | | |
 | | | | | |
