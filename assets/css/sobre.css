@@ -1723,3 +1723,9 @@ body.admin-shell {
     border-bottom-color: rgba(255, 255, 255, 0.08);
     box-shadow: 0 22px 34px -22px rgba(0, 0, 0, 0.65);
 }
+
+/* Bordures de séparation de la page À propos (grand écran) */
+@media (min-width: 1024px) {
+    .lg\:border-l { border-left-width: 1px; }
+    .lg\:border-t-0 { border-top-width: 0; }
+}
