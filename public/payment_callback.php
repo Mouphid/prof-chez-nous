@@ -85,6 +85,7 @@ if (!$ok) {
 
 // Paiement confirmé
 $token = bin2hex(random_bytes(32));
+$justPaid = false;
 try {
     $upd = $pdo->prepare("
         UPDATE purchases
@@ -92,6 +93,9 @@ try {
         WHERE id_purchase = ? AND status = 'pending'
     ");
     $upd->execute([$transaction, $token, $purchaseId]);
+    // rowCount = 1 seulement si c'est nous qui venons de passer la commande en « payé ».
+    // Cela évite d'envoyer deux fois l'e-mail si le webhook et le retour navigateur arrivent tous les deux.
+    $justPaid = ($upd->rowCount() === 1);
 } catch (PDOException $e) {
     // Transaction déjà utilisée pour une autre commande
     error_log("Paiement: transaction déjà utilisée — " . $e->getMessage());
@@ -103,6 +107,25 @@ try {
 $stmt = $pdo->prepare("SELECT download_token FROM purchases WHERE id_purchase = ?");
 $stmt->execute([$purchaseId]);
 $savedToken = $stmt->fetchColumn() ?: $token;
+
+// ─── B1 : envoi automatique du lien par e-mail ───
+// Un échec d'envoi ne doit jamais bloquer le téléchargement : on journalise
+// et l'acheteur garde la redirection immédiate vers son fichier.
+if ($justPaid) {
+    $fileStmt = $pdo->prepare("SELECT file_name FROM files WHERE id_file = ?");
+    $fileStmt->execute([(int)$purchase['id_file']]);
+    $fileName = $fileStmt->fetchColumn() ?: 'Votre document';
+
+    try {
+        require_once __DIR__ . '/../config/mail.php';
+        send_purchase_link_email(
+            array_merge($purchase, ['download_token' => $savedToken]),
+            $fileName
+        );
+    } catch (Throwable $e) {
+        error_log("Achat #{$purchaseId} : envoi du lien impossible — " . $e->getMessage());
+    }
+}
 
 if ($isWebhook) { echo 'ok'; exit; }
 

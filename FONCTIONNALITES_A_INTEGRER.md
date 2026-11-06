@@ -46,18 +46,27 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 
 > Rappel : **aucun compte visiteur**. L'acheteur paie, le serveur vérifie, un lien privé est généré.
 
-### B1. Envoyer le lien d'achat par e-mail ⏳
-- **Constat :** après paiement, le lien n'existe que dans la redirection. Si l'acheteur ferme la page, il perd l'accès.
-- **À faire :** envoyer automatiquement le lien de téléchargement à l'adresse saisie, avec le nom du document et le montant.
+### B1. Envoyer le lien d'achat par e-mail ✅ Fait (6 nov. 2026)
+- **Constat initial :** après paiement, le lien n'existait que dans la redirection. Si l'acheteur fermait la page, il perdait l'accès.
+- **Réalisé :** après confirmation du paiement, un e-mail part automatiquement à l'adresse saisie,
+  avec le nom du document, le montant réglé et un bouton de téléchargement.
+- **Robustesse :**
+  - l'e-mail n'est envoyé **qu'une fois** (le webhook et le retour navigateur ne le doublent pas) ;
+  - si l'envoi échoue, l'erreur est journalisée et **le téléchargement reste accessible** ;
+  - le contenu est préparé par `build_purchase_email()`, séparé de l'envoi pour être vérifié sans SMTP.
 - **Fichiers :** `public/payment_callback.php`, `config/mail.php`
-- **Durée :** 1 à 2 h
-- **Dépend de :** configuration SMTP (voir G4)
+- ⚠️ **Envoi réel en attente du SMTP** (voir G4) : sans `config/mail_config.php`, l'e-mail échoue
+  proprement et l'acheteur garde son lien immédiat.
 
-### B2. Renvoyer un lien depuis l'admin ⏳
-- **Constat :** l'écran Ventes affiche les achats mais ne peut pas renvoyer l'accès.
-- **À faire :** bouton « Renvoyer le lien » + recherche par e-mail dans `admin/manage_purchases.php`.
-- **Durée :** 1 h
-- **Dépend de :** B1
+### B2. Renvoyer un lien depuis l'admin ✅ Fait (6 nov. 2026)
+- **Constat initial :** l'écran Ventes affichait les achats mais ne pouvait pas renvoyer l'accès.
+- **Réalisé :**
+  - bouton **« Renvoyer »** sur chaque vente payée, avec confirmation avant envoi ;
+  - **recherche** par nom, e-mail ou nom du document ;
+  - message clair après l'envoi : succès, ou erreur honnête (« PHPMailer n'est pas installé », SMTP absent, etc.) ;
+  - la recherche et le filtre de statut sont conservés après le renvoi.
+- **Fichiers :** `admin/manage_purchases.php`, `config/mail.php`
+- ⚠️ **Envoi réel en attente du SMTP** (voir G4).
 
 ### B3. Page « Retrouver mon achat » ⏳ (optionnel)
 - **À faire :** formulaire e-mail → renvoi du lien. Évite les demandes manuelles.
@@ -210,5 +219,7 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 | 6 nov. 2026 | Protection des documents et des vidéos | `c1043a3` | oui (local), à revérifier sur Apache | `.htaccess` + `video.php` |
 | 6 nov. 2026 | Message d'erreur honnête sur le contact | `c1043a3` | oui | plus de faux « message envoyé » |
 | 6 nov. 2026 | Tableau de bord admin professionnel | `c1043a3` | oui | revenus, ventes, à traiter, responsive |
+| 6 nov. 2026 | Envoi automatique du lien d'achat par e-mail (B1) | à venir | oui (contenu), envoi réel : SMTP | `build_purchase_email()` + `payment_callback.php` |
+| 6 nov. 2026 | Renvoi du lien + recherche dans Ventes (B2) | à venir | oui (interface), envoi réel : SMTP | `admin/manage_purchases.php` |
 | | | | | |
 | | | | | |

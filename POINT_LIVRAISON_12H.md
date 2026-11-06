@@ -34,7 +34,9 @@
 | Paiement en ligne | ✅ module **indépendant du prestataire** (`public/purchase.php` + `public/payment_callback.php`) — Kkiapay branché, connecteur FedaPay prêt à tester |
 | Vérification serveur | ✅ la transaction est revérifiée via l'API avant de délivrer le fichier (anti-fraude) |
 | Lien de téléchargement | ✅ jeton unique `download_token`, contrôle anti-rejeu |
-| Suivi des ventes | ✅ nouvel écran admin **Ventes** (`admin/manage_purchases.php`) |
+| Suivi des ventes | ✅ nouvel écran admin **Ventes** (`admin/manage_purchases.php`), avec recherche par nom, e-mail ou document |
+| Lien d'achat par e-mail | ✅ envoyé automatiquement après paiement confirmé (nom du document, montant, bouton de téléchargement) — envoi réel dès que le SMTP est configuré |
+| Renvoi du lien | ✅ bouton **Renvoyer** sur chaque vente payée, avec message de succès ou d'erreur honnête |
 | Sans clés de paiement | ✅ message « paiement bientôt disponible » + lien de contact (aucune erreur) |
 | Changement de prestataire | ✅ une seule fonction à modifier (`payment_verify_transaction`) ; la colonne `provider` en base garde l'historique |
 
@@ -153,6 +155,7 @@ mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_newsletter.sql
 - [ ] **Vérifier la protection des fichiers** : `https://joiedenseignante.com/uploads/pdf/<un-fichier>.pdf`
       doit répondre **403**. Tester aussi un document via `download.php` (doit fonctionner) ;
 - [ ] **Vérifier la lecture d'une vidéo d'article** : elle doit se lancer et se déplacer normalement ;
+- [ ] **Tester l'e-mail d'achat** avec une vraie adresse, puis le bouton **Renvoyer** depuis Ventes ;
 - [ ] Tester : accueil, article, PDF gratuit, achat payant, commentaire, contact, admin, ventes.
 
 ---
