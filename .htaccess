@@ -62,8 +62,9 @@ Options -Indexes
     RewriteRule ^uploads/.*\.(php|phtml|php3|php4|php5|phps)$ - [F,L]
 
     # Documents et vidéos : jamais d'accès direct.
-    # Ils passent par public/download.php et public/video.php, qui contrôlent les droits.
-    RewriteRule ^uploads/(pdf|docs|audio|video)/ - [F,L]
+    # Ils passent par public/download.php, public/video.php et public/course_file.php,
+    # qui contrôlent les droits.
+    RewriteRule ^uploads/(pdf|docs|audio|video|cours)/ - [F,L]
 </IfModule>
 
 # Empêcher l'accès au dossier _debug_backup

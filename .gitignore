@@ -13,6 +13,15 @@ uploads/*/*
 !uploads/*/.htaccess
 !uploads/word/.gitkeep
 !uploads/hero/.gitkeep
+# Cours : sous-dossiers de fichiers protégés (deux niveaux)
+!uploads/cours/pdf/
+!uploads/cours/video/
+uploads/cours/pdf/*
+uploads/cours/video/*
+!uploads/cours/pdf/.gitkeep
+!uploads/cours/video/.gitkeep
+!uploads/cours/pdf/.htaccess
+!uploads/cours/video/.htaccess
 
 # Vendor
 vendor/
