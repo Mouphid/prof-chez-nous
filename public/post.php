@@ -82,17 +82,17 @@ include "../includes/header.php";
 ?>
 
     <section class="max-w-4xl mx-auto px-4 py-8 animate-fade-in" id="main-content">
-        <article class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <article class="article-card rounded-xl shadow-sm border border-gray-100 overflow-hidden">
             <div class="p-6 sm:p-10">
-                <a href="publications.php" class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-primary transition mb-6"><i class="ph ph-arrow-left"></i> Retour aux publications</a>
+                <a href="publications.php" class="inline-flex items-center gap-1 text-sm text-gray-600 dark:text-dark-300 hover:text-primary transition mb-6"><i class="ph ph-arrow-left"></i> Retour aux publications</a>
 
                 <div class="flex flex-wrap items-center gap-2 mb-4">
                     <span class="bg-primary-100 text-primary-800 text-xs font-semibold px-3 py-1 rounded-full"><?= htmlspecialchars($post['category_name'] ?? 'Non classé') ?></span>
                 </div>
 
-                <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4"><?= htmlspecialchars($post['title']) ?></h1>
+                <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4"><?= htmlspecialchars($post['title']) ?></h1>
 
-                <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-8 pb-6 border-b border-gray-100">
+                <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-dark-300 mb-8 pb-6 border-b border-gray-100 dark:border-dark-100">
                     <span><i class="ph ph-user text-primary"></i> <?= htmlspecialchars($post['author_name'] ?? 'Anonyme') ?></span>
                     <span><i class="ph ph-calendar text-primary"></i> <?= format_date($post['created_at']) ?></span>
                     <span><i class="ph ph-eye text-primary"></i> <?= ($post['views'] ?? 0) + 1 ?> vues</span>
@@ -104,8 +104,17 @@ include "../includes/header.php";
                 </div>
                 <?php endif; ?>
 
-                <div class="prose prose-gray max-w-none leading-relaxed text-gray-700">
-                    <?= nl2br(htmlspecialchars($post['content'])) ?>
+                <div class="article-body">
+                    <?php
+                    // Découpe le texte en paragraphes pour un meilleur confort de lecture.
+                    $paragraphs = preg_split('/\R{2,}/', trim($post['content']));
+                    foreach ($paragraphs as $paragraph) {
+                        if (trim($paragraph) === '') {
+                            continue;
+                        }
+                        echo '<p>' . nl2br(htmlspecialchars($paragraph)) . '</p>';
+                    }
+                    ?>
                 </div>
 
                 <?php if (!empty($post['main_video'])): ?>
@@ -119,7 +128,7 @@ include "../includes/header.php";
 
                 <?php if (!empty($post['embed_link'])): ?>
                 <div class="mt-8">
-                    <a href="<?= htmlspecialchars($post['embed_link']) ?>" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-3 rounded-lg transition font-medium">
+                    <a href="<?= htmlspecialchars($post['embed_link']) ?>" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 dark:bg-dark-100 dark:hover:bg-dark-200 text-gray-700 dark:text-dark-200 px-5 py-3 rounded-lg transition font-medium">
                         <i class="ph ph-arrow-square-out"></i> Voir le lien externe
                     </a>
                 </div>
@@ -127,7 +136,7 @@ include "../includes/header.php";
 
                 <?php if (!empty($files)): ?>
                 <section class="mt-8" aria-label="Documents à télécharger">
-                    <h2 class="text-xl font-bold text-gray-900 mb-4"><i class="ph ph-paperclip text-primary"></i> Documents</h2>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4"><i class="ph ph-paperclip text-primary"></i> Documents</h2>
                     <div class="space-y-3">
                         <?php foreach ($files as $file):
                             $is_paid = ((float)$file['price'] > 0);
@@ -137,14 +146,14 @@ include "../includes/header.php";
                             elseif ($file['file_type'] === 'image' || $file['file_type'] === 'images') { $file_icon = 'ph-image'; }
                             else { $file_icon = 'ph-file'; }
                         ?>
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-gray-50 border border-gray-200 rounded-xl">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-gray-50 dark:bg-dark-100 border border-gray-200 dark:border-dark-100 rounded-xl">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 flex-shrink-0 rounded-lg bg-primary-100 text-primary-800 flex items-center justify-center">
                                     <i class="ph <?= $file_icon ?> text-xl"></i>
                                 </div>
                                 <div>
-                                    <p class="font-semibold text-gray-900"><?= htmlspecialchars($file['file_name']) ?></p>
-                                    <p class="text-xs text-gray-500"><?= $size_label ?><?= $size_label && $is_paid ? ' · ' : '' ?><?= $is_paid ? 'Document payant' : 'Gratuit' ?></p>
+                                    <p class="font-semibold text-gray-900 dark:text-white"><?= htmlspecialchars($file['file_name']) ?></p>
+                                    <p class="text-xs text-gray-500 dark:text-dark-300"><?= $size_label ?><?= $size_label && $is_paid ? ' · ' : '' ?><?= $is_paid ? 'Document payant' : 'Gratuit' ?></p>
                                 </div>
                             </div>
                             <?php if ($is_paid): ?>
@@ -162,8 +171,8 @@ include "../includes/header.php";
                 </section>
                 <?php endif; ?>
 
-                <div class="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 p-6 bg-gray-50 rounded-xl border border-gray-200">
-                    <button class="like-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium transition <?= $user_liked ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-white text-gray-600 border border-gray-200 hover:border-red-200 hover:text-red-500' ?>" data-post="<?= $id_post ?>" data-liked="<?= $user_liked ? '1' : '0' ?>">
+                <div class="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 p-6 bg-gray-50 dark:bg-dark-100 rounded-xl border border-gray-200 dark:border-dark-100">
+                    <button class="like-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium transition <?= $user_liked ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-white dark:bg-dark-50 text-gray-600 dark:text-dark-200 border border-gray-200 dark:border-dark-100 hover:border-red-200 hover:text-red-500' ?>" data-post="<?= $id_post ?>" data-liked="<?= $user_liked ? '1' : '0' ?>">
                         <i class="ph ph-heart <?= $user_liked ? 'text-red-500' : '' ?>"></i>
                         <span class="like-count font-bold"><?= $likes_count ?></span>
                         <span class="like-text"><?= $user_liked ? 'Vous aimez' : "J'aime" ?></span>
@@ -174,8 +183,8 @@ include "../includes/header.php";
             </div>
         </article>
 
-        <section class="mt-8 bg-white rounded-xl shadow-sm border border-gray-100 p-6 sm:p-10" id="comments">
-            <h2 class="text-xl font-bold text-gray-900 mb-6"><i class="ph ph-chats text-primary"></i> Commentaires (<?= count($comments) ?>)</h2>
+        <section class="mt-8 bg-white dark:bg-dark-50 rounded-xl shadow-sm border border-gray-100 dark:border-dark-100 p-6 sm:p-10" id="comments">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6"><i class="ph ph-chats text-primary"></i> Commentaires (<?= count($comments) ?>)</h2>
 
             <?php if (count($comments) > 0): ?>
             <div class="space-y-6 mb-8">
@@ -195,13 +204,13 @@ include "../includes/header.php";
                     $can_edit = true;
                 }
                 ?>
-                <div class="border-b border-gray-100 pb-6 last:border-0 last:pb-0 animate-slideUp" id="comment-<?= $comment['id_comment'] ?>" data-token="<?= htmlspecialchars($token) ?>">
+                <div class="border-b border-gray-100 dark:border-dark-100 pb-6 last:border-0 last:pb-0 animate-slideUp" id="comment-<?= $comment['id_comment'] ?>" data-token="<?= htmlspecialchars($token) ?>">
                     <div class="flex items-center justify-between mb-2">
                         <div class="flex items-center gap-2">
                             <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold">
                                 <?= strtoupper(substr($comment['user_display_name'] ?? $comment['author_name'] ?? 'V', 0, 1)) ?>
                             </div>
-                            <strong class="text-sm text-gray-900">
+                            <strong class="text-sm text-gray-900 dark:text-white">
                             <?php 
                             if (!empty($comment['user_display_name'])) {
                                 echo htmlspecialchars($comment['user_display_name']);
@@ -215,14 +224,14 @@ include "../includes/header.php";
                             ?>
                             </strong>
                         </div>
-                        <span class="text-xs text-gray-400">
+                        <span class="text-xs text-gray-500 dark:text-dark-300">
                             <?= format_date($comment['created_at']) ?>
                             <?php if (!empty($comment['updated_at'])): ?>
                             <small>(modifié)</small>
                             <?php endif; ?>
                         </span>
                     </div>
-                    <div class="text-sm text-gray-700 ml-10" id="comment-content-<?= $comment['id_comment'] ?>">
+                    <div class="text-sm text-gray-700 dark:text-dark-200 ml-10" id="comment-content-<?= $comment['id_comment'] ?>">
                         <p><?= nl2br(htmlspecialchars($comment['content'])) ?></p>
                     </div>
                     <?php if ($can_edit): ?>
@@ -235,18 +244,18 @@ include "../includes/header.php";
                 <?php endforeach; ?>
             </div>
             <?php else: ?>
-            <div class="text-center py-8 text-gray-400">
+            <div class="text-center py-8 text-gray-400 dark:text-dark-300">
                 <i class="ph ph-chat-dots text-4xl mb-3"></i>
                 <p>Aucun commentaire pour le moment. Soyez le premier !</p>
             </div>
             <?php endif; ?>
 
-            <div class="mt-8 pt-6 border-t border-gray-100">
-                <h3 class="text-lg font-bold text-gray-900 mb-4"><i class="ph ph-pen text-primary"></i> Ajouter un commentaire</h3>
+            <div class="mt-8 pt-6 border-t border-gray-100 dark:border-dark-100">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4"><i class="ph ph-pen text-primary"></i> Ajouter un commentaire</h3>
                 <form id="commentForm" method="post">
                     <input type="hidden" name="id_post" value="<?= $id_post ?>">
                     <div class="mb-4">
-                        <textarea name="content" id="content" rows="4" required placeholder="Votre commentaire..." class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none transition resize-none"></textarea>
+                        <textarea name="content" id="content" rows="4" required placeholder="Votre commentaire..." class="w-full px-4 py-3 border-2 border-gray-200 dark:border-dark-100 dark:bg-dark-50 dark:text-white dark:placeholder-dark-300 rounded-lg focus:border-primary focus:outline-none transition resize-none"></textarea>
                     </div>
                     <button type="submit" class="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-primary-700 transition inline-flex items-center gap-2">
                         <i class="ph ph-paper-plane-right"></i> Publier le commentaire

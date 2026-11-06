@@ -45,6 +45,7 @@
 | « aucun identifiant par défaut » | ✅ écran **Mot de passe** dans l'admin |
 | « manuel d'administration » | ✅ `MANUEL_ADMINISTRATION.md` |
 | Devis corrigé | ✅ `DEVIS_JOIEENSEIGNANTE.pdf` régénéré : **94 250 FCFA**, 2 pages, dates à jour |
+| Confort de lecture | ✅ texte d'article 17 px, interligne 1,85, largeur limitée à ~70 caractères, fond « papier » et version sombre |
 | Newsletter | ✅ formulaire réparé (POST) + table `newsletter_subscribers` |
 | Domaine dans le code | ✅ `joiedenseignante.com` partout + `BASE_URL` corrigé |
 

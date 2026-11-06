@@ -86,14 +86,14 @@ include "../includes/header.php";
                     <div class="p-6 flex-1 flex flex-col">
                         <div class="flex items-center gap-2.5 mb-3">
                             <span class="inline-flex items-center gap-1 text-xs font-semibold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 px-3 py-1 rounded-full"><?= htmlspecialchars($post['category_name'] ?? 'Non classé') ?></span>
-                            <span class="text-xs text-gray-400 dark:text-dark-300"><?= format_date($post['created_at']) ?></span>
+                            <span class="text-xs text-gray-500 dark:text-dark-300"><?= format_date($post['created_at']) ?></span>
                         </div>
                         <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-2">
                             <a href="post.php?id=<?= $post['id_post'] ?>" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"><?= htmlspecialchars($post['title']) ?></a>
                         </h2>
-                        <p class="text-sm text-gray-500 dark:text-dark-300 leading-relaxed mb-4 flex-1"><?= truncate(strip_tags($post['content']), 150) ?></p>
+                        <p class="text-sm text-gray-600 dark:text-dark-300 leading-relaxed mb-4 flex-1"><?= truncate(strip_tags($post['content']), 150) ?></p>
                         <div class="flex items-center justify-between pt-4 border-t border-gray-50 dark:border-dark-100">
-                            <div class="flex items-center gap-4 text-xs text-gray-400 dark:text-dark-300">
+                            <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-dark-300">
                                 <span class="inline-flex items-center gap-1.5"><i class="ph ph-heart"></i> <?= $post['likes_count'] ?? 0 ?></span>
                                 <span class="inline-flex items-center gap-1.5"><i class="ph ph-chat-circle"></i> <?= $post['comments_count'] ?? 0 ?></span>
                             </div>
