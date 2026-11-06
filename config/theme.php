@@ -95,16 +95,15 @@ function empty_state($icon, $title, $subtitle = '') {
 
 // ─── Partage réseaux ───
 function share_links($url, $title = '') {
-    $encoded_url = urlencode($url);
     $encoded_title = urlencode($title);
     $page_url = urlencode('http://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . $_SERVER['REQUEST_URI']);
     ?>
-    <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-dark-300 flex-wrap">
+    <div class="share-links flex items-center gap-2 text-sm text-gray-600 dark:text-dark-300 flex-wrap">
         <span class="font-medium">Partager :</span>
-        <a href="https://www.facebook.com/sharer/sharer.php?u=<?= $page_url ?>" target="_blank" class="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-all duration-300" title="Facebook"><i class="ph ph-facebook-logo"></i></a>
-        <a href="https://twitter.com/intent/tweet?url=<?= $page_url ?>&text=<?= $encoded_title ?>" target="_blank" class="w-9 h-9 flex items-center justify-center rounded-xl bg-sky-50 dark:bg-sky-900/20 text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/40 transition-all duration-300" title="X (Twitter)"><i class="ph ph-x-logo"></i></a>
-        <a href="https://www.linkedin.com/shareArticle?mini=true&url=<?= $page_url ?>" target="_blank" class="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-all duration-300" title="LinkedIn"><i class="ph ph-linkedin-logo"></i></a>
-        <a href="mailto:?subject=<?= $encoded_title ?>&body=<?= $page_url ?>" class="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-dark-100 text-gray-600 dark:text-dark-400 hover:bg-gray-200 dark:hover:bg-dark-200 transition-all duration-300" title="Email"><i class="ph ph-envelope"></i></a>
+        <a href="https://wa.me/?text=<?= $encoded_title ?>%20<?= $page_url ?>" target="_blank" rel="noopener" class="share-btn" title="Partager sur WhatsApp" aria-label="Partager sur WhatsApp"><i class="ph ph-whatsapp-logo"></i></a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=<?= $page_url ?>" target="_blank" rel="noopener" class="share-btn" title="Partager sur Facebook" aria-label="Partager sur Facebook"><i class="ph ph-facebook-logo"></i></a>
+        <a href="https://twitter.com/intent/tweet?url=<?= $page_url ?>&text=<?= $encoded_title ?>" target="_blank" rel="noopener" class="share-btn" title="Partager sur X" aria-label="Partager sur X"><i class="ph ph-x-logo"></i></a>
+        <a href="mailto:?subject=<?= $encoded_title ?>&body=<?= $page_url ?>" class="share-btn" title="Partager par e-mail" aria-label="Partager par e-mail"><i class="ph ph-envelope"></i></a>
     </div>
     <?php
 }
