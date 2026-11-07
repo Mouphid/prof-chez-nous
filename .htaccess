@@ -34,6 +34,14 @@ Options -Indexes
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
     Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+    # Politique de sécurité du contenu (CSP) — mode observation.
+    # Elle n'empêche rien pour l'instant : elle signale dans la console du
+    # navigateur les ressources non prévues. Après avoir testé le paiement
+    # Kkiapay et vérifié qu'aucune alerte rouge n'apparaît, remplacer
+    # « Content-Security-Policy-Report-Only » par « Content-Security-Policy »
+    # pour activer le blocage.
+    Header always set Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.kkiapay.me; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.kkiapay.me https://api-sandbox.kkiapay.me https://cdn.kkiapay.me; frame-src 'self' https://cdn.kkiapay.me https://*.kkiapay.me; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
 </IfModule>
 
 # ─── Compression ───

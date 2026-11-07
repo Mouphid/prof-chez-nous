@@ -70,11 +70,13 @@
 - ✅ **Devinettes** : pas de page « install.php », pas de `config/mail_config.php` versionné (gitignore), logs ignorés.
 - ✅ **Session** : régénération d'ID après login, idle timeout 30 min, cookie httponly/SameSite.
 
-### Faiblesses mineures (à corriger — non bloquantes)
-- ⚠️ **Pas de CSP** (Content-Security-Policy) — recommandation de durcissement progressive.
-- ⚠️ **CSRF manquant** sur `manage_comment.php` / suppression (à vérifier — à ajouter systématiquement).
-- ⚠️ **Rate-limit** de connexion public basé sur **session** (contournable en changeant de session) — un rate-limit par IP serait plus robuste en production.
-- ⚠️ `mail.php` vers `sequoiaempire@gmail.com` codé en dur dans `contact.php` — à externaliser en config.
+### Faiblesses mineures (état au 7 novembre 2026)
+- ✅ **CSP** ajoutée dans `.htaccess` en mode **observation** (`Report-Only`). Elle ne bloque rien
+  pour l'instant ; à passer en mode actif après un test complet du paiement.
+- ✅ **CSRF** présent sur les actions de `manage_comments.php` (approbation, masquage, suppression).
+- ✅ **Rate-limit** de connexion désormais **par adresse IP** (fichier temporaire), en plus de la session :
+  vider ses cookies ne suffit plus.
+- ✅ L'adresse de contact n'est plus codée en dur : elle vient de `config/theme.php` (`SITE_EMAIL`).
 
 ---
 

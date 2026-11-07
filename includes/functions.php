@@ -90,24 +90,85 @@ function is_admin() {
     return isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
 }
 
+/**
+ * Limitation des tentatives (connexion, formulaires sensibles).
+ *
+ * Le compteur est enregistré dans un petit fichier temporaire lié à
+ * l'adresse IP : vider ses cookies ne suffit donc plus à recommencer.
+ * Si le dossier temporaire n'est pas accessible, on retombe sur la session.
+ */
+
+function rate_limit_store_path(string $key): string {
+    $ip  = $_SERVER['REMOTE_ADDR'] ?? 'inconnue';
+    $dir = sys_get_temp_dir() . '/joieenseignante-ratelimit';
+    if (!is_dir($dir)) {
+        @mkdir($dir, 0700, true);
+    }
+    return $dir . '/' . hash('sha256', $key . '|' . $ip) . '.json';
+}
+
+function rate_limit_read(string $key): array {
+    $path = rate_limit_store_path($key);
+    if (is_file($path)) {
+        $raw = @file_get_contents($path);
+        if ($raw !== false) {
+            $data = json_decode($raw, true);
+            if (is_array($data) && isset($data['count'], $data['first'])) {
+                return ['count' => (int)$data['count'], 'first' => (int)$data['first']];
+            }
+        }
+    }
+
+    // Repli : compteur en session (si /tmp est interdit par l'hébergeur).
+    $session_key = 'rate_' . $key;
+    if (isset($_SESSION[$session_key]) && is_array($_SESSION[$session_key])) {
+        return [
+            'count' => (int)($_SESSION[$session_key]['count'] ?? 0),
+            'first' => (int)($_SESSION[$session_key]['first'] ?? 0),
+        ];
+    }
+    return ['count' => 0, 'first' => 0];
+}
+
+function rate_limit_write(string $key, array $data): void {
+    $path = rate_limit_store_path($key);
+    $json = json_encode($data);
+
+    if (@file_put_contents($path, $json, LOCK_EX) !== false) {
+        // Nettoyage occasionnel des anciens fichiers.
+        if (random_int(1, 100) === 1) {
+            foreach ((array)@glob(dirname($path) . '/*.json') as $old) {
+                if (@filemtime($old) < time() - 86400) {
+                    @unlink($old);
+                }
+            }
+        }
+        return;
+    }
+
+    $_SESSION['rate_' . $key] = $data;
+}
+
 function check_rate_limit($key, $max_attempts = 5, $window = 300) {
-    $rate_key = 'rate_' . $key;
-    $attempts = $_SESSION[$rate_key] ?? ['count' => 0, 'first' => 0];
+    $attempts = rate_limit_read($key);
+
     if ($attempts['count'] >= $max_attempts) {
         if (time() - $attempts['first'] < $window) {
             return false;
         }
-        $_SESSION[$rate_key] = ['count' => 0, 'first' => 0];
+        rate_limit_write($key, ['count' => 0, 'first' => 0]);
     }
     return true;
 }
 
 function increment_rate_limit($key) {
-    $rate_key = 'rate_' . $key;
-    $attempts = $_SESSION[$rate_key] ?? ['count' => 0, 'first' => 0];
-    if ($attempts['count'] === 0) $attempts['first'] = time();
-    $attempts['count']++;
-    $_SESSION[$rate_key] = $attempts;
+    $attempts = rate_limit_read($key);
+    if ($attempts['count'] === 0 || time() - $attempts['first'] >= 300) {
+        $attempts = ['count' => 1, 'first' => time()];
+    } else {
+        $attempts['count']++;
+    }
+    rate_limit_write($key, $attempts);
 }
 
 function validate_mime($tmp_name, $allowed_mimes) {
