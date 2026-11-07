@@ -403,6 +403,15 @@ a:hover .sbr-thumb { transform: scale(1.06); }
 }
 
 /* ═══════════════════════════════════════════════════════════
+   ADMIN — CONFORT DE LECTURE
+   Agrandit toute l'administration d'environ 10 % (équivalent
+   d'un zoom navigateur à 110 %), sans toucher au site public.
+   ═══════════════════════════════════════════════════════════ */
+html:has(body.admin-shell) {
+    font-size: 110%;
+}
+
+/* ═══════════════════════════════════════════════════════════
    ADMIN — SYSTÈME VISUEL SOBRE
    Accent unique : bleu #2563eb (le site public garde sa palette)
    Fond sable très clair, cartes blanches, bordures fines.
