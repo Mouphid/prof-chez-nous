@@ -161,6 +161,7 @@ mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_newsletter_suite.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_cours.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_recuperation.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_contenu_chapitre.sql
+mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_mot_de_passe_admin.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/seed_cours_demo.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/seed_contenu_chapitres.sql
 ```
@@ -171,6 +172,7 @@ mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/seed_contenu_chapitres.sql
 - `migration_cours.sql` : tables `courses` et `course_items` + lien des achats vers un cours ou un chapitre ;
 - `migration_recuperation.sql` : table `purchase_recovery_requests` (limite anti-abus de « Retrouver mon achat ») ;
 - `migration_contenu_chapitre.sql` : colonne `content` (le texte rédigé de chaque chapitre) ;
+- `migration_mot_de_passe_admin.sql` : colonnes `reset_token` et `reset_expires` (mot de passe oublié) ;
 - `seed_cours_demo.sql` (facultatif) : reprise des 3 cours de démonstration, **gratuits au départ**.
   Les prix se règlent ensuite dans Admin → Cours.
 - `seed_contenu_chapitres.sql` (facultatif) : textes de démonstration des 12 chapitres,

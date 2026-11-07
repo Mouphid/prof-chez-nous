@@ -79,6 +79,10 @@ if ! mysql --socket="$SOCK" -u root "$DB_NAME" -e "SHOW COLUMNS FROM course_item
     echo "• Reprise du contenu de démonstration des chapitres..."
     mysql --socket="$SOCK" -u root "$DB_NAME" < "$PROJET/sql/seed_contenu_chapitres.sql"
 fi
+if ! mysql --socket="$SOCK" -u root "$DB_NAME" -e "SHOW COLUMNS FROM users LIKE 'reset_token'" 2>/dev/null | grep -q reset_token; then
+    echo "• Application de sql/migration_mot_de_passe_admin.sql..."
+    mysql --socket="$SOCK" -u root "$DB_NAME" < "$PROJET/sql/migration_mot_de_passe_admin.sql"
+fi
 echo "✔ Migrations à jour"
 
 # ── 3. Serveur PHP ───────────────────────────────────────────

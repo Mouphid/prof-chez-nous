@@ -32,6 +32,17 @@ function generateSlug($text) {
 }
 
 /**
+ * Protège une valeur destinée à un fichier CSV.
+ * Empêche Excel / LibreOffice d'interpréter la valeur comme une formule.
+ */
+function csv_safe(string $valeur): string {
+    if ($valeur !== '' && in_array($valeur[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
+        return "'" . $valeur;
+    }
+    return $valeur;
+}
+
+/**
  * Slug lisible pour un cours : conserve les lettres accentuées transposées.
  * « Littérature Orale » → « litterature-orale ».
  */

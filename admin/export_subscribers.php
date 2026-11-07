@@ -47,18 +47,6 @@ header('Content-Disposition: attachment; filename="' . $nom_fichier . '"');
 header('Cache-Control: no-store, no-cache, must-revalidate');
 header('Pragma: no-cache');
 
-/**
- * Empêche Excel d'interpréter une valeur comme une formule.
- * Une adresse e-mail ne commence normalement pas par = + - @, mais on protège quand même.
- */
-function csv_safe(string $valeur): string
-{
-    if ($valeur !== '' && in_array($valeur[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
-        return "'" . $valeur;
-    }
-    return $valeur;
-}
-
 $sortie = fopen('php://output', 'w');
 
 // BOM UTF-8 : accents corrects dans Excel.

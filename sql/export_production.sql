@@ -1,6 +1,6 @@
 -- ============================================================
 -- Export de production — Joie Enseignante
--- Généré le 07/11/2026 à 07:52
+-- Généré le 07/11/2026 à 08:45
 -- Base : joieenseignante (MySQL 8 / utf8mb4)
 --
 -- Contenu : structure + données (articles, catégories, documents,
@@ -314,7 +314,7 @@ CREATE TABLE `purchases` (
   KEY `idx_item` (`id_item`),
   CONSTRAINT `fk_purchase_course` FOREIGN KEY (`id_course`) REFERENCES `courses` (`id_course`) ON DELETE SET NULL,
   CONSTRAINT `fk_purchase_item` FOREIGN KEY (`id_item`) REFERENCES `course_items` (`id_item`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `purchases` WRITE;
@@ -371,15 +371,18 @@ CREATE TABLE `users` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `is_active` tinyint(1) DEFAULT '1',
+  `reset_token` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `reset_expires` datetime DEFAULT NULL,
   PRIMARY KEY (`id_user`),
   UNIQUE KEY `email` (`email`),
-  KEY `role` (`role`)
+  KEY `role` (`role`),
+  KEY `idx_users_reset_token` (`reset_token`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (2,'Sylvestre Djouamon','prof@joieenseignante.com','$2y$10$clegx55ose97jnn5TmKXF.KI9O4M32WJr/KvC8Q0qRSF559dvlQnS','admin',NULL,'Professeur de littérature, Département de Littérature, Université de Cotonou.','2026-09-23 14:35:13','2026-09-24 10:50:28',1);
+INSERT INTO `users` VALUES (2,'Sylvestre Djouamon','prof@joieenseignante.com','$2y$10$clegx55ose97jnn5TmKXF.KI9O4M32WJr/KvC8Q0qRSF559dvlQnS','admin',NULL,'Professeur de littérature, Département de Littérature, Université de Cotonou.','2026-09-23 14:35:13','2026-11-07 08:44:08',1,NULL,NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

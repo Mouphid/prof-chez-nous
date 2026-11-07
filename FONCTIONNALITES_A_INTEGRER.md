@@ -2,7 +2,7 @@
 
 **Projet :** Joie Enseignante — `joiedenseignante.com`
 **Créé le :** 6 novembre 2026
-**Dernière mise à jour :** 6 novembre 2026
+**Dernière mise à jour :** 7 novembre 2026
 
 Ce fichier est la **liste de contrôle** des fonctionnalités qui ne sont pas encore en place.
 Il évite de les oublier et sert de feuille de route le jour de l'intégration.
@@ -90,11 +90,20 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
   (`/JoieEnseignante/…`) ; il utilise `SITE_URL`.
 - **Fichiers :** `public/register.php`, `public/resend-verification.php`
 
-### B5. Mot de passe oublié (admin) ⏳
+### B5. Mot de passe oublié (admin) ✅ Fait (7 nov. 2026)
 - **Constat :** aucune page de récupération. Si le mot de passe admin est perdu, l'accès est bloqué.
-- **À faire :** lien de réinitialisation par e-mail.
-- **Durée :** 1 à 2 h
-- **Dépend de :** SMTP
+- **Réalisé :**
+  - page `admin/forgot_password.php` : l'administrateur saisit son adresse, reçoit un lien valable **1 heure** ;
+  - page `admin/reset_password.php` : choix d'un nouveau mot de passe (10 caractères, majuscule, minuscule, chiffre, caractère spécial) ;
+  - le **jeton n'est jamais stocké en clair** : seule son empreinte SHA-256 est en base, avec une date d'expiration ;
+  - le jeton est **effacé après usage** : il ne peut pas servir deux fois ;
+  - message toujours identique (ne révèle pas si l'adresse existe) ;
+  - limite de 5 demandes / 5 minutes par adresse IP ;
+  - lien « Mot de passe oublié ? » sur la page de connexion.
+- **Fichiers :** `admin/forgot_password.php`, `admin/reset_password.php`, `admin/login.php`,
+  `config/mail.php`, `sql/migration_mot_de_passe_admin.sql`
+- **Commit :** à venir
+- ⚠️ **Envoi réel en attente du SMTP** (voir G4), comme pour les autres e-mails.
 
 ### B6. Espace contributeurs professionnels ⏳ (évolution prévue)
 - **Objectif :** permettre à d'autres professeurs de créer des contenus professionnels
@@ -174,7 +183,7 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 | # | Fonctionnalité | État | Durée | Détail |
 |---|---|---|---|---|
 | E1 | Écran **Réglages du site** | ⏳ | 1/2 journée | téléphone, adresse, réseaux sociaux sont écrits dans `config/theme.php` |
-| E2 | **Export CSV** (ventes, abonnés) | 🔄 | 1 h | ✅ abonnés newsletter fait (`admin/export_subscribers.php`) ; export des ventes à ajouter |
+| E2 | **Export CSV** (ventes, abonnés) | ✅ | 1 h | ✅ abonnés newsletter (`admin/export_subscribers.php`) ; ✅ ventes (`admin/export_purchases.php`) avec filtres et protection Excel |
 | E3 | **Journal des actions** | ⏳ | 1 jour | savoir qui a modifié quoi |
 | E4 | **Sauvegardes automatiques** | ⏳ | serveur | à configurer chez OVH |
 | E5 | **Versions des articles** | ⏳ | 1 jour | revenir à une ancienne version |

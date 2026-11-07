@@ -103,6 +103,12 @@ $page_title = "Connexion Admin - Joie Enseignante";
                 </button>
             </form>
 
+            <div class="text-center mt-5">
+                <a href="forgot_password.php" class="text-sm text-gray-500 hover:text-primary transition inline-flex items-center gap-1">
+                    <i class="ph ph-question"></i> Mot de passe oublié ?
+                </a>
+            </div>
+
             <div class="text-center mt-8 pt-5 border-t border-gray-100">
                 <a href="../public/index.php" class="text-gray-500 text-sm hover:text-primary transition inline-flex items-center gap-1"><i class="ph ph-house"></i> Retour à l'accueil</a>
             </div>

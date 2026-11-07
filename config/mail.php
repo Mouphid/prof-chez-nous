@@ -564,3 +564,95 @@ function send_newsletter_to_subscribers(array $subscribers, string $subject, str
         'first_error' => $first_error,
     ];
 }
+
+/**
+ * Adresse de réinitialisation du mot de passe administrateur.
+ */
+function admin_password_reset_url(string $token): string
+{
+    return rtrim(SITE_URL, '/') . '/admin/reset_password.php?token=' . urlencode($token);
+}
+
+/**
+ * Prépare l'e-mail de réinitialisation, sans l'envoyer.
+ * Le lien est valable une heure et ne peut servir qu'une fois.
+ *
+ * @return array{to_email:string,to_name:string,subject:string,html:string,text:string,link:string}
+ * @throws RuntimeException si l'adresse manque
+ */
+function build_admin_reset_email(array $user, string $token): array
+{
+    $email = trim((string)($user['email'] ?? ''));
+    if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        throw new RuntimeException("Adresse e-mail du compte invalide ou absente.");
+    }
+
+    $link    = admin_password_reset_url($token);
+    $nom     = trim((string)($user['name'] ?? ''));
+    $bonjour = $nom !== '' ? 'Bonjour ' . $nom . ',' : 'Bonjour,';
+
+    $safe_link    = htmlspecialchars($link, ENT_QUOTES, 'UTF-8');
+    $safe_bonjour = htmlspecialchars($bonjour, ENT_QUOTES, 'UTF-8');
+
+    $html = '
+        <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;color:#1f2937;">
+            <p style="font-size:15px;">' . $safe_bonjour . '</p>
+            <p style="font-size:15px;line-height:1.6;">
+                Vous avez demandé à réinitialiser votre mot de passe administrateur.
+                Cliquez sur le bouton ci-dessous pour en choisir un nouveau.
+            </p>
+            <p style="text-align:center;margin:28px 0;">
+                <a href="' . $safe_link . '" style="background:#1E3A5F;color:#ffffff;text-decoration:none;padding:12px 22px;border-radius:8px;font-weight:bold;display:inline-block;">
+                    Choisir un nouveau mot de passe
+                </a>
+            </p>
+            <p style="font-size:13px;color:#6b7280;line-height:1.6;">
+                Ce lien est valable <strong>1 heure</strong> et ne peut être utilisé qu\'une seule fois.<br>
+                Si le bouton ne fonctionne pas, copiez cette adresse dans votre navigateur :<br>
+                <span style="word-break:break-all;">' . $safe_link . '</span>
+            </p>
+            <p style="font-size:13px;color:#6b7280;line-height:1.6;">
+                Si vous n\'êtes pas à l\'origine de cette demande, ignorez cet e-mail :
+                votre mot de passe reste inchangé.
+            </p>
+            <p style="font-size:13px;color:#9ca3af;border-top:1px solid #e5e7eb;padding-top:12px;margin-top:24px;">
+                Joie Enseignante — ' . htmlspecialchars(SITE_URL, ENT_QUOTES, 'UTF-8') . '
+            </p>
+        </div>';
+
+    $text = $bonjour . "\n\n"
+        . "Vous avez demandé à réinitialiser votre mot de passe administrateur.\n\n"
+        . "Choisissez un nouveau mot de passe avec ce lien (valable 1 heure) :\n"
+        . $link . "\n\n"
+        . "Si vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail :\n"
+        . "votre mot de passe reste inchangé.\n\n"
+        . "Joie Enseignante — " . SITE_URL . "\n";
+
+    return [
+        'to_email' => $email,
+        'to_name'  => $nom,
+        'subject'  => 'Réinitialisation de votre mot de passe — Joie Enseignante',
+        'html'     => $html,
+        'text'     => $text,
+        'link'     => $link,
+    ];
+}
+
+/**
+ * Envoie le lien de réinitialisation du mot de passe.
+ *
+ * @throws RuntimeException si l'envoi échoue
+ */
+function send_admin_reset_email(array $user, string $token): void
+{
+    $data = build_admin_reset_email($user, $token);
+
+    $mail = getMailer();
+    $mail->addAddress($data['to_email'], $data['to_name']);
+    $mail->isHTML(true);
+    $mail->Subject = $data['subject'];
+    $mail->Body    = $data['html'];
+    $mail->AltBody = $data['text'];
+
+    $mail->send();
+}

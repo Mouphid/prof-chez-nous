@@ -243,6 +243,14 @@ $initials_of = function (string $name): string {
                            placeholder="Nom, e-mail ou contenu…" autocomplete="off"
                            oninput="debounceAdminSearch(this.form)">
                 </form>
+
+                <a href="<?= htmlspecialchars('export_purchases.php?' . http_build_query(array_filter([
+                    'status' => $status_filter,
+                    'q'      => $q,
+                ], fn($v) => $v !== '' && $v !== 'all'))) ?>"
+                   class="adm-btn adm-btn-secondary" title="Télécharger la liste des ventes au format CSV">
+                    <i class="ph ph-file-csv"></i> Exporter
+                </a>
             </div>
 
             <?php if ($is_filtered): ?>
