@@ -273,4 +273,6 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 | 6 nov. 2026 | Newsletter : envoi, désinscription, écran admin, export CSV (D1–D3) | `470f596` | oui (local), envoi réel : SMTP | `send_newsletter.php`, `desinscription.php`, `manage_newsletter.php` |
 | 7 nov. 2026 | Mot de passe oublié pour l'administration (B5) | `797f222` | oui (local), envoi réel : SMTP | jeton haché, valable 1 h, usage unique, limite par IP |
 | 7 nov. 2026 | Export CSV des ventes (E2) | `797f222` | oui (local) | filtres respectés, protection contre les formules Excel |
+| 7 nov. 2026 | Réglages du site (E1) | `e1f17be` | oui (local) | coordonnées et réseaux dans `settings`, page Contact branchée, réseaux vides masqués |
+| 7 nov. 2026 | Journal des actions admin (E3) | `e1f17be` | oui (local) | connexion, créations, modifications, suppressions, envois, réglages ; filtres et pagination |
 | | | | | |
