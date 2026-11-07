@@ -1,7 +1,7 @@
 # 🚦 POINT DE LIVRAISON — J-12H (mis à jour)
 
 **Projet :** Joie Enseignante — `joiedenseignante.com`
-**Dernière mise à jour :** 6 novembre 2026
+**Dernière mise à jour :** 7 novembre 2026
 **Objectif :** mise en ligne et livraison sous 12 heures
 
 ---
@@ -132,9 +132,27 @@
 
 ---
 
-## 3. 🗄️ Migrations base de données (à exécuter en production)
+## 3. 🗄️ Base de données en production
 
-Après l'import de `sql/export_production.sql`, exécuter dans l'ordre :
+### Cas normal (recommandé) : importer le nouvel export
+
+`sql/export_production.sql` a été régénéré le **7 novembre 2026**. Il contient
+**toutes les tables et toutes les données** : articles, catégories, documents,
+cours, chapitres (avec leur contenu rédigé), réglages et compte administrateur.
+
+```bash
+mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/export_production.sql
+```
+
+👉 **Aucune migration n'est nécessaire après cet import.** Il n'y a rien d'autre à lancer.
+
+> Le fichier a été vérifié en le réimportant dans une base vide : 21 articles,
+> 6 catégories, 41 documents, 3 cours, 12 chapitres (tous avec leur contenu), 1 compte admin.
+
+### Cas particulier : repartir d'une ancienne base
+
+Si vous utilisez un ancien export (avant le 7 novembre 2026), appliquez les migrations
+dans cet ordre :
 
 ```bash
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_paiement.sql
@@ -142,7 +160,9 @@ mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_newsletter.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_newsletter_suite.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_cours.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_recuperation.sql
+mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_contenu_chapitre.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/seed_cours_demo.sql
+mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/seed_contenu_chapitres.sql
 ```
 
 - `migration_paiement.sql` : colonnes `price` / `is_free` sur `files` + table `purchases` ;
@@ -150,8 +170,11 @@ mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/seed_cours_demo.sql
 - `migration_newsletter_suite.sql` : jeton de désinscription, date de désinscription, table `newsletter_campaigns` ;
 - `migration_cours.sql` : tables `courses` et `course_items` + lien des achats vers un cours ou un chapitre ;
 - `migration_recuperation.sql` : table `purchase_recovery_requests` (limite anti-abus de « Retrouver mon achat ») ;
+- `migration_contenu_chapitre.sql` : colonne `content` (le texte rédigé de chaque chapitre) ;
 - `seed_cours_demo.sql` (facultatif) : reprise des 3 cours de démonstration, **gratuits au départ**.
   Les prix se règlent ensuite dans Admin → Cours.
+- `seed_contenu_chapitres.sql` (facultatif) : textes de démonstration des 12 chapitres,
+  à remplacer ensuite par les vrais cours.
 
 > Le script local `dev-start.sh` applique automatiquement ces migrations si elles manquent.
 
