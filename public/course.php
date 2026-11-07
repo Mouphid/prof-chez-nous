@@ -42,6 +42,14 @@ if (!$course) {
 
 $items = course_items($pdo, (int)$course['id_course']);
 
+// Médias réellement présents dans les chapitres (pour adapter le mode d'emploi)
+$has_pdf_items   = false;
+$has_video_items = false;
+foreach ($items as $it) {
+    if (!empty($it['pdf_path']))   { $has_pdf_items   = true; }
+    if (!empty($it['video_path'])) { $has_video_items = true; }
+}
+
 // Jeton du lien privé : ne donne accès qu'aux chapitres de CE cours.
 $purchase = course_purchase_by_token($pdo, $token);
 if ($purchase) {
@@ -111,6 +119,63 @@ $page_description = mb_substr(trim((string)$course['description']), 0, 160);
                 <p class="text-gray-600 dark:text-dark-400 leading-relaxed"><?= nl2br(htmlspecialchars($course['description'])) ?></p>
             </section>
 
+            <!-- ═══ MODE D'EMPLOI : COMMENT SUIVRE CE COURS ═══ -->
+            <section aria-labelledby="comment-suivre">
+                <h2 id="comment-suivre" class="text-lg font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-2">
+                    <i class="ph ph-compass text-primary-500"></i> Comment suivre ce cours
+                </h2>
+                <p class="text-sm text-gray-500 dark:text-dark-300 mb-4">
+                    Tout se passe directement sur la plateforme, sans logiciel à installer. Suivez les étapes dans l'ordre.
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="bg-white dark:bg-dark-50 rounded-2xl border border-gray-100 dark:border-dark-100 p-4">
+                        <span class="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-300 flex items-center justify-center mb-3">
+                            <i class="ph ph-book-open text-xl"></i>
+                        </span>
+                        <h3 class="text-sm font-bold text-gray-900 dark:text-white">1. Lisez le cours</h3>
+                        <p class="text-xs text-gray-500 dark:text-dark-300 mt-1 leading-relaxed">
+                            Ouvrez les chapitres un par un et suivez le contenu directement à l'écran, comme dans une classe en ligne.
+                        </p>
+                    </div>
+
+                    <div class="bg-white dark:bg-dark-50 rounded-2xl border border-gray-100 dark:border-dark-100 p-4">
+                        <span class="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-300 flex items-center justify-center mb-3">
+                            <i class="ph ph-file-pdf text-xl"></i>
+                        </span>
+                        <h3 class="text-sm font-bold text-gray-900 dark:text-white">2. Consultez le PDF</h3>
+                        <p class="text-xs text-gray-500 dark:text-dark-300 mt-1 leading-relaxed">
+                            <?= $has_pdf_items
+                                ? "En cas de doute, ouvrez le support PDF du chapitre. Il reste disponible pour relire ou imprimer."
+                                : "Lorsqu'un chapitre propose un support PDF, ouvrez-le directement ici pour relire ou imprimer." ?>
+                        </p>
+                    </div>
+
+                    <div class="bg-white dark:bg-dark-50 rounded-2xl border border-gray-100 dark:border-dark-100 p-4">
+                        <span class="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-300 flex items-center justify-center mb-3">
+                            <i class="ph ph-video text-xl"></i>
+                        </span>
+                        <h3 class="text-sm font-bold text-gray-900 dark:text-white">3. Regardez la vidéo</h3>
+                        <p class="text-xs text-gray-500 dark:text-dark-300 mt-1 leading-relaxed">
+                            <?= $has_video_items
+                                ? "Lancez la vidéo directement dans la page du chapitre, sans téléchargement ni application externe."
+                                : "Lorsqu'un chapitre propose une vidéo, elle se lance directement dans la page, sans téléchargement." ?>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-4 flex items-start gap-3 bg-primary-50 dark:bg-primary-900/20 border border-primary-100 dark:border-primary-800 rounded-xl p-4">
+                    <i class="ph ph-info text-primary-600 dark:text-primary-300 text-lg flex-shrink-0"></i>
+                    <p class="text-xs text-primary-800 dark:text-primary-200 leading-relaxed">
+                        <?php if ($free): ?>
+                            Ce cours est gratuit : tous les chapitres, PDF et vidéos sont accessibles immédiatement, sans créer de compte.
+                        <?php else: ?>
+                            Après le paiement, vous recevez un lien privé par e-mail. Il ouvre les chapitres, les PDF et les vidéos directement ici, sans créer de compte.
+                        <?php endif; ?>
+                    </p>
+                </div>
+            </section>
+
             <?php if ($objectifs): ?>
             <section>
                 <h2 class="text-sm font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2"><i class="ph ph-target text-primary-500"></i> Objectifs</h2>
@@ -142,6 +207,9 @@ $page_description = mb_substr(trim((string)$course['description']), 0, 160);
                     $item_free = course_item_is_free($course, $item);
                     $has_file = !empty($item['pdf_path']) || !empty($item['video_path']);
                     $file_token = $unlocked && $purchase ? '&token=' . rawurlencode($token) : '';
+                    $video_url = $unlocked && $item['video_path']
+                        ? 'course_file.php?item=' . (int)$item['id_item'] . '&type=video' . $file_token
+                        : '';
                     ?>
                     <div class="bg-white dark:bg-dark-50 rounded-2xl border <?= $unlocked ? 'border-gray-100 dark:border-dark-100' : 'border-gray-200 dark:border-dark-100' ?> p-5">
                         <div class="flex items-start gap-4">
@@ -174,12 +242,6 @@ $page_description = mb_substr(trim((string)$course['description']), 0, 160);
                                             <i class="ph ph-file-pdf"></i> Ouvrir le PDF
                                         </a>
                                         <?php endif; ?>
-                                        <?php if ($item['video_path']): ?>
-                                        <a href="course_file.php?item=<?= (int)$item['id_item'] ?>&type=video<?= $file_token ?>" target="_blank" rel="noopener"
-                                           class="inline-flex items-center gap-1.5 bg-gray-100 dark:bg-dark text-gray-700 dark:text-dark-200 hover:bg-gray-200 text-xs font-semibold px-3 py-2 rounded-lg transition">
-                                            <i class="ph ph-play-circle"></i> Regarder la vidéo
-                                        </a>
-                                        <?php endif; ?>
                                         <?php if (!$has_file): ?>
                                         <span class="text-xs text-gray-400 dark:text-dark-300"><i class="ph ph-hourglass"></i> Contenu en préparation</span>
                                         <?php endif; ?>
@@ -195,6 +257,20 @@ $page_description = mb_substr(trim((string)$course['description']), 0, 160);
                                         <?php endif; ?>
                                     <?php endif; ?>
                                 </div>
+
+                                <?php if ($unlocked && $item['video_path']): ?>
+                                <details class="course-video mt-3">
+                                    <summary class="inline-flex items-center gap-1.5 bg-gray-100 dark:bg-dark text-gray-700 dark:text-dark-200 hover:bg-gray-200 dark:hover:bg-dark-100 text-xs font-semibold px-3 py-2 rounded-lg transition">
+                                        <i class="ph ph-play-circle"></i> Regarder la vidéo en ligne
+                                    </summary>
+                                    <div class="mt-3">
+                                        <video controls preload="metadata" playsinline src="<?= htmlspecialchars($video_url) ?>">
+                                            Votre navigateur ne peut pas lire cette vidéo.
+                                            <a href="<?= htmlspecialchars($video_url) ?>" target="_blank" rel="noopener">Ouvrir la vidéo dans un nouvel onglet</a>.
+                                        </video>
+                                    </div>
+                                </details>
+                                <?php endif; ?>
                             </div>
                             <i class="ph <?= $unlocked ? 'ph-lock-open text-emerald-500' : 'ph-lock-simple text-gray-400' ?> text-lg mt-1 flex-shrink-0" aria-hidden="true"></i>
                         </div>

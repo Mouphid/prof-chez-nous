@@ -1739,3 +1739,22 @@ body.admin-shell {
     .lg\:border-l { border-left-width: 1px; }
     .lg\:border-t-0 { border-top-width: 0; }
 }
+
+/* ─── Lecteur vidéo intégré aux cours ─── */
+.course-video summary {
+    list-style: none;
+    cursor: pointer;
+}
+.course-video summary::-webkit-details-marker { display: none; }
+.course-video summary::marker { content: ""; }
+.course-video video {
+    display: block;
+    width: 100%;
+    max-height: 70vh;
+    border-radius: .75rem;
+    background: #000;
+}
+
+/* Compléments utilisés par le mode d'emploi des cours */
+.border-primary-100 { border-color: var(--color-primary-100); }
+.dark .dark\:text-primary-200 { color: var(--color-primary-200); }

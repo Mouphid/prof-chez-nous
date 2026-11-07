@@ -110,6 +110,25 @@ $finfo = finfo_open(FILEINFO_MIME_TYPE);
 $mime  = finfo_file($finfo, $path) ?: ($type === 'pdf' ? 'application/pdf' : 'video/mp4');
 finfo_close($finfo);
 
+// Certains serveurs renvoient « application/octet-stream ». On corrige
+// le type selon l'extension pour que le navigateur lise la vidéo en ligne.
+if ($type === 'video') {
+    $ext_map = [
+        'mp4'  => 'video/mp4',
+        'm4v'  => 'video/mp4',
+        'webm' => 'video/webm',
+        'ogv'  => 'video/ogg',
+        'ogg'  => 'video/ogg',
+        'mov'  => 'video/quicktime',
+    ];
+    if (!str_starts_with((string)$mime, 'video/')) {
+        $ext  = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+        $mime = $ext_map[$ext] ?? 'video/mp4';
+    }
+} elseif ($type === 'pdf' && $mime !== 'application/pdf') {
+    $mime = 'application/pdf';
+}
+
 // Nom proposé au téléchargement / à l'ouverture, sans caractères gênants.
 $pretty = preg_replace('/[^A-Za-z0-9._-]+/', '-', course_slug((string)$item['title']));
 $pretty = trim($pretty, '-') ?: 'chapitre';
