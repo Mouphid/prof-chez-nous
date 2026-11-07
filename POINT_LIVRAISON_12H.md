@@ -138,7 +138,8 @@
 
 `sql/export_production.sql` a été régénéré le **7 novembre 2026**. Il contient
 **toutes les tables et toutes les données** : articles, catégories, documents,
-cours, chapitres (avec leur contenu rédigé), réglages et compte administrateur.
+cours, chapitres (avec leur contenu rédigé), réglages du site (coordonnées et
+réseaux sociaux), journal des actions et compte administrateur.
 
 ```bash
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/export_production.sql
@@ -148,6 +149,7 @@ mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/export_production.sql
 
 > Le fichier a été vérifié en le réimportant dans une base vide : 21 articles,
 > 6 catégories, 41 documents, 3 cours, 12 chapitres (tous avec leur contenu), 1 compte admin.
+> Les réglages et le journal sont fournis vides ou avec leurs valeurs par défaut.
 
 ### Cas particulier : repartir d'une ancienne base
 
@@ -162,6 +164,8 @@ mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_cours.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_recuperation.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_contenu_chapitre.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_mot_de_passe_admin.sql
+mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_reglages_site.sql
+mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/migration_journal_admin.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/seed_cours_demo.sql
 mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/seed_contenu_chapitres.sql
 ```
@@ -173,6 +177,8 @@ mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/seed_contenu_chapitres.sql
 - `migration_recuperation.sql` : table `purchase_recovery_requests` (limite anti-abus de « Retrouver mon achat ») ;
 - `migration_contenu_chapitre.sql` : colonne `content` (le texte rédigé de chaque chapitre) ;
 - `migration_mot_de_passe_admin.sql` : colonnes `reset_token` et `reset_expires` (mot de passe oublié) ;
+- `migration_reglages_site.sql` : clés `site_email`, `site_phone`, `site_address` et `social_*` dans la table `settings` ;
+- `migration_journal_admin.sql` : table `admin_activity_log` (journal « qui a modifié quoi ») ;
 - `seed_cours_demo.sql` (facultatif) : reprise des 3 cours de démonstration, **gratuits au départ**.
   Les prix se règlent ensuite dans Admin → Cours.
 - `seed_contenu_chapitres.sql` (facultatif) : textes de démonstration des 12 chapitres,
@@ -207,7 +213,7 @@ mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/seed_contenu_chapitres.sql
 ### Configuration serveur
 - [ ] PHP **8.3** + extensions `pdo_mysql`, `fileinfo`, `mbstring`, `openssl`, `gd`, `curl` ;
 - [ ] MySQL 8 : base + utilisateur dédié (pas `root`) ;
-- [ ] Importer `sql/export_production.sql` **puis les migrations** (§3) ;
+- [ ] Importer `sql/export_production.sql` (aucune migration à lancer si l'export est récent — §3) ;
 - [ ] Variables d'environnement `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS` ;
 - [ ] `composer install` (installe PHPMailer dans `vendor/`) ;
 - [ ] Uploader le code (sans `.git`, avec `vendor/`) ;
@@ -274,7 +280,9 @@ Le PDF remis au client contient des incohérences (TVA à 14,74 %, « net à pay
 4. **Migration oubliée** : sans `migration_paiement.sql`, les pages articles affichent une erreur (colonne `price` absente) ;
    sans `migration_newsletter_suite.sql`, l'envoi de la newsletter et la page de désinscription échouent ;
    sans `migration_cours.sql`, la page **Cours** et l'admin des cours échouent ;
-   sans `migration_recuperation.sql`, « Retrouver mon achat » fonctionne mais sans limite anti-abus en base.
+   sans `migration_recuperation.sql`, « Retrouver mon achat » fonctionne mais sans limite anti-abus en base ;
+   sans `migration_reglages_site.sql`, l'écran **Réglages du site** enregistre mais le site public garde les valeurs par défaut ;
+   sans `migration_journal_admin.sql`, les actions ne sont pas enregistrées (le reste du site fonctionne normalement).
 5. **Paiement** : la mise en ligne est prévue « après réception du paiement » (article 3 des conditions).
 6. **Protection des fichiers** : si OVH n'applique pas les `.htaccess` (option `AllowOverride`),
    les PDF pourraient rester accessibles par adresse directe. **Tester le 403** juste après l'upload ;

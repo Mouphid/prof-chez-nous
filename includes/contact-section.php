@@ -9,8 +9,8 @@
  *   @param string $contact_address  Address display
  */
 $contact_email   = $contact_email ?? SITE_EMAIL;
-$contact_phone   = $contact_phone ?? '+229 XX XX XX XX';
-$contact_address = $contact_address ?? 'Cotonou, Bénin';
+$contact_phone   = $contact_phone ?? SITE_PHONE;
+$contact_address = $contact_address ?? SITE_ADDRESS;
 $contact_title   = $contact_title ?? 'Contactez-nous';
 $contact_subtitle = $contact_subtitle ?? 'Une question, une suggestion ? Écrivez-nous !';
 ?>
@@ -65,10 +65,10 @@ $contact_subtitle = $contact_subtitle ?? 'Une question, une suggestion ? Écrive
             <div class="bg-gradient-to-br <?= GRADIENT_CTA ?> text-white rounded-xl p-6 shadow-sm">
                 <h3 class="font-bold mb-1">Suivez-nous</h3>
                 <p class="text-sm text-indigo-200 mb-4">Restez connecté avec la communauté.</p>
-                <div class="flex gap-2">
-                    <a href="#" class="w-9 h-9 bg-white/15 hover:bg-white/30 rounded-lg flex items-center justify-center transition" title="Facebook"><i class="ph ph-facebook-logo"></i></a>
-                    <a href="#" class="w-9 h-9 bg-white/15 hover:bg-white/30 rounded-lg flex items-center justify-center transition" title="Twitter"><i class="ph ph-x-logo"></i></a>
-                    <a href="#" class="w-9 h-9 bg-white/15 hover:bg-white/30 rounded-lg flex items-center justify-center transition" title="LinkedIn"><i class="ph ph-linkedin-logo"></i></a>
+                <div class="flex flex-wrap gap-2">
+                    <?php foreach (social_links() as $lien): ?>
+                    <a href="<?= htmlspecialchars($lien['url']) ?>" target="_blank" rel="noopener" class="w-9 h-9 bg-white/15 hover:bg-white/30 rounded-lg flex items-center justify-center transition" title="<?= htmlspecialchars($lien['label']) ?>"><i class="ph ph-<?= $lien['icon'] ?>"></i></a>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </div>

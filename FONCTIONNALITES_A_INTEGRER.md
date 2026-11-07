@@ -182,9 +182,9 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 
 | # | Fonctionnalité | État | Durée | Détail |
 |---|---|---|---|---|
-| E1 | Écran **Réglages du site** | ⏳ | 1/2 journée | téléphone, adresse, réseaux sociaux sont écrits dans `config/theme.php` |
+| E1 | Écran **Réglages du site** | ✅ | 1/2 journée | `admin/site_settings.php` : e-mail, téléphone, adresse et réseaux sociaux enregistrés dans `settings`, lus par `config/theme.php` |
 | E2 | **Export CSV** (ventes, abonnés) | ✅ | 1 h | ✅ abonnés newsletter (`admin/export_subscribers.php`) ; ✅ ventes (`admin/export_purchases.php`) avec filtres et protection Excel |
-| E3 | **Journal des actions** | ⏳ | 1 jour | savoir qui a modifié quoi |
+| E3 | **Journal des actions** | ✅ | 1 jour | `admin/activity_log.php` : qui a créé, modifié, supprimé, envoyé, changé un réglage ; table `admin_activity_log` + helper `admin_activity()` |
 | E4 | **Sauvegardes automatiques** | ⏳ | serveur | à configurer chez OVH |
 | E5 | **Versions des articles** | ⏳ | 1 jour | revenir à une ancienne version |
 
@@ -194,9 +194,9 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 
 | # | Contenu | État | Où |
 |---|---|---|---|
-| F1 | Téléphone `+229 XX XX XX XX` | ⏳ | `config/theme.php`, `public/contact.php`, `includes/contact-section.php` |
-| F2 | 4 icônes sociales vers `#` | ⏳ | `public/contact.php` (lignes 138-141), `includes/contact-section.php` |
-| F3 | Adresses des réseaux à confirmer | ⏳ | `config/theme.php` (`SOCIAL_*`) |
+| F1 | Téléphone `+229 XX XX XX XX` | ⏳ | valeur à saisir dans **Admin → Réglages du site** (plus aucune valeur en dur) |
+| F2 | 4 icônes sociales vers `#` | ✅ | générées depuis les réglages ; un réseau vide n'apparaît plus |
+| F3 | Adresses des réseaux à confirmer | ⏳ | à saisir dans **Admin → Réglages du site** |
 | F4 | FAQ de la page contact | ⏸ retirée volontairement | composant conservé : `includes/faq-section.php` |
 
 ---

@@ -22,6 +22,7 @@ if(isset($_POST['add'])){
             $stmt = $pdo->prepare("INSERT INTO categories (name, slug, description) VALUES (?, ?, ?)");
             $stmt->execute([$name, $slug, $description]);
             $success = "Catégorie ajoutée avec succès !";
+            admin_activity('create', 'category', (int)$pdo->lastInsertId(), $name);
         }
     }
 }
@@ -39,6 +40,7 @@ if(isset($_POST['edit'])){
             $stmt = $pdo->prepare("UPDATE categories SET name=?, description=? WHERE id_category=?");
             $stmt->execute([$name, $description, $id]);
             $success = "Catégorie mise à jour avec succès !";
+            admin_activity('update', 'category', (int)$id, $name);
         }
     }
 }
@@ -48,8 +50,13 @@ if(isset($_GET['delete'])){
         $error = "Token de sécurité invalide";
     } else {
         $id = (int)$_GET['delete'];
+        $nom_categorie = $pdo->prepare("SELECT name FROM categories WHERE id_category = ?");
+        $nom_categorie->execute([$id]);
+        $nom_categorie = (string)$nom_categorie->fetchColumn();
+
         $pdo->prepare("DELETE FROM categories WHERE id_category=?")->execute([$id]);
         $success = "Catégorie supprimée avec succès !";
+        admin_activity('delete', 'category', (int)$id, $nom_categorie);
     }
 }
 

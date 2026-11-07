@@ -1,12 +1,34 @@
 <?php
 // config/theme.php — Configuration centralisée (images, réseaux, animations, dégradés)
 
+// ─── Valeurs modifiables depuis Admin → Réglages du site ───
+// Elles sont stockées dans la table `settings`. Si la table n'existe pas
+// encore (toute première installation), on garde les valeurs par défaut.
+$__reglages = [];
+if (isset($pdo) && $pdo instanceof PDO) {
+    try {
+        $__cles = [
+            'site_email', 'site_phone', 'site_address',
+            'social_facebook', 'social_twitter', 'social_linkedin',
+            'social_youtube', 'social_instagram',
+        ];
+        $__marques = implode(',', array_fill(0, count($__cles), '?'));
+        $__stmt = $pdo->prepare("SELECT setting_key, setting_value FROM settings WHERE setting_key IN ($__marques)");
+        $__stmt->execute($__cles);
+        foreach ($__stmt->fetchAll(PDO::FETCH_ASSOC) as $__ligne) {
+            $__reglages[$__ligne['setting_key']] = (string)$__ligne['setting_value'];
+        }
+    } catch (Throwable $e) {
+        // Table absente ou base non initialisée : valeurs par défaut ci-dessous.
+    }
+}
+
 // ─── Site ───
 define('SITE_NAME', 'Joie Enseignante');
 define('SITE_URL', 'https://joiedenseignante.com');
-define('SITE_EMAIL', 'contact@joiedenseignante.com');
-define('SITE_PHONE', '+229 XX XX XX XX');
-define('SITE_ADDRESS', 'Cotonou, Bénin');
+define('SITE_EMAIL', $__reglages['site_email'] ?? 'contact@joiedenseignante.com');
+define('SITE_PHONE', $__reglages['site_phone'] ?? '+229 XX XX XX XX');
+define('SITE_ADDRESS', $__reglages['site_address'] ?? 'Cotonou, Bénin');
 define('SITE_TAGLINE', 'Plateforme pédagogique collaborative pour enseignants et étudiants');
 
 // ─── Uploads ───
@@ -29,11 +51,11 @@ $hero_slides = [
 
 
 // ─── Réseaux sociaux ───
-define('SOCIAL_FACEBOOK', 'https://facebook.com/joiedenseignante');
-define('SOCIAL_TWITTER', 'https://twitter.com/joiedenseignante');
-define('SOCIAL_LINKEDIN', 'https://linkedin.com/company/joiedenseignante');
-define('SOCIAL_YOUTUBE', 'https://youtube.com/@joiedenseignante');
-define('SOCIAL_INSTAGRAM', 'https://instagram.com/joiedenseignante');
+define('SOCIAL_FACEBOOK', $__reglages['social_facebook'] ?? 'https://facebook.com/joiedenseignante');
+define('SOCIAL_TWITTER', $__reglages['social_twitter'] ?? 'https://twitter.com/joiedenseignante');
+define('SOCIAL_LINKEDIN', $__reglages['social_linkedin'] ?? 'https://linkedin.com/company/joiedenseignante');
+define('SOCIAL_YOUTUBE', $__reglages['social_youtube'] ?? 'https://youtube.com/@joiedenseignante');
+define('SOCIAL_INSTAGRAM', $__reglages['social_instagram'] ?? 'https://instagram.com/joiedenseignante');
 
 // ─── Dégradés ───
 define('GRADIENT_HERO', 'bg-hero-pattern');
@@ -109,17 +131,35 @@ function share_links($url, $title = '') {
 }
 
 // ─── Icônes sociales (footer) ───
-function social_icons() {
+/**
+ * Liste des réseaux sociaux réellement renseignés.
+ * Un réseau laissé vide dans Admin → Réglages du site n'est pas renvoyé.
+ *
+ * @return array<int, array{icon: string, url: string, label: string}>
+ */
+function social_links(): array {
     $networks = [
-        'facebook-logo' => SOCIAL_FACEBOOK,
-        'x-logo'        => SOCIAL_TWITTER,
-        'youtube-logo'  => SOCIAL_YOUTUBE,
-        'linkedin-logo' => SOCIAL_LINKEDIN,
+        'facebook-logo'  => [SOCIAL_FACEBOOK,  'Facebook'],
+        'x-logo'         => [SOCIAL_TWITTER,   'X (Twitter)'],
+        'youtube-logo'   => [SOCIAL_YOUTUBE,   'YouTube'],
+        'linkedin-logo'  => [SOCIAL_LINKEDIN,  'LinkedIn'],
+        'instagram-logo' => [SOCIAL_INSTAGRAM, 'Instagram'],
     ];
-    foreach ($networks as $icon => $url):
+    $liens = [];
+    foreach ($networks as $icon => [$url, $label]) {
+        if (trim((string)$url) === '') {
+            continue;
+        }
+        $liens[] = ['icon' => $icon, 'url' => $url, 'label' => $label];
+    }
+    return $liens;
+}
+
+function social_icons() {
+    foreach (social_links() as $lien):
     ?>
-    <a href="<?= htmlspecialchars($url) ?>" target="_blank" class="w-10 h-10 bg-white/10 hover:bg-primary-500 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110" title="<?= ucfirst(str_replace('-logo', '', $icon)) ?>">
-        <i class="ph ph-<?= $icon ?>"></i>
+    <a href="<?= htmlspecialchars($lien['url']) ?>" target="_blank" rel="noopener" class="w-10 h-10 bg-white/10 hover:bg-primary-500 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110" title="<?= htmlspecialchars($lien['label']) ?>">
+        <i class="ph ph-<?= $lien['icon'] ?>"></i>
     </a>
     <?php endforeach;
 }

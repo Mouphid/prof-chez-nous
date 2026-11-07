@@ -43,6 +43,52 @@ function csv_safe(string $valeur): string {
 }
 
 /**
+ * Enregistre une action dans le journal de l'administration.
+ *
+ * @param string      $action      verbe : create, update, delete, login, send, settings…
+ * @param string|null $target_type type de l'élément : post, course, item, file, comment…
+ * @param int|null    $target_id   identifiant de l'élément
+ * @param string      $details     courte description lisible
+ */
+function admin_activity(string $action, ?string $target_type = null, ?int $target_id = null, string $details = ''): void {
+    global $pdo;
+
+    if (!isset($pdo) || !($pdo instanceof PDO)) {
+        return;
+    }
+
+    $id_user = isset($_SESSION['admin_id']) ? (int)$_SESSION['admin_id'] : null;
+    $user_name = trim((string)($_SESSION['admin_name'] ?? ''));
+    if ($user_name === '') {
+        $user_name = 'Inconnu';
+    }
+
+    $ip = trim((string)($_SERVER['REMOTE_ADDR'] ?? ''));
+    $details = trim($details);
+    if (mb_strlen($details) > 255) {
+        $details = mb_substr($details, 0, 255);
+    }
+
+    try {
+        $stmt = $pdo->prepare("
+            INSERT INTO admin_activity_log (id_user, user_name, action, target_type, target_id, details, ip)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ");
+        $stmt->execute([
+            $id_user,
+            $user_name,
+            $action,
+            $target_type,
+            $target_id,
+            $details !== '' ? $details : null,
+            $ip !== '' ? $ip : null,
+        ]);
+    } catch (Throwable $e) {
+        error_log('Journal admin — ' . $e->getMessage());
+    }
+}
+
+/**
  * Slug lisible pour un cours : conserve les lettres accentuées transposées.
  * « Littérature Orale » → « litterature-orale ».
  */

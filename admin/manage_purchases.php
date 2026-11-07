@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'resen
                     send_course_access_email($sale, $titre, $whole);
                 }
                 flash('success', 'Lien renvoyé à ' . ($sale['buyer_email'] ?: 'l’acheteur') . '.');
+                admin_activity('resend', 'purchase', (int)$id, 'Lien d\'accès renvoyé à ' . ($sale['buyer_email'] ?: 'l’acheteur'));
             } catch (Throwable $e) {
                 error_log('Renvoi du lien — vente #' . $id . ' : ' . $e->getMessage());
                 flash('error', "L'envoi a échoué : " . $e->getMessage());

@@ -14,7 +14,7 @@ if(!isset($_GET['csrf_token']) || !verify_csrf($_GET['csrf_token'])){
 $post_id = (int)$_GET['id'];
 
 // Check ownership
-$stmt = $pdo->prepare("SELECT id_user FROM posts WHERE id_post = ?");
+$stmt = $pdo->prepare("SELECT id_user, title FROM posts WHERE id_post = ?");
 $stmt->execute([$post_id]);
 $post = $stmt->fetch();
 
@@ -52,6 +52,8 @@ foreach($files as $file){
 // Delete the post
 $stmt = $pdo->prepare("DELETE FROM posts WHERE id_post = ?");
 $stmt->execute([$post_id]);
+
+admin_activity('delete', 'post', (int)$post_id, (string)($post['title'] ?? ''));
 
 header("Location: manage_posts.php");
 exit;

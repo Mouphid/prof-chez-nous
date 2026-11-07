@@ -68,6 +68,8 @@ foreach ($files as $file) {
 
 $pdo->prepare("DELETE FROM courses WHERE id_course = ?")->execute([$id]);
 
+admin_activity('delete', 'course', (int)$id, (string)($course['title'] ?? ''));
+
 flash('success', 'Cours supprimé.');
 header('Location: manage_courses.php');
 exit;

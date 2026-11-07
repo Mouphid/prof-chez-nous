@@ -133,11 +133,11 @@ include "../includes/header.php";
                     </li>
                     <li class="flex items-start gap-3">
                         <div class="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center text-primary flex-shrink-0"><i class="ph ph-phone"></i></div>
-                        <div><strong class="text-sm">Téléphone</strong><p class="text-sm text-gray-500">+229 XX XX XX XX</p></div>
+                        <div><strong class="text-sm">Téléphone</strong><p class="text-sm text-gray-500"><?= htmlspecialchars(SITE_PHONE) ?></p></div>
                     </li>
                     <li class="flex items-start gap-3">
                         <div class="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center text-primary flex-shrink-0"><i class="ph ph-map-pin"></i></div>
-                        <div><strong class="text-sm">Adresse</strong><p class="text-sm text-gray-500">Cotonou, Bénin</p></div>
+                        <div><strong class="text-sm">Adresse</strong><p class="text-sm text-gray-500"><?= htmlspecialchars(SITE_ADDRESS) ?></p></div>
                     </li>
                 </ul>
             </div>
@@ -155,11 +155,18 @@ include "../includes/header.php";
 
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                 <h3 class="font-semibold text-gray-900 mb-4"><i class="ph ph-share-network text-primary"></i> Suivez-nous</h3>
-                <div class="flex gap-3">
-                    <a href="#" class="w-10 h-10 bg-gray-100 hover:bg-primary-100 hover:text-primary rounded-lg flex items-center justify-center transition text-gray-600"><i class="ph ph-facebook-logo"></i></a>
-                    <a href="#" class="w-10 h-10 bg-gray-100 hover:bg-primary-100 hover:text-primary rounded-lg flex items-center justify-center transition text-gray-600"><i class="ph ph-x-logo"></i></a>
-                    <a href="#" class="w-10 h-10 bg-gray-100 hover:bg-primary-100 hover:text-primary rounded-lg flex items-center justify-center transition text-gray-600"><i class="ph ph-youtube-logo"></i></a>
-                    <a href="#" class="w-10 h-10 bg-gray-100 hover:bg-primary-100 hover:text-primary rounded-lg flex items-center justify-center transition text-gray-600"><i class="ph ph-linkedin-logo"></i></a>
+                <?php $liens_sociaux = social_links(); ?>
+                <div class="flex flex-wrap gap-3">
+                    <?php foreach ($liens_sociaux as $lien): ?>
+                    <a href="<?= htmlspecialchars($lien['url']) ?>" target="_blank" rel="noopener"
+                       title="<?= htmlspecialchars($lien['label']) ?>"
+                       class="w-10 h-10 bg-gray-100 hover:bg-primary-100 hover:text-primary rounded-lg flex items-center justify-center transition text-gray-600">
+                        <i class="ph ph-<?= $lien['icon'] ?>"></i>
+                    </a>
+                    <?php endforeach; ?>
+                    <?php if (!$liens_sociaux): ?>
+                    <p class="text-sm text-gray-400">Aucun réseau social renseigné pour le moment.</p>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

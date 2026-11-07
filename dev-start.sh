@@ -83,6 +83,14 @@ if ! mysql --socket="$SOCK" -u root "$DB_NAME" -e "SHOW COLUMNS FROM users LIKE 
     echo "• Application de sql/migration_mot_de_passe_admin.sql..."
     mysql --socket="$SOCK" -u root "$DB_NAME" < "$PROJET/sql/migration_mot_de_passe_admin.sql"
 fi
+if ! mysql --socket="$SOCK" -u root "$DB_NAME" -e "SELECT 1 FROM settings WHERE setting_key='site_email'" 2>/dev/null | grep -q 1; then
+    echo "• Application de sql/migration_reglages_site.sql..."
+    mysql --socket="$SOCK" -u root "$DB_NAME" < "$PROJET/sql/migration_reglages_site.sql"
+fi
+if ! mysql --socket="$SOCK" -u root "$DB_NAME" -e "SHOW TABLES LIKE 'admin_activity_log'" 2>/dev/null | grep -q admin_activity_log; then
+    echo "• Application de sql/migration_journal_admin.sql..."
+    mysql --socket="$SOCK" -u root "$DB_NAME" < "$PROJET/sql/migration_journal_admin.sql"
+fi
 echo "✔ Migrations à jour"
 
 # ── 3. Serveur PHP ───────────────────────────────────────────

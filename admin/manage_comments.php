@@ -8,6 +8,7 @@ if (isset($_GET['approve'])) {
     $id = (int)$_GET['approve'];
     $pdo->prepare("UPDATE comments SET status = 'visible' WHERE id_comment = ?")->execute([$id]);
     flash('success', 'Commentaire approuvé.');
+    admin_activity('moderate', 'comment', (int)$id, 'Commentaire approuvé');
     header("Location: manage_comments.php"); exit;
 }
 if (isset($_GET['hide'])) {
@@ -15,6 +16,7 @@ if (isset($_GET['hide'])) {
     $id = (int)$_GET['hide'];
     $pdo->prepare("UPDATE comments SET status = 'hidden' WHERE id_comment = ?")->execute([$id]);
     flash('success', 'Commentaire masqué.');
+    admin_activity('moderate', 'comment', (int)$id, 'Commentaire masqué');
     header("Location: manage_comments.php"); exit;
 }
 if (isset($_GET['delete'])) {
@@ -22,6 +24,7 @@ if (isset($_GET['delete'])) {
     $id = (int)$_GET['delete'];
     $pdo->prepare("DELETE FROM comments WHERE id_comment = ?")->execute([$id]);
     flash('success', 'Commentaire supprimé.');
+    admin_activity('delete', 'comment', (int)$id, 'Commentaire supprimé');
     header("Location: manage_comments.php"); exit;
 }
 

@@ -126,6 +126,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             }
 
             $success = "Article mis à jour avec succès !";
+            admin_activity('update', 'post', (int)$post_id, $title);
             $stmt = $pdo->prepare("SELECT * FROM posts WHERE id_post = ?");
             $stmt->execute([$post_id]);
             $post = $stmt->fetch();

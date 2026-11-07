@@ -57,6 +57,8 @@ if($file){
     $stmt_del = $pdo->prepare("DELETE FROM files WHERE id_file = ?");
     $stmt_del->execute([$file_id]);
 
+    admin_activity('delete', 'file', (int)$file_id, (string)$file['file_name']);
+
     // Retourner à la page d'édition du post
     header("Location: edit_post.php?id=".$file['id_post']);
     exit;

@@ -33,6 +33,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 $_SESSION['admin_role'] = $admin['role'];
 
                 logger("Connexion admin: " . $email, 'info');
+                admin_activity('login', 'user', (int)$admin['id_user'], 'Connexion à l\'administration');
                 redirect("dashboard.php");
             } else {
                 $error = "Email ou mot de passe incorrect";

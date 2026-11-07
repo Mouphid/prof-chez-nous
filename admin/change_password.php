@@ -41,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
                 $admin_name = $new_name;
                 $_SESSION['admin_name'] = $new_name;
                 $success = "Vos informations ont été mises à jour.";
+                admin_activity('update', 'user', (int)$admin_id, 'Profil mis à jour');
             }
         }
     }
@@ -78,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['update_profile'])) {
             $upd = $pdo->prepare("UPDATE users SET password = ? WHERE id_user = ?");
             $upd->execute([$hash, $admin_id]);
             $success = "Votre mot de passe a été modifié avec succès.";
+            admin_activity('password', 'user', (int)$admin_id, 'Mot de passe modifié');
         }
     }
 }

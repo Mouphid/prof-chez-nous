@@ -95,6 +95,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 flash('error', "L'envoi a échoué : " . $e->getMessage());
             }
 
+            admin_activity(
+                'send',
+                'newsletter',
+                null,
+                '« ' . $sujet . ' » — ' . (int)($resultat['sent'] ?? 0) . ' envoyé(s), ' . (int)($resultat['failed'] ?? 0) . ' échec(s)'
+            );
+
             header('Location: manage_newsletter.php');
             exit;
         }

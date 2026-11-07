@@ -127,6 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $success = "Post ajouté avec succès !";
+        admin_activity('create', 'post', (int)$post_id, $title);
     }
     }
 }

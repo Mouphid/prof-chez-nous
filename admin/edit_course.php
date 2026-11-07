@@ -169,6 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $data['icon'], $data['price'], $data['status'], $id,
                 ]);
                 flash('success', 'Cours mis à jour.');
+                admin_activity('update', 'course', (int)$id, (string)$data['title']);
                 header('Location: edit_course.php?id=' . $id);
                 exit;
             }
@@ -252,6 +253,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
 
                     flash('success', 'Chapitre mis à jour.');
+                    admin_activity('update', 'item', (int)$item_edit['id_item'], (string)$item_edit['title']);
                 } else {
                     $stmt = $pdo->prepare("
                         INSERT INTO course_items (id_course, title, description, content, pdf_path, video_path, price, is_free_preview, sort_order)
@@ -262,7 +264,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $pdf_path, $video_path,
                         $item_edit['price'], $item_edit['is_free_preview'], $item_edit['sort_order'],
                     ]);
+                    $new_item_id = (int)$pdo->lastInsertId();
                     flash('success', 'Chapitre ajouté.');
+                    admin_activity('create', 'item', $new_item_id, (string)$item_edit['title']);
                 }
 
                 header('Location: edit_course.php?id=' . $id . '#chapitres');
@@ -280,6 +284,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 course_remove_upload('video', $item['video_path']);
                 $pdo->prepare("DELETE FROM course_items WHERE id_item = ?")->execute([$item_id]);
                 flash('success', 'Chapitre supprimé.');
+                admin_activity('delete', 'item', (int)$item_id, (string)($item['title'] ?? ''));
             } else {
                 flash('error', 'Chapitre introuvable.');
             }

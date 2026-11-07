@@ -1806,3 +1806,14 @@ body.admin-shell {
     font-weight: 600;
     white-space: nowrap;
 }
+
+/* Icône décorative à droite d'un champ admin */
+.adm-field-icon {
+    position: absolute;
+    right: .9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    pointer-events: none;
+    font-size: 1.05rem;
+}

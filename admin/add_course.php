@@ -74,6 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
 
         $id = (int)$pdo->lastInsertId();
+        admin_activity('create', 'course', $id, (string)$old['title']);
         flash('success', 'Cours créé. Ajoute maintenant les chapitres ci-dessous.');
         header('Location: edit_course.php?id=' . $id);
         exit;

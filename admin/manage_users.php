@@ -63,6 +63,7 @@ if(isset($_POST['edit'])){
             $stmt = $pdo->prepare("UPDATE users SET name=?, email=?, role=? WHERE id_user=?");
             $stmt->execute([$name, $email, $role, $id]);
             $success = "Utilisateur mis à jour avec succès !";
+            admin_activity('update', 'user', (int)$id, $name . ' — rôle : ' . $role);
         }
     }
 }
@@ -81,8 +82,13 @@ if(isset($_GET['delete'])){
         header("Location: manage_users.php?msg=cannot_delete_self");
         exit;
     }
+    $nom_supprime = $pdo->prepare("SELECT name FROM users WHERE id_user = ?");
+    $nom_supprime->execute([$id]);
+    $nom_supprime = (string)$nom_supprime->fetchColumn();
+
     $pdo->prepare("DELETE FROM users WHERE id_user=?")->execute([$id]);
     $success = "Utilisateur supprimé avec succès !";
+    admin_activity('delete', 'user', (int)$id, $nom_supprime);
 }
 
 $users = $pdo->query("SELECT * FROM users ORDER BY name ASC")->fetchAll();

@@ -26,6 +26,8 @@ $active_map = [
     'export_subscribers.php' => 'newsletter',
     'manage_users.php'       => 'users',
     'change_password.php'    => 'settings',
+    'site_settings.php'      => 'site_settings',
+    'activity_log.php'       => 'activity',
 ];
 $active = $active_map[$current_page] ?? '';
 
@@ -90,6 +92,10 @@ function admin_nav_link(string $key, string $href, string $icon, string $label, 
         <ul class="space-y-1">
             <?php if (has_permission('manage_users')): ?>
                 <?php admin_nav_link('users', 'manage_users.php', 'ph-users', 'Utilisateurs', $active); ?>
+            <?php endif; ?>
+            <?php if ($admin_role === 'admin'): ?>
+                <?php admin_nav_link('site_settings', 'site_settings.php', 'ph-sliders-horizontal', 'Réglages du site', $active); ?>
+                <?php admin_nav_link('activity', 'activity_log.php', 'ph-clock-counter-clockwise', 'Journal des actions', $active); ?>
             <?php endif; ?>
             <?php admin_nav_link('settings', 'change_password.php', 'ph-gear-six', 'Paramètres', $active); ?>
         </ul>
