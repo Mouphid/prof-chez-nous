@@ -102,7 +102,7 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
   - lien « Mot de passe oublié ? » sur la page de connexion.
 - **Fichiers :** `admin/forgot_password.php`, `admin/reset_password.php`, `admin/login.php`,
   `config/mail.php`, `sql/migration_mot_de_passe_admin.sql`
-- **Commit :** à venir
+- **Commit :** `797f222`
 - ⚠️ **Envoi réel en attente du SMTP** (voir G4), comme pour les autres e-mails.
 
 ### B6. Espace contributeurs professionnels ⏳ (évolution prévue)
@@ -271,5 +271,6 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 | 6 nov. 2026 | Renvoi du lien + recherche dans Ventes (B2) | `b61c8b3` | oui (interface), envoi réel : SMTP | `admin/manage_purchases.php` |
 | 6 nov. 2026 | Page « Retrouver mon achat » (B3) | `93209d4` | oui (local), envoi réel : SMTP | `public/retrouver-mon-achat.php`, limite anti-abus |
 | 6 nov. 2026 | Newsletter : envoi, désinscription, écran admin, export CSV (D1–D3) | `470f596` | oui (local), envoi réel : SMTP | `send_newsletter.php`, `desinscription.php`, `manage_newsletter.php` |
-| | | | | |
+| 7 nov. 2026 | Mot de passe oublié pour l'administration (B5) | `797f222` | oui (local), envoi réel : SMTP | jeton haché, valable 1 h, usage unique, limite par IP |
+| 7 nov. 2026 | Export CSV des ventes (E2) | `797f222` | oui (local) | filtres respectés, protection contre les formules Excel |
 | | | | | |
