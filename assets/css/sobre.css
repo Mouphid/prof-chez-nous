@@ -1758,3 +1758,40 @@ body.admin-shell {
 /* Compléments utilisés par le mode d'emploi des cours */
 .border-primary-100 { border-color: var(--color-primary-100); }
 .dark .dark\:text-primary-200 { color: var(--color-primary-200); }
+
+/* ─── Page de lecture d'un chapitre ─── */
+.chapter-content {
+    color: #374151;
+    font-size: 1rem;
+    line-height: 1.85;
+}
+.dark .chapter-content { color: #cbd5e1; }
+.chapter-content h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 1.6rem 0 .6rem;
+}
+.dark .chapter-content h3 { color: #f8fafc; }
+.chapter-content p { margin: 0 0 1rem; }
+.chapter-content ul {
+    margin: .5rem 0 1.1rem;
+    padding-left: 1.2rem;
+    list-style: disc;
+}
+.chapter-content li { margin: .3rem 0; }
+.chapter-content strong { color: #111827; font-weight: 700; }
+.dark .chapter-content strong { color: #f8fafc; }
+.chapter-content > :first-child { margin-top: 0; }
+.chapter-content > :last-child { margin-bottom: 0; }
+.chapter-video {
+    display: block;
+    width: 100%;
+    max-height: 70vh;
+    border-radius: .75rem;
+    background: #000;
+}
+
+/* Compléments utilisés par la page de lecture d'un chapitre */
+.gap-x-2 { column-gap: calc(var(--spacing) * 2); }
+.dark .dark\:hover\:bg-dark-100:hover { background-color: var(--color-dark-100); }

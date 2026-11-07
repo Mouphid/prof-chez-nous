@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS `course_items` (
     `id_course`       INT UNSIGNED NOT NULL,
     `title`           VARCHAR(190) NOT NULL,
     `description`     TEXT,
+    `content`         LONGTEXT,                     -- contenu écrit affiché sur la page du chapitre
     `pdf_path`        VARCHAR(255) DEFAULT NULL,   -- nom du fichier dans uploads/cours/pdf
     `video_path`      VARCHAR(255) DEFAULT NULL,   -- nom du fichier dans uploads/cours/video
     `price`           DECIMAL(10,2) NOT NULL DEFAULT 0,  -- 0 = gratuit

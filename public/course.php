@@ -63,6 +63,7 @@ if ($purchase) {
 $free        = course_is_free($course);
 $full_access = $free
     || ($purchase && (int)($purchase['id_course'] ?? 0) === (int)$course['id_course']);
+$link_token  = $purchase ? $token : '';
 
 $objectifs = course_objectives($course);
 $page_title = $course['title'] . " - Cours - Joie Enseignante";
@@ -218,7 +219,9 @@ $page_description = mb_substr(trim((string)$course['description']), 0, 160);
                             </span>
                             <div class="min-w-0 flex-1">
                                 <div class="flex flex-wrap items-center gap-2">
-                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white"><?= htmlspecialchars($item['title']) ?></h3>
+                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white">
+                                        <a href="<?= htmlspecialchars(course_item_url($course, $item, $link_token)) ?>" class="hover:text-primary transition"><?= htmlspecialchars($item['title']) ?></a>
+                                    </h3>
                                     <?php if ($item_free && !$free): ?>
                                     <span class="text-[11px] font-semibold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">Aperçu gratuit</span>
                                     <?php endif; ?>
@@ -236,6 +239,10 @@ $page_description = mb_substr(trim((string)$course['description']), 0, 160);
 
                                 <div class="flex flex-wrap items-center gap-2 mt-3">
                                     <?php if ($unlocked): ?>
+                                        <a href="<?= htmlspecialchars(course_item_url($course, $item, $link_token)) ?>"
+                                           class="inline-flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition">
+                                            <i class="ph ph-book-open"></i> Lire le chapitre
+                                        </a>
                                         <?php if ($item['pdf_path']): ?>
                                         <a href="course_file.php?item=<?= (int)$item['id_item'] ?>&type=pdf<?= $file_token ?>" target="_blank" rel="noopener"
                                            class="inline-flex items-center gap-1.5 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 hover:bg-primary-100 text-xs font-semibold px-3 py-2 rounded-lg transition">

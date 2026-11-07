@@ -133,3 +133,93 @@ function course_url(array $course): string
 {
     return 'course.php?slug=' . rawurlencode((string)$course['slug']);
 }
+
+/**
+ * Adresse publique d'un chapitre (page de lecture).
+ *
+ * @param string $token Jeton du lien privé, pour les cours payants.
+ */
+function course_item_url(array $course, array $item, string $token = ''): string
+{
+    $url = 'chapter.php?item=' . (int)$item['id_item'];
+    if ($token !== '') {
+        $url .= '&token=' . rawurlencode($token);
+    }
+    return $url;
+}
+
+/**
+ * Transforme le texte saisi dans l'administration en HTML propre.
+ *
+ * Mise en forme acceptée (volontairement simple) :
+ * - « ## Titre »    → sous-titre ;
+ * - « - élément »   → liste à puces ;
+ * - « **texte** »   → gras ;
+ * - ligne vide      → nouveau paragraphe.
+ *
+ * Tout le reste est échappé : aucun HTML dangereux ne peut être injecté.
+ */
+function course_content_html(?string $text): string
+{
+    $text = trim((string)$text);
+    if ($text === '') {
+        return '';
+    }
+
+    $inline = static function (string $line): string {
+        $line = htmlspecialchars($line, ENT_QUOTES, 'UTF-8');
+        $line = preg_replace('/\*\*(.+?)\*\*/s', '<strong>$1</strong>', $line);
+        $line = preg_replace('/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/s', '<em>$1</em>', $line);
+        return $line;
+    };
+
+    $blocks    = [];
+    $paragraph = [];
+    $list      = [];
+
+    $flushParagraph = static function () use (&$paragraph, &$blocks, $inline): void {
+        if ($paragraph) {
+            $blocks[] = '<p>' . implode('<br>', array_map($inline, $paragraph)) . '</p>';
+            $paragraph = [];
+        }
+    };
+    $flushList = static function () use (&$list, &$blocks, $inline): void {
+        if ($list) {
+            $items = array_map(static fn($li) => '<li>' . $inline($li) . '</li>', $list);
+            $blocks[] = '<ul>' . implode('', $items) . '</ul>';
+            $list = [];
+        }
+    };
+
+    foreach (preg_split('/\r\n|\r|\n/', $text) as $line) {
+        $line = trim($line);
+
+        if ($line === '') {
+            $flushParagraph();
+            $flushList();
+            continue;
+        }
+
+        if (preg_match('/^##\s+(.+)$/u', $line, $m)) {
+            $flushParagraph();
+            $flushList();
+            $blocks[] = '<h3>' . $inline($m[1]) . '</h3>';
+            continue;
+        }
+
+        if (preg_match('/^[-•]\s+(.+)$/u', $line, $m)) {
+            $flushParagraph();
+            $list[] = $m[1];
+            continue;
+        }
+
+        $flushList();
+        $paragraph[] = $line;
+    }
+
+    $flushParagraph();
+    $flushList();
+
+    return implode("\n", $blocks);
+}
+

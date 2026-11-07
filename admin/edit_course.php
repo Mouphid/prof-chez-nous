@@ -109,6 +109,7 @@ $item_edit = [
     'id_item'         => 0,
     'title'           => '',
     'description'     => '',
+    'content'         => '',
     'price'           => '0',
     'is_free_preview' => 0,
     'sort_order'      => $next_sort,
@@ -178,6 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'id_item'         => (int)($_POST['id_item'] ?? 0),
                 'title'           => trim((string)($_POST['title'] ?? '')),
                 'description'     => trim((string)($_POST['description'] ?? '')),
+                'content'         => trim((string)($_POST['content'] ?? '')),
                 'price'           => max(0, (float)($_POST['price'] ?? 0)),
                 'is_free_preview' => !empty($_POST['is_free_preview']) ? 1 : 0,
                 'sort_order'      => (int)($_POST['sort_order'] ?? $next_sort),
@@ -230,12 +232,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($item_edit['id_item'] > 0) {
                     $stmt = $pdo->prepare("
                         UPDATE course_items
-                        SET title = ?, description = ?, pdf_path = ?, video_path = ?, price = ?,
+                        SET title = ?, description = ?, content = ?, pdf_path = ?, video_path = ?, price = ?,
                             is_free_preview = ?, sort_order = ?
                         WHERE id_item = ? AND id_course = ?
                     ");
                     $stmt->execute([
-                        $item_edit['title'], $item_edit['description'], $pdf_path, $video_path,
+                        $item_edit['title'], $item_edit['description'], $item_edit['content'],
+                        $pdf_path, $video_path,
                         $item_edit['price'], $item_edit['is_free_preview'], $item_edit['sort_order'],
                         $item_edit['id_item'], $id,
                     ]);
@@ -251,11 +254,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     flash('success', 'Chapitre mis à jour.');
                 } else {
                     $stmt = $pdo->prepare("
-                        INSERT INTO course_items (id_course, title, description, pdf_path, video_path, price, is_free_preview, sort_order)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                        INSERT INTO course_items (id_course, title, description, content, pdf_path, video_path, price, is_free_preview, sort_order)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ");
                     $stmt->execute([
-                        $id, $item_edit['title'], $item_edit['description'], $pdf_path, $video_path,
+                        $id, $item_edit['title'], $item_edit['description'], $item_edit['content'],
+                        $pdf_path, $video_path,
                         $item_edit['price'], $item_edit['is_free_preview'], $item_edit['sort_order'],
                     ]);
                     flash('success', 'Chapitre ajouté.');
@@ -464,13 +468,16 @@ $price_label = fn(float $n): string => $n > 0
                                         <?php endif; ?>
                                     </td>
                                     <td class="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">
+                                        <?php if (!empty($item['content'])): ?>
+                                        <span class="inline-flex items-center gap-1 mr-2"><i class="ph ph-text-align-left text-emerald-600"></i> Texte</span>
+                                        <?php endif; ?>
                                         <?php if ($item['pdf_path']): ?>
                                         <span class="inline-flex items-center gap-1 mr-2"><i class="ph ph-file-pdf text-red-500"></i> PDF</span>
                                         <?php endif; ?>
                                         <?php if ($item['video_path']): ?>
                                         <span class="inline-flex items-center gap-1"><i class="ph ph-video text-blue-500"></i> Vidéo</span>
                                         <?php endif; ?>
-                                        <?php if (!$item['pdf_path'] && !$item['video_path']): ?>
+                                        <?php if (empty($item['content']) && !$item['pdf_path'] && !$item['video_path']): ?>
                                         <span class="text-gray-300">—</span>
                                         <?php endif; ?>
                                     </td>
@@ -535,6 +542,19 @@ $price_label = fn(float $n): string => $n > 0
                         <label for="item_description" class="block text-sm font-medium text-gray-700 mb-1.5">Description</label>
                         <textarea id="item_description" name="description" rows="2"
                                   class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary"><?= htmlspecialchars($item_edit['description']) ?></textarea>
+                    </div>
+
+                    <div class="mt-4">
+                        <label for="item_content" class="block text-sm font-medium text-gray-700 mb-1.5">Contenu du chapitre</label>
+                        <textarea id="item_content" name="content" rows="12"
+                                  placeholder="Rédigez ici le cours qui s'affichera quand l'élève ouvrira ce chapitre."
+                                  class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary font-mono text-sm"><?= htmlspecialchars($item_edit['content']) ?></textarea>
+                        <p class="text-xs text-gray-500 mt-1.5">
+                            Mise en forme simple : <code class="px-1 py-0.5 bg-gray-100 rounded">##</code> pour un sous-titre,
+                            <code class="px-1 py-0.5 bg-gray-100 rounded">-</code> en début de ligne pour une liste,
+                            <code class="px-1 py-0.5 bg-gray-100 rounded">**texte**</code> pour le gras.
+                            Laissez une ligne vide entre deux paragraphes.
+                        </p>
                     </div>
 
                     <div class="grid sm:grid-cols-2 gap-4 mt-4">

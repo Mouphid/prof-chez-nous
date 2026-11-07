@@ -44,12 +44,12 @@
                     ['public/contact.php',    'ph-envelope',      'Contact'],
                 ];
                 $current = basename($_SERVER['PHP_SELF']);
-                foreach ($nav_items as $item):
-                    $active = $item[0] === 'public/' . $current
-                        || ($item[0] === 'public/cours.php' && in_array($current, ['course.php', 'course_file.php'], true));
+                foreach ($nav_items as $nav_item):
+                    $active = $nav_item[0] === 'public/' . $current
+                        || ($nav_item[0] === 'public/cours.php' && in_array($current, ['course.php', 'course_file.php'], true));
                 ?>
-                <a href="../<?= $item[0] ?>" class="sbr-pill gap-1.5 px-3.5 py-2 rounded-xl text-sm font-medium <?= $active ? 'is-active' : 'text-gray-600 dark:text-dark-400 hover:bg-gray-100 dark:hover:bg-dark-50 hover:text-gray-900 dark:hover:text-white' ?> transition-all duration-300">
-                    <i class="ph <?= $item[1] ?> sbr-icon"></i> <?= $item[2] ?>
+                <a href="../<?= $nav_item[0] ?>" class="sbr-pill gap-1.5 px-3.5 py-2 rounded-xl text-sm font-medium <?= $active ? 'is-active' : 'text-gray-600 dark:text-dark-400 hover:bg-gray-100 dark:hover:bg-dark-50 hover:text-gray-900 dark:hover:text-white' ?> transition-all duration-300">
+                    <i class="ph <?= $nav_item[1] ?> sbr-icon"></i> <?= $nav_item[2] ?>
                 </a>
                 <?php endforeach; ?>
             </nav>
@@ -69,12 +69,12 @@
             </div>
         </div>
         <div class="hidden md:hidden bg-white dark:bg-dark border-t border-gray-100 dark:border-dark-100 px-4 py-3 space-y-1" id="mobileNav" role="navigation">
-            <?php foreach ($nav_items as $item):
-                $active = $item[0] === 'public/' . $current
-                    || ($item[0] === 'public/cours.php' && in_array($current, ['course.php', 'course_file.php'], true));
+            <?php foreach ($nav_items as $nav_item):
+                $active = $nav_item[0] === 'public/' . $current
+                    || ($nav_item[0] === 'public/cours.php' && in_array($current, ['course.php', 'course_file.php'], true));
             ?>
-            <a href="../<?= $item[0] ?>" class="block px-3 py-2.5 rounded-xl text-sm font-medium <?= $active ? 'bg-primary-100 text-primary-700' : 'text-gray-600 dark:text-dark-400 hover:bg-gray-100 dark:hover:bg-dark-50' ?>">
-                <i class="ph <?= $item[1] ?>"></i> <?= $item[2] ?>
+            <a href="../<?= $nav_item[0] ?>" class="block px-3 py-2.5 rounded-xl text-sm font-medium <?= $active ? 'bg-primary-100 text-primary-700' : 'text-gray-600 dark:text-dark-400 hover:bg-gray-100 dark:hover:bg-dark-50' ?>">
+                <i class="ph <?= $nav_item[1] ?>"></i> <?= $nav_item[2] ?>
             </a>
             <?php endforeach; ?>
             <?php if (is_admin()): ?>
