@@ -1795,3 +1795,14 @@ body.admin-shell {
 /* Compléments utilisés par la page de lecture d'un chapitre */
 .gap-x-2 { column-gap: calc(var(--spacing) * 2); }
 .dark .dark\:hover\:bg-dark-100:hover { background-color: var(--color-dark-100); }
+
+/* Zones à compléter dans les pages légales */
+.legal-todo {
+    display: inline;
+    background: #fef3c7;
+    color: #92400e;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    white-space: nowrap;
+}

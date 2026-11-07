@@ -51,6 +51,7 @@
                 <ul class="space-y-3">
                     <li><a href="../public/mentions-legales.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-file-text text-gray-400 dark:text-dark-200"></i> Mentions légales</a></li>
                     <li><a href="../public/conditions-utilisation.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-scroll text-gray-400 dark:text-dark-200"></i> Conditions d'utilisation</a></li>
+                    <li><a href="../public/conditions-vente.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-shopping-cart text-gray-400 dark:text-dark-200"></i> Conditions de vente</a></li>
                     <li><a href="../public/confidentialite.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-shield-check text-gray-400 dark:text-dark-200"></i> Confidentialité</a></li>
                     <li><a href="../public/about.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-info text-gray-400 dark:text-dark-200"></i> À propos</a></li>
                 </ul>
