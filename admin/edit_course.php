@@ -587,7 +587,10 @@ $price_label = fn(float $n): string => $n > 0
                             <label for="item_price" class="block text-sm font-medium text-gray-700 mb-1.5">Prix du chapitre seul (FCFA)</label>
                             <input type="number" id="item_price" name="price" min="0" step="50" value="<?= htmlspecialchars((string)(float)$item_edit['price']) ?>"
                                    class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary">
-                            <p class="text-xs text-gray-500 mt-1">0 = gratuit pour tous.</p>
+                            <p class="text-xs text-gray-500 mt-1">
+                                0 = inclus dans l'achat du cours (pas d'achat séparé).
+                                Un prix supérieur permet d'acheter ce chapitre seul.
+                            </p>
                         </div>
                         <div class="flex items-end pb-2">
                             <label for="is_free_preview" class="inline-flex items-center gap-2 text-sm text-gray-700">

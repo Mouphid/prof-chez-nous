@@ -75,9 +75,15 @@ function course_purchase_by_token(PDO $pdo, string $token): ?array
  */
 function course_item_is_free(array $course, array $item): bool
 {
-    return course_is_free($course)
-        || (int)($item['is_free_preview'] ?? 0) === 1
-        || (float)($item['price'] ?? 0) <= 0;
+    // Cours gratuit : tous ses chapitres sont ouverts.
+    if (course_is_free($course)) {
+        return true;
+    }
+
+    // Cours payant : seuls les chapitres marqués « aperçu gratuit » sont ouverts.
+    // Un chapitre à 0 FCFA est inclus dans l'achat du cours ; il n'est pas
+    // offert aux visiteurs (sinon le prix du cours n'aurait aucun effet).
+    return (int)($item['is_free_preview'] ?? 0) === 1;
 }
 
 /**

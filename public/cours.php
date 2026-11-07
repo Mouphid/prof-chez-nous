@@ -134,7 +134,10 @@ if ($courses) {
                                                 <span class="inline-flex items-center gap-1"><i class="ph ph-video text-blue-500"></i> Vidéo</span>
                                                 <?php endif; ?>
                                                 <?php if (!$chapter_free): ?>
-                                                <span class="inline-flex items-center gap-1 font-semibold text-gray-700 dark:text-dark-200"><i class="ph ph-tag"></i> <?= course_price_label((float)$chapter['price']) ?> seul</span>
+                                                <span class="inline-flex items-center gap-1 font-semibold text-gray-700 dark:text-dark-200">
+                                                    <i class="ph ph-tag"></i>
+                                                    <?= (float)$chapter['price'] > 0 ? course_price_label((float)$chapter['price']) . ' seul' : 'Inclus dans le cours' ?>
+                                                </span>
                                                 <?php endif; ?>
                                             </div>
                                         </div>
