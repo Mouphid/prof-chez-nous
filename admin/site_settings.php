@@ -139,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="adm-field">
                                     <input type="email" id="site_email" name="site_email" required
                                            value="<?= htmlspecialchars($valeurs['site_email']) ?>" class="adm-input"
-                                           placeholder="contact@joiedenseignante.com">
+                                           placeholder="contact@joie-enseignante.com">
                                     <i class="ph ph-envelope adm-field-icon"></i>
                                 </div>
                             </div>

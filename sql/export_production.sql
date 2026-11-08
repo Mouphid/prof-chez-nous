@@ -445,7 +445,7 @@ INSERT INTO `settings` VALUES (3,'site_logo','');
 INSERT INTO `settings` VALUES (4,'items_per_page','10');
 INSERT INTO `settings` VALUES (5,'comments_moderation','1');
 INSERT INTO `settings` VALUES (6,'allow_registration','1');
-INSERT INTO `settings` VALUES (7,'site_email','contact@joiedenseignante.com');
+INSERT INTO `settings` VALUES (7,'site_email','contact@joie-enseignante.com');
 INSERT INTO `settings` VALUES (8,'site_phone','+229 XX XX XX XX');
 INSERT INTO `settings` VALUES (9,'site_address','Cotonou, Bénin');
 INSERT INTO `settings` VALUES (10,'social_facebook','https://facebook.com/joiedenseignante');

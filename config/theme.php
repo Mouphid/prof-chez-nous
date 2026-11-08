@@ -25,8 +25,8 @@ if (isset($pdo) && $pdo instanceof PDO) {
 
 // ─── Site ───
 define('SITE_NAME', 'Joie Enseignante');
-define('SITE_URL', 'https://joiedenseignante.com');
-define('SITE_EMAIL', $__reglages['site_email'] ?? 'contact@joiedenseignante.com');
+define('SITE_URL', 'https://joie-enseignante.com');
+define('SITE_EMAIL', $__reglages['site_email'] ?? 'contact@joie-enseignante.com');
 define('SITE_PHONE', $__reglages['site_phone'] ?? '+229 XX XX XX XX');
 define('SITE_ADDRESS', $__reglages['site_address'] ?? 'Cotonou, Bénin');
 define('SITE_TAGLINE', 'Plateforme pédagogique collaborative pour enseignants et étudiants');

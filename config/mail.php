@@ -487,7 +487,7 @@ function build_newsletter_email(array $subscriber, string $subject, string $body
             <p style="font-size:13px;color:#9ca3af;border-top:1px solid #e5e7eb;padding-top:14px;margin-top:28px;line-height:1.6;">
                 Vous recevez cet e-mail parce que votre adresse est inscrite à la newsletter de Joie Enseignante.<br>
                 <a href="' . htmlspecialchars($unsub, ENT_QUOTES, 'UTF-8') . '" style="color:#2563eb;">Se désinscrire</a>
-                · <a href="' . htmlspecialchars(SITE_URL, ENT_QUOTES, 'UTF-8') . '" style="color:#2563eb;">joiedenseignante.com</a>
+                · <a href="' . htmlspecialchars(SITE_URL, ENT_QUOTES, 'UTF-8') . '" style="color:#2563eb;">joie-enseignante.com</a>
                 · <a href="mailto:' . htmlspecialchars(SITE_EMAIL, ENT_QUOTES, 'UTF-8') . '" style="color:#2563eb;">Nous écrire</a>
             </p>
         </div>';

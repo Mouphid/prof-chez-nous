@@ -1,7 +1,7 @@
 <?php
 /**
  * Plan du site (sitemap XML) généré dynamiquement.
- * Accessible via https://joiedenseignante.com/sitemap.xml (voir .htaccess).
+ * Accessible via https://joie-enseignante.com/sitemap.xml (voir .htaccess).
  */
 require_once __DIR__ . '/../config/config.php';
 

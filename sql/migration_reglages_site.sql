@@ -7,7 +7,7 @@
 -- ============================================================
 
 INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
-    ('site_email',       'contact@joiedenseignante.com'),
+    ('site_email',       'contact@joie-enseignante.com'),
     ('site_phone',       '+229 XX XX XX XX'),
     ('site_address',     'Cotonou, Bénin'),
     ('social_facebook',  'https://facebook.com/joiedenseignante'),
