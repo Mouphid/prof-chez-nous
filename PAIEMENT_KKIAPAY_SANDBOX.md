@@ -55,9 +55,16 @@ Résultat attendu :
 Prestataire : Kkiapay
 Mode        : SANDBOX (test)
 Devise      : XOF
-Clés        : présentes
+Clés        : publique seulement
+Manque      : clé privée, clé secrète
 Serveur     : https://api-sandbox.kkiapay.me
 ```
+
+> La clé publique suffit pour tester : l’API sandbox de Kkiapay accepte de
+> vérifier une transaction avec elle seule (vérifié le 8 novembre 2026).
+> La clé privée et la clé secrète restent **recommandées** : la documentation
+> Kkiapay les exige pour la production. Générez-les via
+> **Développeurs → Clés API → « Générer de nouveaux »**.
 
 ---
 
@@ -122,6 +129,23 @@ Attendu :
 - la commande reste ou n’est pas marquée « Payé » ;
 - **aucun** lien de téléchargement n’est créé ;
 - le journal `logs/` contient une ligne « Paiement non confirmé ».
+
+> Le site réessaie automatiquement la vérification pendant environ 10 secondes
+> (0, 2, 3 puis 5 s). Si la transaction est encore « en attente », la commande
+> **n’est pas** marquée comme échouée : une page « Paiement en cours de
+> vérification » propose de revérifier.
+
+### Résultat du test réalisé le 8 novembre 2026
+
+| Étape | Résultat |
+|---|---|
+| Ouverture de la fenêtre Kkiapay | ✅ « Vous êtes en mode Sandbox », 102 FCFA (100 + frais) |
+| Numéro `22997000000` | ✅ transaction `SUCCESS`, montant 100 |
+| Commande en base | ✅ `status = paid`, `transaction_id` et `download_token` créés |
+| Téléchargement du PDF | ✅ HTTP 200, fichier PDF de 8 pages |
+| Sans le lien privé | ✅ accès refusé (redirection) |
+| Numéro `22997000002` | ✅ « Fonds insuffisants », aucun lien créé |
+| Admin → Ventes | ✅ ligne « Payé » + bandeau « Mode test Kkiapay » |
 
 ---
 

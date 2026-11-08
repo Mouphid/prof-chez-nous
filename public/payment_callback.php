@@ -38,6 +38,48 @@ function purchase_retry_url(array $purchase): string
     return 'purchase_course.php?item=' . (int)$purchase['id_item'];
 }
 
+/**
+ * Interroge le prestataire plusieurs fois.
+ *
+ * Après un paiement Mobile Money, la transaction reste parfois « en attente »
+ * quelques secondes. Vérifier une seule fois tout de suite ferait croire à un
+ * échec alors que le paiement est réussi. On réessaie donc brièvement.
+ *
+ * @param string $transaction identifiant de la transaction
+ * @param int    $attempts    nombre maximal d'essais
+ */
+function payment_verify_with_retry(string $transaction, int $attempts = 4): array
+{
+    // Pauses avant chaque essai (0 s, 2 s, 3 s, 5 s → environ 10 s au total).
+    $delays = [0, 2, 3, 5];
+    $result = [];
+
+    for ($i = 0; $i < $attempts; $i++) {
+        if (!empty($delays[$i])) {
+            sleep($delays[$i]);
+        }
+
+        $result = payment_verify_transaction($transaction);
+        if (!empty($result['ok'])) {
+            return $result;
+        }
+
+        $status = strtoupper((string)($result['data']['status'] ?? ''));
+
+        // Statut clairement définitif : inutile d'attendre.
+        if (in_array($status, [
+            'FAILED', 'REJECTED', 'CANCELLED', 'CANCELED', 'REFUNDED',
+            'INSUFFICIENT_FUND', 'PAYMENT_DECLINED', 'TRANSACTION_ERROR',
+        ], true)) {
+            return $result;
+        }
+
+        // Sinon (PENDING, TRANSACTION_NOT_FOUND, réponse vide…), on réessaie.
+    }
+
+    return $result;
+}
+
 $isWebhook = ($_SERVER['REQUEST_METHOD'] === 'POST');
 
 $purchaseId  = 0;
@@ -81,7 +123,7 @@ if (!payment_is_configured()) {
     die("Le paiement en ligne n'est pas configuré.");
 }
 
-$result = payment_verify_transaction($transaction);
+$result = payment_verify_with_retry($transaction);
 $data   = $result['data'] ?? null;
 $ok     = $result['ok'] ?? false;
 
@@ -96,13 +138,40 @@ if ($ok) {
 if (!$ok) {
     // Journalise le motif exact : indispensable pour diagnostiquer un test sandbox.
     error_log(sprintf(
-        'Paiement non confirmé — commande #%d, transaction %s, HTTP %s, montant reçu %s, erreur %s',
+        'Paiement non confirmé — commande #%d, transaction %s, HTTP %s, statut %s, montant reçu %s, erreur %s',
         $purchaseId,
         (string)$transaction,
         (string)($result['http'] ?? '?'),
+        (string)($data['status'] ?? 'inconnu'),
         isset($result['amount']) ? (string)$result['amount'] : 'inconnu',
         (string)($result['error'] ?? 'aucune')
     ));
+
+    // Paiement encore « en attente » chez le prestataire : on ne marque PAS
+    // la commande comme échouée. L'acheteur peut revérifier dans un instant.
+    $status = strtoupper((string)($data['status'] ?? ''));
+    $stillPending = in_array($status, ['', 'PENDING', 'PROCESSING', 'TRANSACTION_NOT_FOUND'], true);
+
+    if ($stillPending) {
+        $upd = $pdo->prepare("UPDATE purchases SET transaction_id = ? WHERE id_purchase = ? AND status = 'pending'");
+        $upd->execute([$transaction, $purchaseId]);
+
+        if ($isWebhook) { echo 'ok'; exit; }
+        ?>
+        <!DOCTYPE html>
+        <html lang="fr"><head><meta charset="UTF-8"><title>Paiement en cours de vérification</title>
+        <link rel="stylesheet" href="../assets/css/tailwind.css"><link rel="stylesheet" href="../assets/css/sobre.css"></head>
+        <body class="bg-gray-50 font-sans">
+        <div class="max-w-lg mx-auto mt-20 p-8 bg-white rounded-2xl shadow-sm border border-gray-100 text-center">
+            <i class="ph ph-clock text-5xl text-amber-500"></i>
+            <h1 class="text-xl font-bold text-gray-900 mt-4 mb-2">Paiement en cours de vérification</h1>
+            <p class="text-gray-500 mb-6">Votre paiement est enregistré mais la confirmation n'est pas encore arrivée. Patientez quelques secondes puis cliquez ci-dessous.</p>
+            <a href="<?= htmlspecialchars('payment_callback.php?purchase=' . (int)$purchaseId . '&transaction=' . urlencode((string)$transaction)) ?>" class="inline-flex items-center gap-2 bg-primary text-white font-semibold px-6 py-3 rounded-xl">Vérifier à nouveau</a>
+        </div>
+        </body></html>
+        <?php
+        exit;
+    }
 
     $upd = $pdo->prepare("UPDATE purchases SET status = 'failed', transaction_id = ? WHERE id_purchase = ? AND status = 'pending'");
     $upd->execute([$transaction, $purchaseId]);

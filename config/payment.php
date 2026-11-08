@@ -96,15 +96,19 @@ function payment_is_sandbox(): bool {
 
 /**
  * Les clés du prestataire actif sont-elles renseignées ?
+ *
+ * Kkiapay : la clé publique suffit pour ouvrir la fenêtre de paiement ET
+ * pour vérifier une transaction (testé en sandbox). La clé privée et la
+ * clé secrète restent recommandées : elles renforcent la vérification et
+ * sont exigées par la documentation Kkiapay pour la production.
+ * Utiliser payment_missing_keys() pour savoir ce qui manque.
  */
 function payment_is_configured(): bool {
     $cfg = payment_config();
 
     switch (payment_provider()) {
         case 'kkiapay':
-            return !empty($cfg['kkiapay']['public_key'])
-                && !empty($cfg['kkiapay']['private_key'])
-                && !empty($cfg['kkiapay']['secret_key']);
+            return !empty($cfg['kkiapay']['public_key']);
 
         case 'fedapay':
             return !empty($cfg['fedapay']['secret_key']);
@@ -112,6 +116,36 @@ function payment_is_configured(): bool {
         default:
             return false;
     }
+}
+
+/**
+ * Liste des clés encore vides pour le prestataire actif.
+ * Sert à afficher un avertissement clair (outil de vérification, admin).
+ *
+ * @return string[] noms lisibles des clés manquantes
+ */
+function payment_missing_keys(): array {
+    $cfg = payment_config();
+    $missing = [];
+
+    if (payment_provider() === 'kkiapay') {
+        $labels = [
+            'public_key'  => 'clé publique',
+            'private_key' => 'clé privée',
+            'secret_key'  => 'clé secrète',
+        ];
+        foreach ($labels as $key => $label) {
+            if (empty($cfg['kkiapay'][$key])) {
+                $missing[] = $label;
+            }
+        }
+    } elseif (payment_provider() === 'fedapay') {
+        if (empty($cfg['fedapay']['secret_key'])) {
+            $missing[] = 'clé secrète';
+        }
+    }
+
+    return $missing;
 }
 
 function payment_amount_label(float $amount): string {

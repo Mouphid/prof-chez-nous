@@ -203,6 +203,10 @@ include "../includes/header.php";
 <script>
 var achatId = <?= (int)$purchase['id'] ?>;
 function payerMaintenant() {
+    if (typeof openKkiapayWidget !== "function") {
+        alert("Le paiement se charge encore. Patientez une seconde puis réessayez.");
+        return;
+    }
     openKkiapayWidget({
         amount: <?= (int)round($amount) ?>,
         key: <?= json_encode($cfg['kkiapay']['public_key']) ?>,

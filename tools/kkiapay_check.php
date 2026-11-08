@@ -22,7 +22,17 @@ $cfg = payment_config();
 echo "Prestataire : " . payment_provider_label() . PHP_EOL;
 echo "Mode        : " . (payment_is_sandbox() ? 'SANDBOX (test)' : 'PRODUCTION (argent réel)') . PHP_EOL;
 echo "Devise      : " . strtoupper((string)$cfg['currency']) . PHP_EOL;
-echo "Clés        : " . (payment_is_configured() ? 'présentes' : 'MANQUANTES') . PHP_EOL;
+$missing = payment_missing_keys();
+$configState = empty($missing)
+    ? 'complètes'
+    : (payment_is_configured() ? 'publique seulement' : 'MANQUANTES');
+echo "Clés        : " . $configState . PHP_EOL;
+if (!empty($missing) && payment_is_configured()) {
+    echo "Manque      : " . implode(', ', $missing) . PHP_EOL;
+    echo "Note        : la vérification fonctionne en sandbox avec la clé publique." . PHP_EOL;
+    echo "              Génère aussi la clé privée et la clé secrète sur Kkiapay" . PHP_EOL;
+    echo "              (Développeurs → Clés API → « Générer de nouveaux »)." . PHP_EOL;
+}
 
 if (payment_provider() === 'kkiapay') {
     $base = payment_is_sandbox()
