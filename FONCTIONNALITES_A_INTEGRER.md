@@ -205,12 +205,12 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 
 | # | Point | État | Bloqué par |
 |---|---|---|---|
-| G1 | Clés du prestataire de paiement (Kkiapay ou FedaPay) | ⏸ | validation du compte marchand |
+| G1 | Clés du prestataire de paiement (Kkiapay ou FedaPay) | ⏸ | clés **sandbox** disponibles après inscription gratuite ; clés réelles après validation KYC |
 | G2 | Domaine + hébergement OVH | ⏸ | achat client |
 | G3 | SSL (HTTPS) | ⏸ | hébergement |
 | G4 | SMTP + SPF/DKIM | ⏸ | hébergement / boîte mail |
 | G5 | `composer install` | ⏸ | serveur |
-| G6 | Migrations paiement + newsletter | ⏸ | base de production |
+| G6 | Migrations paiement + newsletter | ✅ | incluses dans `sql/export_production.sql` et appliquées par `dev-start.sh` |
 | G7 | Changement du mot de passe admin | ⏸ | à faire juste après la mise en ligne |
 
 ---

@@ -46,6 +46,22 @@ if (has_permission('manage_comments')) {
 $topbar_search = ($page_search && basename($_SERVER['PHP_SELF'] ?? '') === 'manage_posts.php')
     ? trim((string) ($_GET['q'] ?? ''))
     : '';
+
+// Bandeau d'avertissement : paiement en mode test (sandbox).
+$payment_sandbox_mode = false;
+if (!function_exists('payment_is_sandbox')) {
+    $payment_file = __DIR__ . '/../config/payment.php';
+    if (file_exists($payment_file)) {
+        require_once $payment_file;
+    }
+}
+if (function_exists('payment_is_sandbox')) {
+    try {
+        $payment_sandbox_mode = payment_is_sandbox() && payment_is_configured();
+    } catch (Throwable $e) {
+        $payment_sandbox_mode = false;
+    }
+}
 ?>
 <header class="adm-topbar px-4 sm:px-6 py-2.5 flex items-center gap-3 sm:gap-5">
     <div class="flex items-center gap-3 min-w-0 shrink-0">
@@ -91,6 +107,17 @@ $topbar_search = ($page_search && basename($_SERVER['PHP_SELF'] ?? '') === 'mana
         </div>
     </div>
 </header>
+
+<?php if ($payment_sandbox_mode): ?>
+<div class="mx-4 sm:mx-6 mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 flex items-start gap-2" role="status">
+    <i class="ph ph-flask text-lg mt-0.5"></i>
+    <span>
+        <strong>Mode test Kkiapay activé.</strong>
+        Aucun paiement réel n'est encaissé. Avant la mise en ligne, passez
+        <code>sandbox</code> à <code>false</code> dans <code>config/payment_config.php</code>.
+    </span>
+</div>
+<?php endif; ?>
 <script>
 function toggleAdminSidebar() {
     const sidebar = document.getElementById('adminSidebar');

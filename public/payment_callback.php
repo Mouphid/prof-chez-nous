@@ -94,6 +94,16 @@ if ($ok) {
 }
 
 if (!$ok) {
+    // Journalise le motif exact : indispensable pour diagnostiquer un test sandbox.
+    error_log(sprintf(
+        'Paiement non confirmé — commande #%d, transaction %s, HTTP %s, montant reçu %s, erreur %s',
+        $purchaseId,
+        (string)$transaction,
+        (string)($result['http'] ?? '?'),
+        isset($result['amount']) ? (string)$result['amount'] : 'inconnu',
+        (string)($result['error'] ?? 'aucune')
+    ));
+
     $upd = $pdo->prepare("UPDATE purchases SET status = 'failed', transaction_id = ? WHERE id_purchase = ? AND status = 'pending'");
     $upd->execute([$transaction, $purchaseId]);
 

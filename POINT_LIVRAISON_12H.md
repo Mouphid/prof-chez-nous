@@ -188,18 +188,32 @@ mysql -u UTILISATEUR -p NOM_DE_LA_BASE < sql/seed_contenu_chapitres.sql
 
 ---
 
-## 4. 🔑 Activer les paiements réels (Kkiapay)
+## 4. 🔑 Paiements (Kkiapay)
 
-1. Créer / activer le compte marchand sur [kkiapay.me](https://kkiapay.me).
-2. Récupérer les 3 clés (menu **Développeurs**) : publique, privée, secrète.
-3. Sur le serveur :
-   ```bash
-   cp config/payment_config.example.php config/payment_config.php
-   ```
-4. Renseigner les clés, puis mettre `'sandbox' => false`.
-5. Tester un achat de faible montant → vérifier qu'il apparaît **Payé** dans **Ventes**.
+### Phase 1 — Tester en sandbox (sans argent réel)
+
+Guide détaillé : **`PAIEMENT_KKIAPAY_SANDBOX.md`**.
+
+1. Créer un compte sur [kkiapay.me](https://kkiapay.me) et activer le mode **Sandbox**.
+2. Menu **Développeurs → Clés API** : copier les 3 clés de test.
+3. Renseigner `config/payment_config.php` (fichier local, ignoré par Git) :
+   - `public_key`, `private_key`, `secret_key` ;
+   - garder `'sandbox' => true`.
+4. Vérifier la configuration : `php tools/kkiapay_check.php`.
+5. Tester un achat avec le numéro MTN Bénin `22997000000` (succès),
+   puis `22997000002` (échec).
+6. Vérifier que la commande passe en **Payé** dans **Admin → Ventes**.
+
+### Phase 2 — Passer en paiement réel
+
+1. Faire valider le compte marchand (**KYC**) dans le tableau de bord.
+2. Récupérer les clés **Live** (elles sont différentes des clés sandbox).
+3. Remplacer les clés et mettre `'sandbox' => false`.
+4. Vérifier `php tools/kkiapay_check.php`, puis faire un achat réel de faible montant.
 
 > Sans ces clés, le site fonctionne normalement : les documents payants affichent seulement « paiement bientôt disponible ».
+> L’adresse de vérification dépend du mode : `https://api-sandbox.kkiapay.me` (test) ou
+> `https://api.kkiapay.me` (réel), avec le chemin `/api/v1/transactions/status`.
 
 ---
 

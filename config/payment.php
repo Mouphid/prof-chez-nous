@@ -86,6 +86,15 @@ function payment_supports_widget(?string $provider = null): bool {
 }
 
 /**
+ * Sommes-nous en mode test (sandbox) ?
+ * En sandbox, aucun argent réel n'est encaissé.
+ */
+function payment_is_sandbox(): bool {
+    $cfg = payment_config();
+    return !empty($cfg['sandbox']);
+}
+
+/**
  * Les clés du prestataire actif sont-elles renseignées ?
  */
 function payment_is_configured(): bool {
@@ -156,7 +165,16 @@ function payment_verify_transaction(string $transactionId): array {
  */
 function kkiapay_verify_transaction(string $transactionId): array {
     $cfg = payment_config();
-    $url = 'https://api.kkiapay.me/api/v1/transactions/verify';
+
+    // Kkiapay utilise deux serveurs distincts :
+    //   - test  : https://api-sandbox.kkiapay.me
+    //   - réel  : https://api.kkiapay.me
+    // L'adresse de vérification officielle est /api/v1/transactions/status
+    // (voir le SDK officiel kkiapay/php-sdk).
+    $base = !empty($cfg['sandbox'])
+        ? 'https://api-sandbox.kkiapay.me'
+        : 'https://api.kkiapay.me';
+    $url = $base . '/api/v1/transactions/status';
 
     $payload = json_encode(['transactionId' => $transactionId]);
 
@@ -169,9 +187,9 @@ function kkiapay_verify_transaction(string $transactionId): array {
         CURLOPT_HTTPHEADER     => [
             'Content-Type: application/json',
             'Accept: application/json',
-            'x-api-key: ' . $cfg['kkiapay']['public_key'],
-            'x-private-key: ' . $cfg['kkiapay']['private_key'],
-            'x-secret-key: ' . $cfg['kkiapay']['secret_key'],
+            'X-API-KEY: ' . $cfg['kkiapay']['public_key'],
+            'X-PRIVATE-KEY: ' . $cfg['kkiapay']['private_key'],
+            'X-SECRET-KEY: ' . $cfg['kkiapay']['secret_key'],
         ],
     ]);
 
