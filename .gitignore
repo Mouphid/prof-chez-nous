@@ -1,5 +1,6 @@
 # Documentation et notes internes (gardées uniquement en local, hors Git)
 *.md
+/*.pdf
 
 # Logs
 logs/
