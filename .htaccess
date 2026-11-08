@@ -63,7 +63,7 @@ Options -Indexes
     ExpiresByType font/woff2 "access plus 30 days"
 </IfModule>
 
-# Bloquer l'exécution PHP dans uploads
+# Bloquer l'exécution PHP dans uploads et gérer les URL propres sans /public/
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteRule ^sitemap\.xml$ public/sitemap.php [L]
@@ -73,6 +73,22 @@ Options -Indexes
     # Ils passent par public/download.php, public/video.php et public/course_file.php,
     # qui contrôlent les droits.
     RewriteRule ^uploads/(pdf|docs|audio|video|cours)/ - [F,L]
+
+    # Rediriger en 301 les requêtes GET sur /public/index.php ou /index.php vers /
+    RewriteCond %{REQUEST_METHOD} =GET
+    RewriteCond %{THE_REQUEST} \s/+(?:public/)?index\.php[\s?] [NC]
+    RewriteRule ^ / [R=301,L]
+
+    # Rediriger en 301 les requêtes GET sur /public/<page>.php vers /<page>.php
+    RewriteCond %{REQUEST_METHOD} =GET
+    RewriteCond %{THE_REQUEST} \s/+public/([a-zA-Z0-9_-]+\.php)[\s?] [NC]
+    RewriteRule ^ /%1 [R=301,L]
+
+    # Réécrire en interne /<page>.php vers public/<page>.php (conserve GET et POST)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{DOCUMENT_ROOT}/public/$1 -f
+    RewriteRule ^([a-zA-Z0-9_-]+\.php)$ public/$1 [L,QSA]
 </IfModule>
 
 # Empêcher l'accès au dossier _debug_backup
