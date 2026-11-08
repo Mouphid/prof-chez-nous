@@ -3,13 +3,13 @@
 # ============================================================
 
 # Bloquer l'accès aux dossiers sensibles
-RedirectMatch 403 ^/(config|includes|sql|vendor|logs)/.*$
+RedirectMatch 403 ^/(config|includes|sql|vendor|logs|tools)/.*$
 
-# Protéger les fichiers sensibles à la racine
+# Protéger les fichiers sensibles à la racine (fichiers cachés, .md, .sh, composer)
 <FilesMatch "^\.">
     Require all denied
 </FilesMatch>
-<FilesMatch "^(composer\.(json|lock)|skills-lock\.json|README\.md)$">
+<FilesMatch "(\.(md|sh)|^(composer\.(json|lock)|skills-lock\.json))$">
     Require all denied
 </FilesMatch>
 
