@@ -32,7 +32,7 @@
         <div class="sbr-topbar" aria-hidden="true"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16 sm:h-[4.5rem] relative">
             <a href="../public/index.php" class="flex items-center gap-2.5 transition group">
-                <img src="../img/logo.jpg" alt="<?= SITE_NAME ?>" class="h-10 sm:h-12 w-auto rounded-lg group-hover:scale-105 transition-transform duration-300">
+                <?= logo_tag('h-10 sm:h-12', 'auto', 'group-hover:scale-105 transition-transform duration-300') ?>
             </a>
             <nav class="hidden md:flex items-center gap-2 sm:gap-2.5 pl-6" aria-label="Navigation principale">
                 <?php

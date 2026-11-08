@@ -317,10 +317,41 @@ function counter_animation_script() {
     <?php
 }
 
+// ─── Logo adapté au thème ───
+/**
+ * Balise <img> du logo Joie Enseignante.
+ *
+ * @param string $classes classes de hauteur Tailwind (ex. « h-10 sm:h-12 »)
+ * @param string $variant « auto » = gris en clair / blanc en sombre,
+ *                        « light » = noir, « dark » = blanc
+ * @param string $extra   classes supplémentaires (ex. « mx-auto mb-2 »)
+ */
+function logo_tag(string $classes = 'h-10', string $variant = 'auto', string $extra = ''): string
+{
+    $base = BASE_URL . 'img/';
+    $alt  = htmlspecialchars(SITE_NAME, ENT_QUOTES);
+    $cls  = trim($classes . ' w-auto ' . $extra);
+
+    if ($variant === 'dark') {
+        return '<img src="' . $base . 'logo-blanc.png" alt="' . $alt . '" class="' . $cls . '">';
+    }
+    if ($variant === 'light') {
+        return '<img src="' . $base . 'logo-noir.png" alt="' . $alt . '" class="' . $cls . '">';
+    }
+
+    // « auto » : gris sur fond clair, blanc sur fond sombre.
+    return '<img src="' . $base . 'logo-gris.png" alt="' . $alt . '" class="' . $cls . ' dark:hidden">'
+        . '<img src="' . $base . 'logo-blanc.png" alt="" aria-hidden="true" class="' . $cls . ' hidden dark:block">';
+}
+
 // ─── Head (Tailwind local + Phosphor + Inter local) ───
 function cdn_head() {
     $a = BASE_URL;
     ?>
+    <link rel="icon" href="<?= $a ?>img/favicon-32.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="<?= $a ?>img/favicon-192.png" sizes="192x192" type="image/png">
+    <link rel="shortcut icon" href="<?= $a ?>img/favicon.ico">
+    <link rel="apple-touch-icon" href="<?= $a ?>img/apple-touch-icon.png">
     <link href="<?= $a ?>assets/css/tailwind.css" rel="stylesheet">
     <style>:root{--font-sans:'Inter',ui-sans-serif,system-ui,sans-serif;--font-display:'Inter',ui-sans-serif,system-ui,sans-serif}</style>
     <link href="<?= $a ?>assets/css/sobre.css" rel="stylesheet">

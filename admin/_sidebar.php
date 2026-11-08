@@ -57,7 +57,7 @@ function admin_nav_link(string $key, string $href, string $icon, string $label, 
 ?>
 <aside id="adminSidebar" class="admin-sidebar w-64 fixed h-full overflow-y-auto z-40 flex flex-col" aria-label="Navigation administration">
     <a href="dashboard.php" class="admin-side-brand">
-        <img src="../img/logo.jpg" alt="Joie Enseignante">
+        <?= logo_tag('', 'dark') ?>
         <span>Joie Enseignante<small>Administration</small></span>
     </a>
 

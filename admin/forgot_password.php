@@ -78,7 +78,7 @@ $page_title = "Mot de passe oublié - Joie Enseignante";
     <div class="hidden lg:flex w-1/2 bg-cover bg-center relative items-center justify-center" style="background-image: url('<?= BASE_URL ?>img/bg/admin-login.jpg');">
         <div class="absolute inset-0 bg-gradient-to-br from-primary/90 to-indigo-900/90"></div>
         <div class="relative z-10 text-center px-12 max-w-md">
-            <img src="../img/logo.jpg" alt="Joie Enseignante" class="h-32 w-auto">
+            <?= logo_tag('h-32', 'dark') ?>
             <p class="text-white/70 mt-6 leading-relaxed text-lg">Espace réservé aux administrateurs et auteurs</p>
         </div>
     </div>
@@ -86,7 +86,7 @@ $page_title = "Mot de passe oublié - Joie Enseignante";
     <main class="w-full lg:w-1/2 min-h-screen flex items-center justify-center p-4" id="main-content">
         <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl p-10">
             <div class="text-center mb-8">
-                <img src="../img/logo.jpg" alt="Joie Enseignante" class="h-16 w-auto mx-auto mb-2">
+                <?= logo_tag('h-16', 'light', 'mx-auto mb-2') ?>
                 <h1 class="text-2xl font-bold text-gray-900">Mot de passe oublié</h1>
                 <p class="text-gray-500 mt-1">Recevez un lien pour choisir un nouveau mot de passe</p>
             </div>

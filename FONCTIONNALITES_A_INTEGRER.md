@@ -205,7 +205,7 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 
 | # | Point | État | Bloqué par |
 |---|---|---|---|
-| G1 | Clés du prestataire de paiement (Kkiapay ou FedaPay) | ⏸ | clés **sandbox** disponibles après inscription gratuite ; clés réelles après validation KYC |
+| G1 | Clés du prestataire de paiement (Kkiapay ou FedaPay) | ✅ sandbox testé (8 nov. 2026) — ⏸ réel | clés **sandbox** actives ; clés réelles après validation KYC |
 | G2 | Domaine + hébergement OVH | ⏸ | achat client |
 | G3 | SSL (HTTPS) | ⏸ | hébergement |
 | G4 | SMTP + SPF/DKIM | ⏸ | hébergement / boîte mail |
@@ -275,4 +275,6 @@ Il évite de les oublier et sert de feuille de route le jour de l'intégration.
 | 7 nov. 2026 | Export CSV des ventes (E2) | `797f222` | oui (local) | filtres respectés, protection contre les formules Excel |
 | 7 nov. 2026 | Réglages du site (E1) | `e1f17be` | oui (local) | coordonnées et réseaux dans `settings`, page Contact branchée, réseaux vides masqués |
 | 7 nov. 2026 | Journal des actions admin (E3) | `e1f17be` | oui (local) | connexion, créations, modifications, suppressions, envois, réglages ; filtres et pagination |
+| 8 nov. 2026 | Test Kkiapay sandbox de bout en bout | — | oui | clé publique suffisante en sandbox, vérification avec réessais, échec bloqué sans lien |
+| 8 nov. 2026 | Logos adaptés au thème + favicons PNG | — | oui | gris en clair, blanc en sombre, blanc sur la barre admin, favicons PNG 16→512 |
 | | | | | |

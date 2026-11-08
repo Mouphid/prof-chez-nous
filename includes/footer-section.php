@@ -8,7 +8,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
         <div class="sm:col-span-2 lg:col-span-1">
             <a href="index.php" class="flex items-center gap-2.5 mb-4 group">
-                <img src="../img/logo.jpg" alt="<?= SITE_NAME ?>" class="h-10 w-auto rounded-lg group-hover:scale-105 transition-transform">
+                <?= logo_tag('h-10', 'auto', 'group-hover:scale-105 transition-transform') ?>
             </a>
             <p class="leading-relaxed text-gray-500 dark:text-dark-300 text-sm mb-6"><?= SITE_TAGLINE ?></p>
             <div class="flex items-center gap-2">
