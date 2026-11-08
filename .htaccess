@@ -77,12 +77,12 @@ Options -Indexes
     # Rediriger en 301 les requêtes GET/HEAD sur /public/index.php ou /index.php vers /
     RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$
     RewriteCond %{THE_REQUEST} \s/+(?:public/)?index\.php[\s?] [NC]
-    RewriteRule ^ / [R=301,L]
+    RewriteRule ^ https://%{HTTP_HOST}/ [R=301,L]
 
     # Rediriger en 301 les requêtes GET/HEAD sur /public/<page>.php vers /<page>.php
     RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$
     RewriteCond %{THE_REQUEST} \s/+public/([a-zA-Z0-9_-]+\.php)[\s?] [NC]
-    RewriteRule ^ /%1 [R=301,L]
+    RewriteRule ^ https://%{HTTP_HOST}/%1 [R=301,L]
 
     # Réécrire en interne /<page>.php vers public/<page>.php (conserve GET et POST)
     RewriteCond %{REQUEST_FILENAME} !-f
