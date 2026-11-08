@@ -438,6 +438,9 @@ body.admin-shell {
     background: #1e3a5f;
     border-right: 1px solid rgba(255, 255, 255, .08);
     color: #cbd5e1;
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
 }
 .admin-side-brand {
     position: relative;
@@ -445,7 +448,7 @@ body.admin-shell {
     flex: 0 0 auto;
     align-items: center;
     justify-content: center;
-    padding: 1.6rem 1.15rem 1.45rem;
+    padding: 1rem 1rem .9rem;
     border-bottom: 1px solid rgba(255, 255, 255, .10);
     background:
         radial-gradient(120% 150% at 50% 0%, rgba(255, 255, 255, .12), rgba(255, 255, 255, 0) 62%);
@@ -463,7 +466,7 @@ body.admin-shell {
     background: linear-gradient(90deg, rgba(179, 147, 107, 0), #b3936b, rgba(179, 147, 107, 0));
 }
 .admin-side-brand img {
-    width: min(9.75rem, 100%);
+    width: min(8.25rem, 100%);
     height: auto;
     max-width: 100%;
     border-radius: .5rem;
@@ -474,28 +477,37 @@ body.admin-shell {
     transform: scale(1.04);
     filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .35));
 }
-.adm-side-nav { padding: .9rem .75rem 1.25rem; }
+.adm-side-nav {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: .5rem .7rem .5rem;
+}
+.adm-side-nav ul > :not([hidden]) ~ :not([hidden]) {
+    margin-top: .12rem;
+}
 .adm-side-section {
-    padding: .85rem .65rem .4rem;
-    font-size: .625rem;
+    padding: .5rem .6rem .2rem;
+    font-size: .58rem;
     font-weight: 700;
     letter-spacing: .1em;
     text-transform: uppercase;
     color: rgba(226, 232, 240, .45);
 }
-.adm-side-section:first-child { padding-top: .25rem; }
+.adm-side-section:first-child { padding-top: .15rem; }
 .adm-nav-link {
     display: flex;
     align-items: center;
-    gap: .7rem;
-    padding: .55rem .65rem;
-    border-radius: .55rem;
-    font-size: .855rem;
+    gap: .6rem;
+    padding: .36rem .6rem;
+    border-radius: .5rem;
+    font-size: .81rem;
     font-weight: 500;
     color: #cbd5e1;
     transition: background-color .18s ease, color .18s ease;
 }
-.adm-nav-link i { font-size: 1.05rem; color: #94a3b8; transition: color .18s ease; }
+.adm-nav-link i { font-size: .98rem; color: #94a3b8; transition: color .18s ease; }
 .adm-nav-link:hover { background: rgba(255, 255, 255, .08); color: #ffffff; }
 .adm-nav-link:hover i { color: #e2e8f0; }
 .adm-nav-link.is-active {
@@ -507,8 +519,8 @@ body.admin-shell {
 .adm-nav-link.is-active i { color: #fdba74; }
 .adm-nav-count {
     margin-left: auto;
-    min-width: 1.3rem;
-    height: 1.3rem;
+    min-width: 1.2rem;
+    height: 1.2rem;
     padding: 0 .35rem;
     display: inline-flex;
     align-items: center;
@@ -516,28 +528,46 @@ body.admin-shell {
     border-radius: 9999px;
     background: rgba(249, 115, 22, .18);
     color: #fdba74;
-    font-size: .65rem;
+    font-size: .62rem;
     font-weight: 700;
 }
 .adm-side-footer {
-    margin: 0 .75rem 1rem;
-    padding: .85rem;
+    flex: 0 0 auto;
+    margin: 0 .75rem .5rem;
+    padding: .6rem .75rem;
     border: 1px solid rgba(255, 255, 255, .10);
-    border-radius: .75rem;
+    border-radius: .65rem;
     background: rgba(255, 255, 255, .05);
 }
-.adm-side-footer p { font-size: .72rem; line-height: 1.45; color: rgba(226, 232, 240, .65); }
+.adm-side-footer p { font-size: .68rem; line-height: 1.35; color: rgba(226, 232, 240, .65); }
 .adm-side-footer p strong { color: #f8fafc; }
 .adm-side-footer a {
     display: inline-flex;
     align-items: center;
     gap: .3rem;
-    margin-top: .45rem;
-    font-size: .72rem;
+    margin-top: .3rem;
+    font-size: .68rem;
     font-weight: 600;
     color: #fdba74;
 }
 .adm-side-footer a:hover { text-decoration: underline; }
+.adm-side-logout { flex: 0 0 auto; }
+
+/* Écrans peu hauts (portables 768 px et moins) : condense encore
+   pour que l'intégralité du menu reste visible sans défilement. */
+@media (max-height: 800px) {
+    .admin-side-brand { padding: .7rem .9rem .65rem; }
+    .admin-side-brand img { width: min(6.75rem, 100%); }
+    .adm-side-nav { padding: .35rem .65rem .35rem; }
+    .adm-side-section { padding: .35rem .6rem .12rem; font-size: .54rem; }
+    .adm-nav-link { padding: .26rem .55rem; font-size: .78rem; }
+    .adm-side-footer { margin: 0 .65rem .35rem; padding: .45rem .65rem; }
+    .adm-side-footer p { font-size: .63rem; line-height: 1.25; }
+    .adm-side-footer a { margin-top: .2rem; font-size: .64rem; }
+}
+@media (max-height: 690px) {
+    .adm-side-footer { display: none; }
+}
 
 /* ─── Topbar ─── */
 .adm-topbar {

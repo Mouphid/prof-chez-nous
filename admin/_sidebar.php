@@ -55,12 +55,12 @@ function admin_nav_link(string $key, string $href, string $icon, string $label, 
         . '</a></li>';
 }
 ?>
-<aside id="adminSidebar" class="admin-sidebar w-64 fixed h-full overflow-y-auto z-40 flex flex-col" aria-label="Navigation administration">
+<aside id="adminSidebar" class="admin-sidebar w-64 fixed inset-y-0 z-40 flex flex-col" aria-label="Navigation administration">
     <a href="dashboard.php" class="admin-side-brand" aria-label="<?= htmlspecialchars(SITE_NAME) ?> — Administration">
         <?= logo_tag('', 'dark') ?>
     </a>
 
-    <nav class="adm-side-nav flex-1" aria-label="Menu admin">
+    <nav class="adm-side-nav flex-1 min-h-0" aria-label="Menu admin">
         <p class="adm-side-section">Menu</p>
         <ul class="space-y-1">
             <?php admin_nav_link('dashboard', 'dashboard.php', 'ph-squares-four', 'Tableau de bord', $active); ?>
@@ -107,7 +107,7 @@ function admin_nav_link(string $key, string $href, string $icon, string $label, 
         </a>
     </div>
 
-    <div class="px-3 pb-4">
+    <div class="adm-side-logout px-3 pb-2.5">
         <a href="logout.php" class="adm-nav-link">
             <i class="ph ph-sign-out"></i>
             <span>Déconnexion</span>
