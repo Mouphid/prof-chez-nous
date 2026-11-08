@@ -1,11 +1,22 @@
 <?php
 // config/config.php
+// Charge config/db_config.php s'il existe (fichier local de production hors Git),
+// sinon lit les variables d'environnement ou utilise les valeurs de développement local.
+$__db_cfg = file_exists(__DIR__ . '/db_config.php') ? (require __DIR__ . '/db_config.php') : [];
 
-$host = getenv('DB_HOST') ?: 'localhost';
-$port = getenv('DB_PORT') ?: '3306';
-$db_name = getenv('DB_NAME') ?: 'joieenseignante';
-$username = getenv('DB_USER') ?: 'root';
-$password = getenv('DB_PASS') !== false ? getenv('DB_PASS') : '';
+$host     = $__db_cfg['host'] ?? (getenv('DB_HOST') ?: 'localhost');
+$port     = $__db_cfg['port'] ?? (getenv('DB_PORT') ?: '3306');
+$db_name  = $__db_cfg['name'] ?? (getenv('DB_NAME') ?: 'joieenseignante');
+$username = $__db_cfg['user'] ?? (getenv('DB_USER') ?: 'root');
+$password = $__db_cfg['pass'] ?? (getenv('DB_PASS') !== false ? getenv('DB_PASS') : '');
+$__debug  = $__db_cfg['debug'] ?? (getenv('APP_DEBUG') === '1');
+
+if (!$__debug) {
+    ini_set('display_errors', '0');
+    ini_set('display_startup_errors', '0');
+    ini_set('log_errors', '1');
+}
+unset($__db_cfg);
 
 // Connexion avec plusieurs tentatives (prod: localhost socket / dev local: 127.0.0.1:3306)
 $attempts = [
