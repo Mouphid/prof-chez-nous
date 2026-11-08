@@ -56,9 +56,8 @@ function admin_nav_link(string $key, string $href, string $icon, string $label, 
 }
 ?>
 <aside id="adminSidebar" class="admin-sidebar w-64 fixed h-full overflow-y-auto z-40 flex flex-col" aria-label="Navigation administration">
-    <a href="dashboard.php" class="admin-side-brand">
+    <a href="dashboard.php" class="admin-side-brand" aria-label="<?= htmlspecialchars(SITE_NAME) ?> — Administration">
         <?= logo_tag('', 'dark') ?>
-        <span>Joie Enseignante<small>Administration</small></span>
     </a>
 
     <nav class="adm-side-nav flex-1" aria-label="Menu admin">

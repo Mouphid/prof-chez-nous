@@ -440,32 +440,39 @@ body.admin-shell {
     color: #cbd5e1;
 }
 .admin-side-brand {
+    position: relative;
     display: flex;
+    flex: 0 0 auto;
     align-items: center;
-    gap: .75rem;
-    padding: 1.15rem 1.15rem;
+    justify-content: center;
+    padding: 1.6rem 1.15rem 1.45rem;
     border-bottom: 1px solid rgba(255, 255, 255, .10);
+    background:
+        radial-gradient(120% 150% at 50% 0%, rgba(255, 255, 255, .12), rgba(255, 255, 255, 0) 62%);
+    overflow: hidden;
+}
+.admin-side-brand::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 3.5rem;
+    height: 2px;
+    transform: translate(-50%, 50%);
+    border-radius: 2px;
+    background: linear-gradient(90deg, rgba(179, 147, 107, 0), #b3936b, rgba(179, 147, 107, 0));
 }
 .admin-side-brand img {
-    height: 2rem;
-    width: auto;
+    width: min(9.75rem, 100%);
+    height: auto;
+    max-width: 100%;
     border-radius: .5rem;
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, .28));
+    transition: transform .25s ease, filter .25s ease;
 }
-.admin-side-brand span {
-    font-size: .9rem;
-    font-weight: 700;
-    color: #f8fafc;
-    letter-spacing: -.01em;
-    line-height: 1.1;
-}
-.admin-side-brand small {
-    display: block;
-    font-size: .65rem;
-    font-weight: 500;
-    color: rgba(226, 232, 240, .55);
-    letter-spacing: .04em;
-    text-transform: uppercase;
-    margin-top: .15rem;
+.admin-side-brand:hover img {
+    transform: scale(1.04);
+    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .35));
 }
 .adm-side-nav { padding: .9rem .75rem 1.25rem; }
 .adm-side-section {
