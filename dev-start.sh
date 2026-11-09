@@ -63,6 +63,10 @@ if ! mysql --socket="$SOCK" -u root "$DB_NAME" -e "SHOW COLUMNS FROM newsletter_
     echo "• Application de sql/migration_newsletter_suite.sql..."
     mysql --socket="$SOCK" -u root "$DB_NAME" < "$PROJET/sql/migration_newsletter_suite.sql"
 fi
+if ! mysql --socket="$SOCK" -u root "$DB_NAME" -e "SHOW COLUMNS FROM newsletter_subscribers LIKE 'consent_at'" 2>/dev/null | grep -q consent_at; then
+    echo "• Application de sql/migration_newsletter_consentement.sql..."
+    mysql --socket="$SOCK" -u root "$DB_NAME" < "$PROJET/sql/migration_newsletter_consentement.sql"
+fi
 if ! mysql --socket="$SOCK" -u root "$DB_NAME" -e "SHOW TABLES LIKE 'courses'" 2>/dev/null | grep -q courses; then
     echo "• Application de sql/migration_cours.sql..."
     mysql --socket="$SOCK" -u root "$DB_NAME" < "$PROJET/sql/migration_cours.sql"
@@ -94,7 +98,7 @@ fi
 echo "✔ Migrations à jour"
 
 # ── 3. Serveur PHP ───────────────────────────────────────────
-if pgrep -f "php -S 127.0.0.1:8080" >/dev/null; then
+if pgrep -f "[p]hp -S 127.0.0.1:8080" >/dev/null; then
     echo "✔ Serveur PHP déjà démarré"
 else
     echo "✔ Démarrage du serveur PHP..."

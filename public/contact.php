@@ -56,14 +56,14 @@ include "../includes/header.php";
 
 <div class="relative overflow-hidden bg-cover bg-center" style="background-image: url('<?= BASE_URL ?>img/bg/banner-contact.jpg');">
     <div class="sbr-overlay"></div>
-    <div class="relative z-10 max-w-7xl mx-auto px-4 py-16 text-center">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-16 text-center">
         <span class="inline-block text-xs font-semibold text-accent-400 uppercase tracking-widest mb-3"><i class="ph ph-envelope"></i> Écrivez-nous</span>
         <h1 class="text-3xl sm:text-4xl font-extrabold font-display text-white">Contact</h1>
         <p class="text-white/70 mt-4 text-base max-w-xl mx-auto">Une question, une suggestion ? Notre équipe vous répond sous 24 à 48h ouvrées.</p>
     </div>
 </div>
 
-<div id="main-content" class="max-w-7xl mx-auto px-4 py-12">
+<div id="main-content" class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
         <div class="lg:col-span-2">
             <div class="bg-white dark:bg-dark-50 rounded-xl shadow-sm border border-gray-100 dark:border-dark-100 p-8">
@@ -124,27 +124,27 @@ include "../includes/header.php";
         </div>
 
         <div class="space-y-6">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-900 mb-4"><i class="ph ph-identification-card text-primary"></i> Coordonnées</h3>
+            <div class="bg-white dark:bg-dark-50 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-dark-100 p-6">
+                <h3 class="font-semibold text-gray-900 dark:text-white mb-4"><i class="ph ph-identification-card text-primary"></i> Coordonnées</h3>
                 <ul class="space-y-4">
                     <li class="flex items-start gap-3">
-                        <div class="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center text-primary flex-shrink-0"><i class="ph ph-envelope"></i></div>
-                        <div><strong class="text-sm">Email</strong><p class="text-sm text-gray-500"><?= htmlspecialchars(SITE_EMAIL) ?></p></div>
+                        <div class="w-10 h-10 bg-primary-50 dark:bg-primary-900/20 rounded-lg flex items-center justify-center text-primary flex-shrink-0"><i class="ph ph-envelope"></i></div>
+                        <div><strong class="text-sm text-gray-900 dark:text-white">Email</strong><p class="text-sm text-gray-500 dark:text-dark-300"><?= htmlspecialchars(SITE_EMAIL) ?></p></div>
                     </li>
                     <li class="flex items-start gap-3">
-                        <div class="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center text-primary flex-shrink-0"><i class="ph ph-phone"></i></div>
-                        <div><strong class="text-sm">Téléphone</strong><p class="text-sm text-gray-500"><?= htmlspecialchars(SITE_PHONE) ?></p></div>
+                        <div class="w-10 h-10 bg-primary-50 dark:bg-primary-900/20 rounded-lg flex items-center justify-center text-primary flex-shrink-0"><i class="ph ph-phone"></i></div>
+                        <div><strong class="text-sm text-gray-900 dark:text-white">Téléphone</strong><p class="text-sm text-gray-500 dark:text-dark-300"><?= htmlspecialchars(SITE_PHONE) ?></p></div>
                     </li>
                     <li class="flex items-start gap-3">
-                        <div class="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center text-primary flex-shrink-0"><i class="ph ph-map-pin"></i></div>
-                        <div><strong class="text-sm">Adresse</strong><p class="text-sm text-gray-500"><?= htmlspecialchars(SITE_ADDRESS) ?></p></div>
+                        <div class="w-10 h-10 bg-primary-50 dark:bg-primary-900/20 rounded-lg flex items-center justify-center text-primary flex-shrink-0"><i class="ph ph-map-pin"></i></div>
+                        <div><strong class="text-sm text-gray-900 dark:text-white">Adresse</strong><p class="text-sm text-gray-500 dark:text-dark-300"><?= htmlspecialchars(SITE_ADDRESS) ?></p></div>
                     </li>
                 </ul>
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-900 mb-4"><i class="ph ph-key text-primary"></i> Vous avez perdu votre lien ?</h3>
-                <p class="text-sm text-gray-500 mb-4">
+            <div class="bg-white dark:bg-dark-50 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-dark-100 p-6">
+                <h3 class="font-semibold text-gray-900 dark:text-white mb-4"><i class="ph ph-key text-primary"></i> Vous avez perdu votre lien ?</h3>
+                <p class="text-sm text-gray-500 dark:text-dark-300 mb-4">
                     Indiquez l'adresse utilisée lors de l'achat : nous vous renvoyons
                     vos liens de téléchargement et d'accès aux cours.
                 </p>
@@ -153,19 +153,19 @@ include "../includes/header.php";
                 </a>
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-900 mb-4"><i class="ph ph-share-network text-primary"></i> Suivez-nous</h3>
+            <div class="bg-white dark:bg-dark-50 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-dark-100 p-6">
+                <h3 class="font-semibold text-gray-900 dark:text-white mb-4"><i class="ph ph-share-network text-primary"></i> Suivez-nous</h3>
                 <?php $liens_sociaux = social_links(); ?>
                 <div class="flex flex-wrap gap-3">
                     <?php foreach ($liens_sociaux as $lien): ?>
                     <a href="<?= htmlspecialchars($lien['url']) ?>" target="_blank" rel="noopener"
                        title="<?= htmlspecialchars($lien['label']) ?>"
-                       class="w-10 h-10 bg-gray-100 hover:bg-primary-100 hover:text-primary rounded-lg flex items-center justify-center transition text-gray-600">
+                       class="w-10 h-10 bg-gray-100 dark:bg-dark-100 hover:bg-primary-100 hover:text-primary rounded-lg flex items-center justify-center transition text-gray-600 dark:text-dark-300">
                         <i class="ph ph-<?= $lien['icon'] ?>"></i>
                     </a>
                     <?php endforeach; ?>
                     <?php if (!$liens_sociaux): ?>
-                    <p class="text-sm text-gray-400">Aucun réseau social renseigné pour le moment.</p>
+                    <p class="text-sm text-gray-400 dark:text-dark-300">Aucun réseau social renseigné pour le moment.</p>
                     <?php endif; ?>
                 </div>
             </div>

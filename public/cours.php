@@ -36,7 +36,7 @@ if ($courses) {
 
     <div class="relative overflow-hidden bg-cover bg-center" style="background-image: url('<?= BASE_URL ?>img/bg/hero-1.jpg');">
     <div class="sbr-overlay"></div>
-    <div class="relative z-10 max-w-7xl mx-auto px-4 py-16 text-center">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-16 text-center">
         <span class="inline-block text-xs font-semibold text-accent-400 uppercase tracking-widest mb-3">Formation universitaire</span>
         <h1 class="text-3xl sm:text-4xl font-extrabold font-display text-white">Cours du professeur</h1>
         <p class="text-white/70 mt-4 text-base max-w-xl mx-auto">Ressources pédagogiques pour mes étudiants en littérature</p>
@@ -98,7 +98,7 @@ if ($courses) {
                                 <ul class="space-y-2">
                                     <?php foreach ($objectifs as $obj): ?>
                                     <li class="flex items-start gap-2.5 text-gray-600 dark:text-dark-400">
-                                        <i class="ph ph-check-circle text-emerald-500 mt-1 flex-shrink-0"></i>
+                                        <i class="ph ph-check-circle text-primary-500 mt-1 flex-shrink-0"></i>
                                         <span><?= htmlspecialchars($obj) ?></span>
                                     </li>
                                     <?php endforeach; ?>
@@ -128,10 +128,10 @@ if ($courses) {
                                             <?php endif; ?>
                                             <div class="flex flex-wrap items-center gap-3 mt-1.5 text-[11px] text-gray-500 dark:text-dark-300">
                                                 <?php if ($chapter['pdf_path']): ?>
-                                                <span class="inline-flex items-center gap-1"><i class="ph ph-file-pdf text-red-500"></i> PDF</span>
+                                                <span class="inline-flex items-center gap-1"><i class="ph ph-file-pdf text-accent-600"></i> PDF</span>
                                                 <?php endif; ?>
                                                 <?php if ($chapter['video_path']): ?>
-                                                <span class="inline-flex items-center gap-1"><i class="ph ph-video text-blue-500"></i> Vidéo</span>
+                                                <span class="inline-flex items-center gap-1"><i class="ph ph-video text-primary-500"></i> Vidéo</span>
                                                 <?php endif; ?>
                                                 <?php if (!$chapter_free): ?>
                                                 <span class="inline-flex items-center gap-1 font-semibold text-gray-700 dark:text-dark-200">
@@ -141,7 +141,7 @@ if ($courses) {
                                                 <?php endif; ?>
                                             </div>
                                         </div>
-                                        <i class="ph <?= $chapter_free ? 'ph-lock-open text-emerald-500' : 'ph-lock-simple text-gray-400' ?> text-lg mt-1 flex-shrink-0" aria-hidden="true"></i>
+                                        <i class="ph <?= $chapter_free ? 'ph-lock-open text-primary-500' : 'ph-lock-simple text-gray-400' ?> text-lg mt-1 flex-shrink-0" aria-hidden="true"></i>
                                     </div>
                                     <?php endforeach; ?>
                                 </div>

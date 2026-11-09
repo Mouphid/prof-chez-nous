@@ -20,15 +20,25 @@
                     Une sélection de ressources, cours et publications, une fois par semaine, directement dans votre boîte mail.
                 </p>
 
-                <form class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto" action="newsletter_subscribe.php" method="post" novalidate>
+                <form class="max-w-lg mx-auto" action="newsletter_subscribe.php" method="post" novalidate>
                     <?= csrf_field() ?>
-                    <label for="nl-email" class="sr-only">Adresse email</label>
-                    <input type="email" name="email" id="nl-email" required placeholder="Votre adresse email"
-                        class="flex-1 px-5 py-4 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-white/50 text-sm focus:outline-none focus:ring-2 focus:ring-accent-400/60 focus:border-transparent backdrop-blur-md transition-all">
-                    <button type="submit"
-                        class="inline-flex items-center justify-center gap-2 bg-accent-500 hover:bg-accent-600 text-white font-bold px-8 py-4 rounded-2xl text-sm transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-accent-500/25 active:scale-[0.97] transform hover:-translate-y-0.5">
-                        S'abonner <i class="ph ph-arrow-right"></i>
-                    </button>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <label for="nl-email" class="sr-only">Adresse email</label>
+                        <input type="email" name="email" id="nl-email" required placeholder="Votre adresse email"
+                            class="flex-1 px-5 py-4 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-white/50 text-sm focus:outline-none focus:ring-2 focus:ring-accent-400/60 focus:border-transparent backdrop-blur-md transition-all">
+                        <button type="submit"
+                            class="inline-flex items-center justify-center gap-2 bg-accent-500 hover:bg-accent-600 text-white font-bold px-8 py-4 rounded-2xl text-sm transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-accent-500/25 active:scale-[0.97] transform hover:-translate-y-0.5">
+                            S'abonner <i class="ph ph-arrow-right"></i>
+                        </button>
+                    </div>
+                    <label class="flex items-start gap-2.5 text-left text-xs text-primary-100/90 mt-4 cursor-pointer">
+                        <input type="checkbox" name="consent" value="1" required
+                            class="mt-0.5 h-4 w-4 rounded border-white/40 bg-white/10 text-accent-500 focus:ring-accent-400 focus:ring-offset-0">
+                        <span>
+                            J'accepte de recevoir la lettre pédagogique et j'ai lu la
+                            <a href="confidentialite.php" class="underline decoration-white/40 hover:decoration-white font-semibold text-white transition">politique de confidentialité</a>.
+                        </span>
+                    </label>
                 </form>
             </div>
         </div>

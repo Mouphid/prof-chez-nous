@@ -4,9 +4,16 @@ require_once "../includes/functions.php";
 
 $page_title = "Accueil - Joie Enseignante";
 
-$page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $per_page = 4;
+
+$total = $pdo->query("SELECT COUNT(*) FROM posts WHERE (status = 'published' OR (status = 'scheduled' AND published_at <= NOW()))")->fetchColumn();
+$total_pages = max(1, (int)ceil($total / $per_page));
+
+// Par défaut, l'accueil affiche la page 3 (les articles récents restent dans la colonne latérale).
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 3;
+$page = max(1, min($page, $total_pages));
 $offset = ($page - 1) * $per_page;
+$is_default_page = !isset($_GET['page']);
 
 $stmt = $pdo->query("
     SELECT p.*, c.name as category_name, u.name as author_name,
@@ -21,14 +28,11 @@ $stmt = $pdo->query("
 ");
 $posts = $stmt->fetchAll();
 
-$total = $pdo->query("SELECT COUNT(*) FROM posts WHERE (status = 'published' OR (status = 'scheduled' AND published_at <= NOW()))")->fetchColumn();
-$total_pages = ceil($total / $per_page);
-
 $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
 
 include "../includes/header.php";
 ?>
-    <?php if ($page === 1): ?>
+    <?php if ($is_default_page || $page === 1): ?>
     <!-- ═══ HERO SECTION ═══ -->
     <section class="relative min-h-[85vh] flex items-center overflow-hidden" id="hero-slider">
         <?php foreach ($hero_slides as $i => $src): ?>
@@ -57,11 +61,11 @@ include "../includes/header.php";
                     <?= SITE_TAGLINE ?>. Partagez, apprenez et grandissez ensemble dans un cadre bienveillant.
                 </p>
                 <div class="flex flex-col sm:flex-row items-start gap-3">
-                    <a href="#articles" class="bg-white text-primary-700 font-semibold px-6 py-3.5 rounded-xl hover:bg-gray-50 transition-all duration-300 shadow-lg active:scale-[0.98] inline-flex items-center gap-2.5">
-                        <i class="ph ph-book-open text-lg"></i> Découvrir les articles
-                    </a>
-                    <a href="cours.php" class="bg-accent-500 text-white font-semibold px-6 py-3.5 rounded-xl hover:bg-accent-600 transition-all duration-300 shadow-lg active:scale-[0.98] inline-flex items-center gap-2.5">
+                    <a href="cours.php" class="sbr-hero-primary">
                         <i class="ph ph-graduation-cap text-lg"></i> Découvrir les cours
+                    </a>
+                    <a href="#articles" class="sbr-hero-secondary">
+                        <i class="ph ph-book-open text-lg"></i> Découvrir les articles
                     </a>
                 </div>
             </div>
@@ -91,7 +95,6 @@ include "../includes/header.php";
     })();
     </script>
     <?php endif; ?>
-
 
 
     <!-- ═══ INTRODUCTION ═══ -->
@@ -151,16 +154,16 @@ include "../includes/header.php";
         </div>
     </section>
 
-    <?php if ($page === 1): ?>
+    <?php if ($is_default_page || $page === 1): ?>
     <!-- ═══ FEATURES ═══ -->
     <section class="bg-white dark:bg-dark-50 py-16 sm:py-24 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
-            <div class="text-center mb-14 <?= REVEAL_UP ?>">
-                <span class="inline-flex items-center gap-2 text-xs font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-widest mb-3 bg-primary-50 dark:bg-primary-900/20 px-4 py-1.5 rounded-full">Nos fonctionnalités</span>
-                <h2 class="text-3xl sm:text-4xl font-display font-extrabold text-gray-900 dark:text-white mb-4">Tout ce dont vous avez besoin</h2>
-                <p class="text-gray-500 dark:text-dark-300 max-w-xl mx-auto">Une plateforme complète pour enrichir vos cours et partager vos ressources.</p>
+            <div class="mb-10 sm:mb-12 <?= REVEAL_UP ?>">
+                <span class="text-xs font-semibold text-primary-500 dark:text-primary-400 uppercase tracking-widest mb-2 block">Nos fonctionnalités</span>
+                <h2 class="text-3xl sm:text-4xl font-display font-extrabold text-gray-900 dark:text-white mb-3">Tout ce dont vous avez besoin</h2>
+                <p class="text-gray-500 dark:text-dark-300 max-w-2xl">Une plateforme complète pour enrichir vos cours et partager vos ressources.</p>
             </div>
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <?php
                 $features = [
                     ['ph-graduation-cap', 'Cours structurés', 'Accédez à des cours complets organisés par catégories pour faciliter votre enseignement au quotidien.', 'primary'],
@@ -189,46 +192,72 @@ include "../includes/header.php";
     <?php endif; ?>
 
     <!-- ═══ ARTICLES ═══ -->
+    <?php
+    // Compteur par catégorie en une seule requête (utilisé pour les puces mobile et la sidebar)
+    $cat_counts = [];
+    $cat_count_rows = $pdo->query("
+        SELECT id_category, COUNT(*) AS n FROM posts
+        WHERE (status = 'published' OR (status = 'scheduled' AND published_at <= NOW()))
+        GROUP BY id_category
+    ")->fetchAll();
+    foreach ($cat_count_rows as $row) {
+        $cat_counts[(int)$row['id_category']] = (int)$row['n'];
+    }
+    ?>
     <section class="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24" id="articles" aria-label="Derniers articles">
-        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10" <?= REVEAL_UP ?>>
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10 sm:mb-12" <?= REVEAL_UP ?>>
             <div>
                 <span class="text-xs font-semibold text-accent-600 dark:text-accent-400 uppercase tracking-widest mb-2 block">Le blog</span>
                 <h2 class="text-3xl sm:text-4xl font-display font-extrabold text-gray-900 dark:text-white">Derniers articles</h2>
             </div>
             <p class="text-sm text-gray-500 dark:text-dark-300"><?= number_format($total) ?> publication<?= $total > 1 ? 's' : '' ?> à découvrir</p>
         </div>
+
+        <!-- Puces de catégories (défilantes sur mobile et tablette) -->
+        <div class="lg:hidden sbr-chips-row mb-6" aria-label="Filtrer par catégorie">
+            <a href="publications.php" class="sbr-chip inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-primary-500 text-white shadow-sm">
+                Toutes (<?= number_format($total) ?>)
+            </a>
+            <?php foreach ($categories as $cat):
+                $nb_cat = $cat_counts[(int)$cat['id_category']] ?? 0;
+                if ($nb_cat === 0) continue;
+            ?>
+            <a href="category.php?id=<?= $cat['id_category'] ?>" class="sbr-chip inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-white dark:bg-dark-50 text-gray-700 dark:text-dark-300 border border-gray-200 dark:border-dark-100 hover:border-primary-300 transition">
+                <span><?= htmlspecialchars($cat['name']) ?></span>
+                <span class="text-gray-400">(<?= $nb_cat ?>)</span>
+            </a>
+            <?php endforeach; ?>
+        </div>
+
         <div class="flex flex-col lg:flex-row gap-8">
             <div class="flex-1 min-w-0">
                 <?php if (count($posts) > 0): ?>
-                    <div class="space-y-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <?php foreach ($posts as $i => $post): ?>
-                        <article class="bg-white dark:bg-dark-50 rounded-2xl border border-gray-100 dark:border-dark-100 hover:shadow-lg dark:hover:border-primary-800/30 transition-all duration-300 overflow-hidden group <?= REVEAL ?> stagger-<?= ($i % 6) + 1 ?>">
-                            <div class="flex flex-col sm:flex-row">
-                                <?php if (!empty($post['main_image'])): ?>
-                                <div class="sm:w-56 h-48 sm:h-auto overflow-hidden flex-shrink-0">
-                                    <img src="../uploads/images/<?= htmlspecialchars($post['main_image']) ?>" alt="<?= htmlspecialchars($post['title']) ?>" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <article class="bg-white dark:bg-dark-50 rounded-2xl border border-gray-100 dark:border-dark-100 hover:shadow-lg dark:hover:border-primary-800/30 transition-all duration-300 overflow-hidden group flex flex-col <?= REVEAL ?> stagger-<?= ($i % 6) + 1 ?>">
+                            <?= post_thumb_html($post, 'post.php?id=' . (int)$post['id_post']) ?>
+                            <div class="p-6 flex-1 flex flex-col">
+                                <div class="flex items-center gap-2.5 mb-3">
+                                    <span class="inline-flex items-center gap-1 text-xs font-semibold text-primary-700 dark:text-primary-300 bg-primary-50 dark:bg-primary-900/20 px-3 py-1 rounded-full"><?= htmlspecialchars($post['category_name'] ?? 'Non classé') ?></span>
+                                    <span class="text-gray-300 dark:text-dark-200">·</span>
+                                    <span class="text-xs text-gray-500 dark:text-dark-300"><?= format_date($post['created_at']) ?></span>
                                 </div>
-                                <?php endif; ?>
-                                <div class="p-6 flex-1 flex flex-col">
-                                    <div class="flex items-center gap-2.5 mb-3">
-                                        <span class="inline-flex items-center gap-1 text-xs font-semibold text-primary-700 dark:text-primary-300 bg-primary-50 dark:bg-primary-900/20 px-3 py-1 rounded-full"><?= htmlspecialchars($post['category_name'] ?? 'Non classé') ?></span>
-                                        <span class="text-gray-300 dark:text-dark-200">·</span>
-                                        <span class="text-xs text-gray-500 dark:text-dark-300"><?= format_date($post['created_at']) ?></span>
+                                <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white mb-2 leading-snug line-clamp-2">
+                                    <a href="post.php?id=<?= $post['id_post'] ?>" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"><?= htmlspecialchars($post['title']) ?></a>
+                                </h3>
+                                <p class="text-sm text-gray-600 dark:text-dark-300 leading-relaxed mb-4 flex-1 sbr-justify"><?= truncate(strip_tags($post['content']), 140) ?></p>
+                                <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-dark-100">
+                                    <div class="flex items-center gap-3 text-xs text-gray-500 dark:text-dark-300">
+                                        <?php if (($post['likes_count'] ?? 0) > 0): ?>
+                                        <span class="inline-flex items-center gap-1"><i class="ph ph-heart text-accent-600"></i> <?= (int)$post['likes_count'] ?></span>
+                                        <?php endif; ?>
+                                        <?php if (($post['comments_count'] ?? 0) > 0): ?>
+                                        <span class="inline-flex items-center gap-1"><i class="ph ph-chat-circle text-primary-600"></i> <?= (int)$post['comments_count'] ?></span>
+                                        <?php endif; ?>
                                     </div>
-                                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 leading-snug">
-                                        <a href="post.php?id=<?= $post['id_post'] ?>" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"><?= htmlspecialchars($post['title']) ?></a>
-                                    </h3>
-                                    <p class="text-sm text-gray-600 dark:text-dark-300 leading-relaxed mb-4 flex-1 sbr-justify"><?= truncate(strip_tags($post['content']), 180) ?></p>
-                                    <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-dark-100">
-                                        <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-dark-300">
-                                            <span class="inline-flex items-center gap-1.5"><i class="ph ph-user"></i> <?= htmlspecialchars($post['author_name'] ?? 'Anonyme') ?></span>
-                                            <span class="inline-flex items-center gap-1.5"><i class="ph ph-heart"></i> <?= $post['likes_count'] ?? 0 ?></span>
-                                            <span class="inline-flex items-center gap-1.5"><i class="ph ph-chat-circle"></i> <?= $post['comments_count'] ?? 0 ?></span>
-                                        </div>
-                                        <a href="post.php?id=<?= $post['id_post'] ?>" class="text-sm font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-all inline-flex items-center gap-1.5 group/link">
-                                            Lire <i class="ph ph-arrow-right group-hover/link:translate-x-1 transition-transform"></i>
-                                        </a>
-                                    </div>
+                                    <a href="post.php?id=<?= $post['id_post'] ?>" class="text-sm font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-all inline-flex items-center gap-1.5 group/link">
+                                        Lire <i class="ph ph-arrow-right group-hover/link:translate-x-1 transition-transform"></i>
+                                    </a>
                                 </div>
                             </div>
                         </article>
@@ -236,7 +265,7 @@ include "../includes/header.php";
                     </div>
 
                     <?php if ($total_pages > 1): ?>
-                    <nav class="flex justify-center items-center gap-2 mt-12" aria-label="Pagination">
+                    <nav class="flex flex-wrap justify-center items-center gap-2 mt-12" aria-label="Pagination">
                         <?php if ($page > 1): ?>
                         <a href="?page=<?= $page - 1 ?>" class="px-5 py-2.5 rounded-xl text-sm font-medium text-gray-500 dark:text-dark-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-50 transition-all inline-flex items-center gap-1.5"><i class="ph ph-caret-left"></i> Précédent</a>
                         <?php endif; ?>
@@ -253,70 +282,52 @@ include "../includes/header.php";
                 <?php endif; ?>
             </div>
 
-            <!-- ═══ SIDEBAR ═══ -->
-            <aside class="w-full lg:w-72 space-y-5 flex-shrink-0" aria-label="Barre latérale">
-                <?php
-                // Compteur par catégorie en une seule requête (évite une requête par catégorie)
-                $cat_counts = [];
-                $cat_count_rows = $pdo->query("
-                    SELECT id_category, COUNT(*) AS n FROM posts
-                    WHERE (status = 'published' OR (status = 'scheduled' AND published_at <= NOW()))
-                    GROUP BY id_category
-                ")->fetchAll();
-                foreach ($cat_count_rows as $row) {
-                    $cat_counts[(int)$row['id_category']] = (int)$row['n'];
-                }
-                ?>
+            <!-- ═══ COLONNE LATÉRALE ═══ -->
+            <aside class="hidden lg:block lg:w-72 flex-shrink-0 space-y-6" aria-label="Barre latérale">
                 <!-- Catégories -->
-                <div class="bg-white dark:bg-dark-50 rounded-2xl border border-gray-100 dark:border-dark-100 p-5 <?= REVEAL ?>">
+                <div class="bg-white dark:bg-dark-50 rounded-2xl border border-gray-100 dark:border-dark-100 p-6 <?= REVEAL ?>">
                     <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                         <i class="ph ph-folder-simple text-primary-500"></i> Catégories
                     </h3>
                     <ul class="space-y-1">
-                        <?php foreach ($categories as $cat): ?>
+                        <?php foreach ($categories as $cat):
+                            $nb_cat = $cat_counts[(int)$cat['id_category']] ?? 0;
+                            if ($nb_cat === 0) continue;
+                        ?>
                         <li>
                             <a href="category.php?id=<?= $cat['id_category'] ?>" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm text-gray-600 dark:text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all">
                                 <span><?= htmlspecialchars($cat['name']) ?></span>
-                                <span class="text-xs bg-gray-100 dark:bg-dark-100 text-gray-500 dark:text-dark-300 px-2 py-0.5 rounded-full"><?= $cat_counts[(int)$cat['id_category']] ?? 0 ?></span>
+                                <span class="text-xs bg-gray-100 dark:bg-dark-100 text-gray-500 dark:text-dark-300 px-2 py-0.5 rounded-full"><?= $nb_cat ?></span>
                             </a>
                         </li>
                         <?php endforeach; ?>
                     </ul>
                 </div>
 
-                <!-- Récents -->
-                <div class="bg-white dark:bg-dark-50 rounded-2xl border border-gray-100 dark:border-dark-100 p-5 <?= REVEAL ?>">
+                <!-- Récents : les derniers articles publiés, sans doublon avec la liste de la page -->
+                <?php
+                $shown_ids = array_map(function ($p) { return (int)$p['id_post']; }, $posts);
+                $recent_sql = "SELECT id_post, title FROM posts WHERE (status = 'published' OR (status = 'scheduled' AND published_at <= NOW()))";
+                if ($shown_ids) {
+                    $recent_sql .= " AND id_post NOT IN (" . implode(',', $shown_ids) . ")";
+                }
+                $recent_sql .= " ORDER BY created_at DESC LIMIT 5";
+                $recent_rows = $pdo->query($recent_sql)->fetchAll();
+                if ($recent_rows):
+                ?>
+                <div class="bg-white dark:bg-dark-50 rounded-2xl border border-gray-100 dark:border-dark-100 p-6 <?= REVEAL ?>">
                     <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                         <i class="ph ph-clock text-primary-500"></i> Récents
                     </h3>
                     <ul class="space-y-1">
-                        <?php
-                        $recent = $pdo->query("SELECT id_post, title FROM posts WHERE (status = 'published' OR (status = 'scheduled' AND published_at <= NOW())) ORDER BY created_at DESC LIMIT 5");
-                        while ($r = $recent->fetch()):
-                        ?>
+                        <?php foreach ($recent_rows as $r): ?>
                         <li>
-                            <a href="post.php?id=<?= $r['id_post'] ?>" class="text-sm text-gray-500 dark:text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 transition-all block py-2 px-3 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-900/20"><?= htmlspecialchars(truncate($r['title'], 40)) ?></a>
+                            <a href="post.php?id=<?= (int)$r['id_post'] ?>" class="text-sm text-gray-500 dark:text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 transition-all block py-2 px-3 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-900/20 line-clamp-2"><?= htmlspecialchars($r['title']) ?></a>
                         </li>
-                        <?php endwhile; ?>
+                        <?php endforeach; ?>
                     </ul>
                 </div>
-
-                <!-- Newsletter -->
-                <div class="bg-primary-900 rounded-2xl p-5 text-white <?= REVEAL ?>">
-                    <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center mb-4">
-                        <i class="ph ph-envelope-simple text-lg"></i>
-                    </div>
-                    <h3 class="text-sm font-semibold mb-2">La lettre pédagogique</h3>
-                    <p class="text-xs text-primary-100/80 mb-4 leading-relaxed">Recevez les nouvelles ressources directement dans votre boîte mail.</p>
-                    <form class="space-y-2" action="newsletter_subscribe.php" method="post">
-                        <?= csrf_field() ?>
-                        <label for="nl-sidebar-email" class="sr-only">Adresse email</label>
-                        <input type="email" name="email" id="nl-sidebar-email" required placeholder="Votre email" class="w-full px-3 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 text-sm focus:outline-none focus:ring-2 focus:ring-white/30 transition-all">
-                        <button type="submit" class="w-full bg-accent-500 text-white font-semibold py-2.5 rounded-xl text-sm hover:bg-accent-600 transition-all duration-300">
-                            S'abonner
-                        </button>
-                    </form>
-                </div>
+                <?php endif; ?>
             </aside>
         </div>
     </section>

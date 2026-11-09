@@ -186,7 +186,7 @@ $page_description = mb_substr(trim((string)($item['description'] ?: $course['des
                 </h2>
 
                 <?php if ($has_content): ?>
-                <article class="chapter-content bg-white dark:bg-dark-50 rounded-2xl border border-gray-100 dark:border-dark-100 p-6 sm:p-8">
+                <article class="chapter-content sbr-justify bg-white dark:bg-dark-50 rounded-2xl border border-gray-100 dark:border-dark-100 p-6 sm:p-8">
                     <?= course_content_html($item['content']) ?>
                 </article>
                 <?php else: ?>
@@ -207,7 +207,7 @@ $page_description = mb_substr(trim((string)($item['description'] ?: $course['des
                 <div class="space-y-4">
                     <?php if ($has_pdf): ?>
                     <div class="bg-white dark:bg-dark-50 rounded-2xl border border-gray-100 dark:border-dark-100 p-5 flex flex-wrap items-center gap-4">
-                        <span class="w-11 h-11 rounded-xl bg-red-50 text-red-600 flex items-center justify-center flex-shrink-0">
+                        <span class="w-11 h-11 rounded-xl bg-accent-50 text-accent-600 dark:bg-accent-900/20 dark:text-accent-400 flex items-center justify-center flex-shrink-0">
                             <i class="ph ph-file-pdf text-xl"></i>
                         </span>
                         <div class="min-w-0 flex-1">
@@ -224,7 +224,7 @@ $page_description = mb_substr(trim((string)($item['description'] ?: $course['des
                     <?php if ($has_video): ?>
                     <div class="bg-white dark:bg-dark-50 rounded-2xl border border-gray-100 dark:border-dark-100 p-5">
                         <div class="flex items-center gap-3 mb-4">
-                            <span class="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
+                            <span class="w-11 h-11 rounded-xl bg-primary-50 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400 flex items-center justify-center flex-shrink-0">
                                 <i class="ph ph-video text-xl"></i>
                             </span>
                             <div>
@@ -243,20 +243,22 @@ $page_description = mb_substr(trim((string)($item['description'] ?: $course['des
             <?php endif; ?>
 
             <!-- ═══ NAVIGATION ENTRE CHAPITRES ═══ -->
-            <nav class="flex flex-col sm:flex-row gap-3 justify-between border-t border-gray-100 dark:border-dark-100 pt-6" aria-label="Navigation entre les chapitres">
+            <nav class="flex flex-row items-center justify-between gap-3 border-t border-gray-100 dark:border-dark-100 pt-6" aria-label="Navigation entre les chapitres">
                 <?php if ($previous): ?>
                 <a href="<?= htmlspecialchars(course_item_url($course, $previous, $link_token)) ?>"
-                   class="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 dark:text-dark-300 hover:text-primary transition">
-                    <i class="ph ph-arrow-left"></i>
-                    <span><span class="block text-xs text-gray-400">Chapitre précédent</span><?= htmlspecialchars($previous['title']) ?></span>
+                   title="<?= htmlspecialchars($previous['title']) ?>"
+                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-50 text-sm font-semibold text-gray-700 dark:text-dark-300 hover:bg-gray-50 dark:hover:bg-dark-100 hover:text-primary transition shadow-sm">
+                    <i class="ph ph-arrow-left text-base"></i>
+                    <span>Précédent</span>
                 </a>
                 <?php else: ?><span></span><?php endif; ?>
 
                 <?php if ($following): ?>
                 <a href="<?= htmlspecialchars(course_item_url($course, $following, $link_token)) ?>"
-                   class="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 dark:text-dark-300 hover:text-primary transition sm:text-right">
-                    <span><span class="block text-xs text-gray-400">Chapitre suivant</span><?= htmlspecialchars($following['title']) ?></span>
-                    <i class="ph ph-arrow-right"></i>
+                   title="<?= htmlspecialchars($following['title']) ?>"
+                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary-500 hover:bg-primary-600 text-white text-sm font-semibold transition shadow-sm ml-auto">
+                    <span>Suivant</span>
+                    <i class="ph ph-arrow-right text-base"></i>
                 </a>
                 <?php endif; ?>
             </nav>
@@ -298,7 +300,7 @@ $page_description = mb_substr(trim((string)($item['description'] ?: $course['des
                                     <?= str_pad((string)($idx + 1), 2, '0', STR_PAD_LEFT) ?>
                                 </span>
                                 <span class="truncate"><?= htmlspecialchars($it['title']) ?></span>
-                                <i class="ph <?= $it_unlocked ? 'ph-lock-open text-emerald-500' : 'ph-lock-simple text-gray-400' ?> ml-auto flex-shrink-0" aria-hidden="true"></i>
+                                <i class="ph <?= $it_unlocked ? 'ph-lock-open text-primary-500' : 'ph-lock-simple text-gray-400' ?> ml-auto flex-shrink-0" aria-hidden="true"></i>
                             </a>
                         </li>
                         <?php endforeach; ?>

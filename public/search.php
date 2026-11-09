@@ -23,6 +23,11 @@ if (!empty($q)) {
 }
 $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
 
+$cat_counts = [];
+foreach ($pdo->query("SELECT id_category, COUNT(*) AS n FROM posts WHERE (status = 'published' OR (status = 'scheduled' AND published_at <= NOW())) GROUP BY id_category")->fetchAll() as $row) {
+    $cat_counts[(int)$row['id_category']] = (int)$row['n'];
+}
+
 include "../includes/header.php";
 ?>
 
@@ -47,7 +52,7 @@ include "../includes/header.php";
                     <div class="space-y-4 animate-stagger">
                         <?php foreach ($results as $post): ?>
                         <article class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition animate-slideUp">
-                            <h2 class="text-lg font-bold text-gray-900 mb-2">
+                            <h2 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
                                 <a href="post.php?id=<?= $post['id_post'] ?>" class="hover:text-primary transition"><?= htmlspecialchars($post['title']) ?></a>
                             </h2>
                             <div class="flex flex-wrap gap-3 text-sm text-gray-500 mb-3">
@@ -77,7 +82,10 @@ include "../includes/header.php";
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-24">
                     <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4"><i class="ph ph-folder text-primary mr-2"></i> Catégories</h3>
                     <ul class="space-y-1">
-                        <?php foreach ($categories as $cat): ?>
+                        <?php foreach ($categories as $cat):
+                            $nb_cat = $cat_counts[(int)$cat['id_category']] ?? 0;
+                            if ($nb_cat === 0) continue;
+                        ?>
                         <li>
                             <a href="category.php?id=<?= $cat['id_category'] ?>" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition">
                                 <span class="w-2 h-2 rounded-full bg-primary flex-shrink-0"></span>

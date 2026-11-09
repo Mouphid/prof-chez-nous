@@ -135,6 +135,92 @@ function truncate($text, $length = 100, $end = '...') {
     return mb_substr($text, 0, $length) . $end;
 }
 
+/**
+ * Remet un titre écrit ENTIÈREMENT EN MAJUSCULES en casse normale
+ * (première lettre en majuscule, reste en minuscules).
+ * Les titres déjà saisis normalement ne sont pas modifiés.
+ * Les espaces multiples sont réduits à un seul.
+ * Les noms propres courants du site retrouvent leur majuscule.
+ */
+function normalize_title_case($title) {
+    $title = trim(preg_replace('/\s+/u', ' ', (string)$title));
+    if ($title === '') return $title;
+
+    $letters = preg_replace('/[^\p{L}]/u', '', $title);
+    if ($letters === '' || $letters === null) return $title;
+
+    $uppers = preg_replace('/[^\p{Lu}]/u', '', $title);
+    $ratio  = mb_strlen($uppers) / mb_strlen($letters);
+
+    // Moins de 70 % de majuscules : le titre est déjà lisible, on n'y touche pas.
+    if ($ratio >= 0.7) {
+        $title = mb_strtolower($title, 'UTF-8');
+
+        // Majuscule au début et après une ponctuation forte.
+        $title = preg_replace_callback(
+            '/(^|[.!?]\s+|:\s+)(\p{L})/u',
+            function ($m) { return $m[1] . mb_strtoupper($m[2], 'UTF-8'); },
+            $title
+        );
+    }
+
+    // Noms propres fréquents (ordre : les formes longues d'abord).
+    $proper = [
+        'sud-benin'     => 'Sud-Bénin',
+        'bénin'         => 'Bénin',
+        'benin'         => 'Bénin',
+        'afrique'       => 'Afrique',
+        'alèkpéhanhou'  => 'Alèkpéhanhou',
+        'alokpon'       => 'Alokpon',
+        'fɔn'           => 'Fɔn',
+        'fon'           => 'Fon',
+        'maxi'          => 'Maxi',
+        'denagan'       => 'Denagan',
+        'janvier'       => 'Janvier',
+        'honfo'         => 'Honfo',
+        'loucou'        => 'Loucou',
+        'michel'        => 'Michel',
+        'adedoyin'      => 'Adedoyin',
+        'n’dje'         => 'N’Dje',
+        "n'dje"         => "N'Dje",
+        'djolokoko'     => 'Djolokoko',
+        'honoré'        => 'Honoré',
+        'honore'        => 'Honoré',
+        'bleḱpon'       => 'Bleḱpon',
+        'blekpon'       => 'Blekpon',
+    ];
+    foreach ($proper as $needle => $replacement) {
+        $title = preg_replace(
+            '/(?<![\p{L}])' . preg_quote($needle, '/') . '(?![\p{L}])/iu',
+            $replacement,
+            $title
+        );
+    }
+
+    return $title;
+}
+
+/**
+ * Vignette d'article au format uniforme 16:10.
+ * Utilise l'image de l'article quand elle existe (recadrée dans le cadre),
+ * sinon affiche un fond neutre avec une icône.
+ */
+function post_thumb_html(array $post, ?string $href = null): string {
+    $alt = htmlspecialchars($post['title'] ?? '');
+
+    if (!empty($post['main_image'])) {
+        $inner = '<img src="../uploads/images/' . htmlspecialchars($post['main_image']) . '"'
+               . ' alt="' . $alt . '" loading="lazy" class="sbr-thumb-img">';
+    } else {
+        $inner = '<span class="sbr-thumb-placeholder"><i class="ph ph-article" aria-hidden="true"></i></span>';
+    }
+
+    if ($href !== null) {
+        return '<a href="' . htmlspecialchars($href) . '" class="sbr-thumb-16x10 sbr-thumb-photo" aria-hidden="true" tabindex="-1">' . $inner . '</a>';
+    }
+    return '<div class="sbr-thumb-16x10 sbr-thumb-photo" aria-hidden="true">' . $inner . '</div>';
+}
+
 function logger($message, $type = 'info') {
     $log_file = __DIR__ . '/../logs/app.log';
     $dir = dirname($log_file);

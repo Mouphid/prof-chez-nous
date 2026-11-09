@@ -1,0 +1,9 @@
+# Ces fichiers de cours ne doivent jamais être servis directement.
+# Ils passent uniquement par public/course_file.php, qui contrôle les droits d'accès.
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

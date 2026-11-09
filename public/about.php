@@ -9,14 +9,14 @@ include "../includes/header.php";
 
 <div class="relative overflow-hidden bg-cover bg-center" style="background-image: url('<?= BASE_URL ?>img/bg/banner-about.jpg');">
     <div class="sbr-overlay"></div>
-    <div class="relative z-10 max-w-7xl mx-auto px-4 py-16 text-center">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-16 text-center">
         <span class="inline-block text-xs font-semibold text-accent-400 uppercase tracking-widest mb-3"><i class="ph ph-info"></i> Notre histoire</span>
         <h1 class="text-3xl sm:text-4xl font-extrabold font-display text-white">À propos</h1>
         <p class="text-white/70 mt-4 text-base max-w-xl mx-auto">Découvrez notre mission et ceux qui font vivre cette plateforme.</p>
     </div>
 </div>
 
-<div id="main-content" class="max-w-7xl mx-auto px-4 py-12 sm:py-20">
+<div id="main-content" class="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
 
     <!-- ═══ UN SEUL BLOC : INTRODUCTION, IDENTITÉ, MISSION ET APPEL À L'ACTION ═══ -->
     <div class="bg-white dark:bg-dark-50 rounded-3xl border border-gray-100 dark:border-dark-100 shadow-sm overflow-hidden">

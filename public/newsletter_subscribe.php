@@ -33,6 +33,12 @@ if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
+if (empty($_POST['consent'])) {
+    flash('error', 'Merci de cocher la case de consentement avant de vous inscrire.');
+    header("Location: $back");
+    exit;
+}
+
 try {
     $stmt = $pdo->prepare("SELECT id_subscriber, unsubscribe_token FROM newsletter_subscribers WHERE email = ? LIMIT 1");
     $stmt->execute([$email]);
@@ -48,13 +54,13 @@ try {
         }
         $pdo->prepare("
             UPDATE newsletter_subscribers
-            SET status = 'active', unsubscribed_at = NULL, unsubscribe_token = ?
+            SET status = 'active', unsubscribed_at = NULL, unsubscribe_token = ?, consent_at = NOW()
             WHERE id_subscriber = ?
         ")->execute([$token, (int)$existing['id_subscriber']]);
     } else {
         $pdo->prepare("
-            INSERT INTO newsletter_subscribers (email, status, unsubscribe_token, created_at)
-            VALUES (?, 'active', ?, NOW())
+            INSERT INTO newsletter_subscribers (email, status, unsubscribe_token, consent_at, created_at)
+            VALUES (?, 'active', ?, NOW(), NOW())
         ")->execute([$email, $token]);
     }
 

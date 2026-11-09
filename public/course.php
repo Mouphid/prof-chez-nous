@@ -183,7 +183,7 @@ $page_description = mb_substr(trim((string)$course['description']), 0, 160);
                 <ul class="space-y-2">
                     <?php foreach ($objectifs as $obj): ?>
                     <li class="flex items-start gap-2.5 text-gray-600 dark:text-dark-400">
-                        <i class="ph ph-check-circle text-emerald-500 mt-1 flex-shrink-0"></i>
+                        <i class="ph ph-check-circle text-primary-500 mt-1 flex-shrink-0"></i>
                         <span><?= htmlspecialchars($obj) ?></span>
                     </li>
                     <?php endforeach; ?>
@@ -226,10 +226,10 @@ $page_description = mb_substr(trim((string)$course['description']), 0, 160);
                                     <span class="text-[11px] font-semibold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">Aperçu gratuit</span>
                                     <?php endif; ?>
                                     <?php if ($item['pdf_path']): ?>
-                                    <span class="text-[11px] text-gray-500 dark:text-dark-300 inline-flex items-center gap-1"><i class="ph ph-file-pdf text-red-500"></i> PDF</span>
+                                    <span class="text-[11px] text-gray-500 dark:text-dark-300 inline-flex items-center gap-1"><i class="ph ph-file-pdf text-accent-600"></i> PDF</span>
                                     <?php endif; ?>
                                     <?php if ($item['video_path']): ?>
-                                    <span class="text-[11px] text-gray-500 dark:text-dark-300 inline-flex items-center gap-1"><i class="ph ph-video text-blue-500"></i> Vidéo</span>
+                                    <span class="text-[11px] text-gray-500 dark:text-dark-300 inline-flex items-center gap-1"><i class="ph ph-video text-primary-500"></i> Vidéo</span>
                                     <?php endif; ?>
                                 </div>
 
@@ -279,7 +279,7 @@ $page_description = mb_substr(trim((string)$course['description']), 0, 160);
                                 </details>
                                 <?php endif; ?>
                             </div>
-                            <i class="ph <?= $unlocked ? 'ph-lock-open text-emerald-500' : 'ph-lock-simple text-gray-400' ?> text-lg mt-1 flex-shrink-0" aria-hidden="true"></i>
+                            <i class="ph <?= $unlocked ? 'ph-lock-open text-primary-500' : 'ph-lock-simple text-gray-400' ?> text-lg mt-1 flex-shrink-0" aria-hidden="true"></i>
                         </div>
                     </div>
                     <?php endforeach; ?>

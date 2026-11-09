@@ -3,11 +3,10 @@
     <!-- ═══ PIED DE PAGE DYNAMIQUE ═══ -->
     <footer class="relative overflow-hidden bg-white dark:bg-dark-50 border-t border-gray-100 dark:border-dark-100 mt-16 transition-colors duration-300" id="siteFooter">
         <div class="sbr-footergrad"></div>
-        <div class="sbr-watermark" aria-hidden="true">JOIE&nbsp;ENSEIGNANTE</div>
 
         <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
             <div class="lg:col-span-1">
-                <a href="<?= BASE_URL ?>" class="flex items-center gap-2.5 mb-4 group">
+                <a href="../public/index.php" class="flex items-center gap-2.5 mb-4 group">
                     <?= logo_tag('h-10', 'auto', 'group-hover:scale-105 transition-transform') ?>
                 </a>
                 <p class="leading-relaxed text-gray-500 dark:text-dark-300 text-sm mb-6"><?= SITE_TAGLINE ?></p>
@@ -19,41 +18,48 @@
             <div>
                 <h4 class="text-gray-900 dark:text-white font-bold mb-5 text-sm uppercase tracking-wider">Explorer</h4>
                 <ul class="space-y-3">
-                    <li><a href="<?= BASE_URL ?>" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-house text-gray-400 dark:text-dark-200"></i> Accueil</a></li>
-                    <li><a href="<?= BASE_URL ?>publications.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-book text-gray-400 dark:text-dark-200"></i> Publications</a></li>
-                    <li><a href="<?= BASE_URL ?>cours.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-graduation-cap text-gray-400 dark:text-dark-200"></i> Cours</a></li>
-                    <li><a href="<?= BASE_URL ?>retrouver-mon-achat.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-key text-gray-400 dark:text-dark-200"></i> Retrouver mon achat</a></li>
-                    <li><a href="<?= BASE_URL ?>biography.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-user-circle text-gray-400 dark:text-dark-200"></i> Biographie</a></li>
-                    <li><a href="<?= BASE_URL ?>contact.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-envelope text-gray-400 dark:text-dark-200"></i> Contact</a></li>
+                    <li><a href="../public/index.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-house text-gray-400 dark:text-dark-200"></i> Accueil</a></li>
+                    <li><a href="../public/publications.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-book text-gray-400 dark:text-dark-200"></i> Publications</a></li>
+                    <li><a href="../public/cours.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-graduation-cap text-gray-400 dark:text-dark-200"></i> Cours</a></li>
+                    <li><a href="../public/retrouver-mon-achat.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-key text-gray-400 dark:text-dark-200"></i> Retrouver mon achat</a></li>
+                    <li><a href="../public/biography.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-user-circle text-gray-400 dark:text-dark-200"></i> Biographie</a></li>
+                    <li><a href="../public/contact.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-envelope text-gray-400 dark:text-dark-200"></i> Contact</a></li>
                 </ul>
             </div>
             <div>
-                <h4 class="text-gray-900 dark:text-white font-bold mb-5 text-sm uppercase tracking-wider">Derniers articles</h4>
+                <h4 class="text-gray-900 dark:text-white font-bold mb-5 text-sm uppercase tracking-wider">Nos rubriques</h4>
                 <ul class="space-y-3">
                     <?php
                     if (isset($pdo)) {
-                        $footer_posts = $pdo->query("SELECT id_post, title, main_image FROM posts WHERE (status = 'published' OR (status = 'scheduled' AND published_at <= NOW())) ORDER BY created_at DESC LIMIT 4");
-                        while ($fp = $footer_posts->fetch()):
+                        $footer_cats = $pdo->query("
+                            SELECT c.id_category, c.name, COUNT(p.id_post) AS n
+                            FROM categories c
+                            LEFT JOIN posts p ON p.id_category = c.id_category
+                                AND (p.status = 'published' OR (p.status = 'scheduled' AND p.published_at <= NOW()))
+                            GROUP BY c.id_category, c.name
+                            HAVING n > 0
+                            ORDER BY c.name
+                        ")->fetchAll();
+                        foreach ($footer_cats as $fc):
                     ?>
                     <li>
-                        <a href="<?= BASE_URL ?>post.php?id=<?= $fp['id_post'] ?>" class="flex items-center gap-3 text-sm text-gray-600 dark:text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors group">
-                            <span class="sbr-thumb">
-                                <?php if (!empty($fp['main_image'])): ?><img src="<?= BASE_URL ?>uploads/images/<?= htmlspecialchars($fp['main_image']) ?>" alt="" loading="lazy"><?php else: ?><i class="ph ph-note-pencil"></i><?php endif; ?>
-                            </span>
-                            <span class="font-medium leading-snug"><?= htmlspecialchars(truncate($fp['title'], 38)) ?></span>
+                        <a href="../public/category.php?id=<?= (int)$fc['id_category'] ?>" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm">
+                            <i class="ph ph-folder text-gray-400 dark:text-dark-200"></i>
+                            <span><?= htmlspecialchars($fc['name']) ?></span>
+                            <span class="text-xs text-gray-400 dark:text-dark-300">(<?= (int)$fc['n'] ?>)</span>
                         </a>
                     </li>
-                    <?php endwhile; } ?>
+                    <?php endforeach; } ?>
                 </ul>
             </div>
             <div>
                 <h4 class="text-gray-900 dark:text-white font-bold mb-5 text-sm uppercase tracking-wider">Légal</h4>
                 <ul class="space-y-3">
-                    <li><a href="<?= BASE_URL ?>mentions-legales.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-file-text text-gray-400 dark:text-dark-200"></i> Mentions légales</a></li>
-                    <li><a href="<?= BASE_URL ?>conditions-utilisation.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-scroll text-gray-400 dark:text-dark-200"></i> Conditions d'utilisation</a></li>
-                    <li><a href="<?= BASE_URL ?>conditions-vente.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-shopping-cart text-gray-400 dark:text-dark-200"></i> Conditions de vente</a></li>
-                    <li><a href="<?= BASE_URL ?>confidentialite.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-shield-check text-gray-400 dark:text-dark-200"></i> Confidentialité</a></li>
-                    <li><a href="<?= BASE_URL ?>about.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-info text-gray-400 dark:text-dark-200"></i> À propos</a></li>
+                    <li><a href="../public/mentions-legales.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-file-text text-gray-400 dark:text-dark-200"></i> Mentions légales</a></li>
+                    <li><a href="../public/conditions-utilisation.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-scroll text-gray-400 dark:text-dark-200"></i> Conditions d'utilisation</a></li>
+                    <li><a href="../public/conditions-vente.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-shopping-cart text-gray-400 dark:text-dark-200"></i> Conditions de vente</a></li>
+                    <li><a href="../public/confidentialite.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-shield-check text-gray-400 dark:text-dark-200"></i> Confidentialité</a></li>
+                    <li><a href="../public/about.php" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors inline-flex items-center gap-2 text-sm"><i class="ph ph-info text-gray-400 dark:text-dark-200"></i> À propos</a></li>
                 </ul>
             </div>
         </div>
@@ -77,16 +83,36 @@
         }
         const topBtn = document.getElementById('backToTop');
         if (topBtn) {
-            window.addEventListener('scroll', function() {
-                topBtn.classList.toggle('show', window.scrollY > 500);
-            }, {passive:true});
+            const hero = document.getElementById('hero-slider');
+            const paginations = document.querySelectorAll('nav[aria-label="Pagination"]');
+
+            function seuilHero() {
+                if (!hero) return 500;
+                const bas = hero.getBoundingClientRect().bottom + window.scrollY;
+                return Math.max(400, bas - 120);
+            }
+
+            function majBouton() {
+                let visible = window.scrollY > seuilHero();
+                // Ne jamais recouvrir la pagination (bouton « Suivant »)
+                paginations.forEach(function (nav) {
+                    const r = nav.getBoundingClientRect();
+                    if (r.bottom > 8 && r.top < window.innerHeight - 8) visible = false;
+                });
+                topBtn.classList.toggle('show', visible);
+                topBtn.setAttribute('aria-hidden', visible ? 'false' : 'true');
+            }
+
+            window.addEventListener('scroll', majBouton, {passive:true});
+            window.addEventListener('resize', majBouton, {passive:true});
+            majBouton();
+
             topBtn.addEventListener('click', function() {
                 window.scrollTo({top:0, behavior:'smooth'});
             });
         }
     })();
     </script>
-<script>function toggleMobileMenu(b){var m=document.getElementById('mobileNav');if(m){m.classList.toggle('hidden');b.setAttribute('aria-expanded',!m.classList.contains('hidden'));}}</script>
     <?php scroll_reveal_script(); ?>
 </body>
 </html>
