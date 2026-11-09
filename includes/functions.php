@@ -209,7 +209,8 @@ function post_thumb_html(array $post, ?string $href = null): string {
     $alt = htmlspecialchars($post['title'] ?? '');
 
     if (!empty($post['main_image'])) {
-        $inner = '<img src="../uploads/images/' . htmlspecialchars($post['main_image']) . '"'
+        $base = defined('BASE_URL') ? BASE_URL : '../';
+        $inner = '<img src="' . htmlspecialchars($base . 'uploads/images/' . $post['main_image']) . '"'
                . ' alt="' . $alt . '" loading="lazy" class="sbr-thumb-img">';
     } else {
         $inner = '<span class="sbr-thumb-placeholder"><i class="ph ph-article" aria-hidden="true"></i></span>';

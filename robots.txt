@@ -6,7 +6,12 @@ Disallow: /includes/
 Disallow: /sql/
 Disallow: /vendor/
 Disallow: /logs/
+Disallow: /tools/
+Disallow: /purchase.php
+Disallow: /purchase_course.php
+Disallow: /payment_callback.php
 Disallow: /public/purchase.php
+Disallow: /public/purchase_course.php
 Disallow: /public/payment_callback.php
 
 Sitemap: https://joie-enseignante.com/sitemap.xml
