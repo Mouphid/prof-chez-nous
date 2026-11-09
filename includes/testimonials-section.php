@@ -23,7 +23,7 @@ $testimonials       = $testimonials ?? [
                     <i class="ph ph-star-fill text-sm"></i>
                     <?php endfor; ?>
                 </div>
-                <p class="text-sm text-gray-600 dark:text-dark-400 leading-relaxed mb-5"><?= $t[2] ?></p>
+                <p class="text-sm text-gray-600 dark:text-dark-400 leading-relaxed mb-5 sbr-justify"><?= $t[2] ?></p>
                 <div class="flex items-center gap-3 pt-4 border-t border-gray-50 dark:border-dark-100">
                     <div class="w-10 h-10 <?= $t[4] ?> <?= $t[5] ?> rounded-full flex items-center justify-center text-sm font-bold"><?= $t[3] ?></div>
                     <div>

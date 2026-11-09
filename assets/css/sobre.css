@@ -82,13 +82,19 @@
 .focus\:ring-accent-400\/60:focus { --tw-ring-color: rgba(207, 182, 151, 0.6); }
 .hover\:border-primary-200:hover { border-color: var(--color-primary-200); }
 .opacity-70 { opacity: 0.7; }
-.md\:inline-flex { display: inline-flex; }
-.sm\:gap-2 { gap: 0.5rem; }
-.sm\:gap-2\.5 { gap: 0.625rem; }
-.sm\:h-\[4\.5rem\] { height: 4.5rem; }
-.sm\:mt-20 { margin-top: 5rem; }
+@media (min-width: 768px) {
+    .md\:inline-flex { display: inline-flex; }
+}
+@media (min-width: 640px) {
+    .sm\:gap-2 { gap: 0.5rem; }
+    .sm\:gap-2\.5 { gap: 0.625rem; }
+    .sm\:h-\[4\.5rem\] { height: 4.5rem; }
+    .sm\:mt-20 { margin-top: 5rem; }
+}
 .mt-16 { margin-top: 4rem; }
-.lg\:p-16 { padding: 4rem; }
+@media (min-width: 1024px) {
+    .lg\:p-16 { padding: 4rem; }
+}
 .pl-2 { padding-left: 0.5rem; }
 .rounded-\[2rem\] { border-radius: 2rem; }
 .from-primary-700 { --tw-gradient-from: var(--color-primary-700); --tw-gradient-to: rgb(61 82 104 / 0); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
@@ -222,22 +228,15 @@
 html, body {
     overflow-x: clip;
 }
-/* Texte courant : aligné à gauche, sans césure forcée, ligne de 60-70 caractères */
+/* Texte courant : aligné en justifié (text-align: justify) sur tous les blocs */
 .sbr-justify,
 .sbr-justify p,
-.article-body p {
-    text-align: left;
-    text-justify: auto;
+.article-body p,
+.chapter-content p {
+    text-align: justify;
+    text-justify: inter-word;
     hyphens: none;
     -webkit-hyphens: none;
-    max-width: 68ch;
-}
-.sbr-justify > p,
-.article-body > p {
-    max-width: 68ch;
-}
-.article-body {
-    max-width: 72ch;
 }
 
 /* Pills de navigation : soulignement animé + icône qui avance au survol */
@@ -1068,9 +1067,11 @@ body.admin-shell {
 
 /* ─── Utilitaires complémentaires utilisés par l'admin ─── */
 .mb-7 { margin-bottom: 1.75rem; }
-.sm\:inline { display: inline; }
-.sm\:inline-flex { display: inline-flex; }
-.sm\:gap-5 { gap: 1.25rem; }
+@media (min-width: 640px) {
+    .sm\:inline { display: inline; }
+    .sm\:inline-flex { display: inline-flex; }
+    .sm\:gap-5 { gap: 1.25rem; }
+}
 .first\:pt-0:first-child { padding-top: 0; }
 .last\:pb-0:last-child { padding-bottom: 0; }
 @media (min-width: 1024px) {
@@ -2209,5 +2210,12 @@ html:not(:has(body.admin-shell)) .max-w-4xl {
         padding-left: 0.75rem;
         padding-right: 0.75rem;
         font-size: 0.84rem;
+    }
+}
+
+/* Sur téléphone (< 768 px), « Me suivre » reste uniquement dans le menu déroulant mobile */
+@media (max-width: 767.98px) {
+    .sbr-header-bar a.rounded-full {
+        display: none !important;
     }
 }

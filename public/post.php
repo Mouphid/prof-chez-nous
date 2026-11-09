@@ -231,8 +231,8 @@ include "../includes/header.php";
                             <?php endif; ?>
                         </span>
                     </div>
-                    <div class="text-sm text-gray-700 dark:text-dark-200 ml-10" id="comment-content-<?= $comment['id_comment'] ?>">
-                        <p><?= nl2br(htmlspecialchars($comment['content'])) ?></p>
+                    <div class="text-sm text-gray-700 dark:text-dark-200 ml-10 sbr-justify" id="comment-content-<?= $comment['id_comment'] ?>">
+                        <p class="sbr-justify"><?= nl2br(htmlspecialchars($comment['content'])) ?></p>
                     </div>
                     <?php if ($can_edit): ?>
                     <div class="flex items-center gap-2 mt-2 ml-10" id="comment-actions-<?= $comment['id_comment'] ?>">

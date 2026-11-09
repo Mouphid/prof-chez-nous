@@ -28,7 +28,7 @@ $features          = $features ?? [
                     <i class="<?= $feat[0] ?> text-2xl"></i>
                 </div>
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2"><?= $feat[3] ?></h3>
-                <p class="text-sm text-gray-500 dark:text-dark-300 leading-relaxed"><?= $feat[4] ?></p>
+                <p class="text-sm text-gray-500 dark:text-dark-300 leading-relaxed sbr-justify"><?= $feat[4] ?></p>
             </div>
             <?php endforeach; ?>
         </div>

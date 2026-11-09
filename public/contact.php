@@ -144,7 +144,7 @@ include "../includes/header.php";
 
             <div class="bg-white dark:bg-dark-50 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-dark-100 p-6">
                 <h3 class="font-semibold text-gray-900 dark:text-white mb-4"><i class="ph ph-key text-primary"></i> Vous avez perdu votre lien ?</h3>
-                <p class="text-sm text-gray-500 dark:text-dark-300 mb-4">
+                <p class="text-sm text-gray-500 dark:text-dark-300 mb-4 sbr-justify">
                     Indiquez l'adresse utilisée lors de l'achat : nous vous renvoyons
                     vos liens de téléchargement et d'accès aux cours.
                 </p>
