@@ -89,7 +89,7 @@ if ($courses) {
                         <div class="lg:col-span-2 space-y-6">
                             <div>
                                 <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2"><i class="ph ph-info text-primary-500"></i> Description</h3>
-                                <p class="text-gray-600 dark:text-dark-400 leading-relaxed"><?= nl2br(htmlspecialchars($course['description'])) ?></p>
+                                <p class="text-gray-600 dark:text-dark-400 leading-relaxed sbr-justify"><?= nl2br(htmlspecialchars($course['description'])) ?></p>
                             </div>
 
                             <?php if ($objectifs): ?>

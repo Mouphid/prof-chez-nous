@@ -68,7 +68,7 @@ include "../includes/header.php";
                                     <span><i class="ph ph-user"></i> <?= htmlspecialchars($post['author_name'] ?? 'Anonyme') ?></span>
                                     <span><i class="ph ph-calendar"></i> <?= format_date($post['created_at']) ?></span>
                                 </div>
-                                <p class="text-gray-600 text-sm leading-relaxed mb-4"><?= truncate(strip_tags($post['content']), 250) ?></p>
+                                <p class="text-gray-600 text-sm leading-relaxed mb-4 sbr-justify"><?= truncate(strip_tags($post['content']), 250) ?></p>
                                 <div class="flex items-center gap-4 text-sm">
                                     <a href="post.php?id=<?= $post['id_post'] ?>" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-700 transition inline-flex items-center gap-1 active:scale-[0.97]">
                                         <i class="ph ph-book-open"></i> Lire plus

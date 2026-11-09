@@ -30,7 +30,7 @@ include "../includes/header.php";
                     <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">Sylvestre Djouamon</h2>
                     <p class="text-primary text-sm font-medium mt-1">Maître-Assistant au département des Lettres Modernes — FLLAC</p>
                     <div class="mt-4 w-16 h-1 bg-accent-500 rounded-full mx-auto sm:mx-0"></div>
-                    <p class="text-gray-600 dark:text-dark-400 leading-relaxed mt-6 text-sm">
+                    <p class="text-gray-600 dark:text-dark-400 leading-relaxed mt-6 text-sm sbr-justify">
                         Sa thèse, intitulée <em>« Le fonctionnement du pessimisme dans les chansons traditionnelles
                         modernes fons et maxis du Bénin »</em>, explore les dynamiques du discours littéraire dans la
                         musique du Sud-Bénin.
@@ -144,7 +144,7 @@ include "../includes/header.php";
                     <h3 class="text-lg font-bold text-gray-900 dark:text-white">Engagement Journalistique</h3>
                 </div>
             </div>
-            <p class="text-sm text-gray-600 dark:text-dark-400 leading-relaxed">
+            <p class="text-sm text-gray-600 dark:text-dark-400 leading-relaxed sbr-justify">
                 Journaliste et directeur de publication du magazine <strong class="text-gray-900 dark:text-white">Afrique Identité</strong>,
                 membre actif de l'Association des journalistes scientifiques du Bénin et coordonnateur du projet
                 <strong class="text-gray-900 dark:text-white">École Avenir</strong>.

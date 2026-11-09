@@ -91,7 +91,7 @@ include "../includes/header.php";
                         <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-2">
                             <a href="post.php?id=<?= $post['id_post'] ?>" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"><?= htmlspecialchars($post['title']) ?></a>
                         </h2>
-                        <p class="text-sm text-gray-600 dark:text-dark-300 leading-relaxed mb-4 flex-1"><?= truncate(strip_tags($post['content']), 150) ?></p>
+                        <p class="text-sm text-gray-600 dark:text-dark-300 leading-relaxed mb-4 flex-1 sbr-justify"><?= truncate(strip_tags($post['content']), 150) ?></p>
                         <div class="flex items-center justify-between pt-4 border-t border-gray-50 dark:border-dark-100">
                             <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-dark-300">
                                 <span class="inline-flex items-center gap-1.5"><i class="ph ph-heart"></i> <?= $post['likes_count'] ?? 0 ?></span>

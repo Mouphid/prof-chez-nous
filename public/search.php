@@ -56,7 +56,7 @@ include "../includes/header.php";
                                 <?php endif; ?>
                                 <span><i class="ph ph-calendar text-primary"></i> <?= format_date($post['created_at']) ?></span>
                             </div>
-                            <p class="text-gray-600 text-sm leading-relaxed mb-4"><?= truncate(strip_tags($post['content']), 200) ?></p>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4 sbr-justify"><?= truncate(strip_tags($post['content']), 200) ?></p>
                             <a href="post.php?id=<?= $post['id_post'] ?>" class="inline-flex items-center gap-1 text-primary font-medium text-sm hover:underline">
                                 <i class="ph ph-book-open"></i> Lire plus
                             </a>

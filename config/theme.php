@@ -354,9 +354,27 @@ function cdn_head() {
     <link rel="apple-touch-icon" href="<?= $a ?>img/apple-touch-icon.png">
     <link href="<?= $a ?>assets/css/tailwind.css" rel="stylesheet">
     <style>:root{--font-sans:'Inter',ui-sans-serif,system-ui,sans-serif;--font-display:'Inter',ui-sans-serif,system-ui,sans-serif}</style>
-    <link href="<?= $a ?>assets/css/sobre.css" rel="stylesheet">
+    <link href="<?= $a ?>assets/css/sobre.css?v=20261109" rel="stylesheet">
     <link href="<?= $a ?>assets/phosphor/phosphor.css" rel="stylesheet">
     <link href="<?= $a ?>assets/fonts/inter/index.css" rel="stylesheet">
-    <script>function toggleMobileMenu(b){var m=document.getElementById('mobileNav');if(m){m.classList.toggle('hidden');b.setAttribute('aria-expanded',!m.classList.contains('hidden'));}}</script>
+    <script>
+    function toggleMobileMenu(b){
+        var m=document.getElementById('mobileNav'),o=document.getElementById('mobileNavOverlay');
+        if(!m)return;
+        var open=!m.classList.contains('is-open');
+        m.classList.toggle('is-open',open);
+        if(o)o.classList.toggle('is-visible',open);
+        if(b)b.setAttribute('aria-expanded',open?'true':'false');
+        document.body.style.overflow=open?'hidden':'';
+    }
+    function closeMobileMenu(){
+        var m=document.getElementById('mobileNav'),o=document.getElementById('mobileNavOverlay'),b=document.getElementById('mobileMenuBtn');
+        if(m)m.classList.remove('is-open');
+        if(o)o.classList.remove('is-visible');
+        if(b)b.setAttribute('aria-expanded','false');
+        document.body.style.overflow='';
+    }
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeMobileMenu();});
+    </script>
     <?php
 }

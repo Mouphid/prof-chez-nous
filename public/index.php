@@ -102,7 +102,7 @@ include "../includes/header.php";
                 <h2 class="text-3xl sm:text-4xl font-display font-extrabold text-gray-900 dark:text-white mb-6 leading-tight">
                     Bienvenue à <span class="text-primary-600 dark:text-primary-400">Joie Enseignante</span>
                 </h2>
-                <div class="text-gray-600 dark:text-dark-400 leading-relaxed space-y-4">
+                <div class="text-gray-600 dark:text-dark-400 leading-relaxed space-y-4 sbr-justify">
                     <p>
                         <strong class="text-gray-900 dark:text-white">Joie Enseignante</strong> est un espace dédié à l'accompagnement des étudiants 
                         et à la promotion de l'éducation de qualité. Notre mission est de partager des connaissances, de créer des 
@@ -180,7 +180,7 @@ include "../includes/header.php";
                         <i class="ph <?= $feat[0] ?> text-xl"></i>
                     </div>
                     <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-2"><?= $feat[1] ?></h3>
-                    <p class="text-sm text-gray-600 dark:text-dark-300 leading-relaxed"><?= $feat[2] ?></p>
+                    <p class="text-sm text-gray-600 dark:text-dark-300 leading-relaxed sbr-justify"><?= $feat[2] ?></p>
                 </div>
                 <?php endforeach; ?>
             </div>
@@ -218,7 +218,7 @@ include "../includes/header.php";
                                     <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 leading-snug">
                                         <a href="post.php?id=<?= $post['id_post'] ?>" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"><?= htmlspecialchars($post['title']) ?></a>
                                     </h3>
-                                    <p class="text-sm text-gray-600 dark:text-dark-300 leading-relaxed mb-4 flex-1"><?= truncate(strip_tags($post['content']), 180) ?></p>
+                                    <p class="text-sm text-gray-600 dark:text-dark-300 leading-relaxed mb-4 flex-1 sbr-justify"><?= truncate(strip_tags($post['content']), 180) ?></p>
                                     <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-dark-100">
                                         <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-dark-300">
                                             <span class="inline-flex items-center gap-1.5"><i class="ph ph-user"></i> <?= htmlspecialchars($post['author_name'] ?? 'Anonyme') ?></span>

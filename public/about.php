@@ -26,7 +26,7 @@ include "../includes/header.php";
         <div class="p-6 sm:p-10 text-center">
             <span class="text-xs font-semibold text-accent-600 uppercase tracking-widest">Introduction</span>
             <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mt-2 mb-6">Introduction à Joie Enseignante</h2>
-            <p class="text-gray-600 dark:text-dark-400 leading-relaxed max-w-4xl mx-auto">
+            <p class="text-gray-600 dark:text-dark-400 leading-relaxed max-w-4xl mx-auto sbr-justify">
                 <strong class="text-primary">Joie Enseignante</strong> est une plateforme dédiée à l'enrichissement de l'éducation,
                 créée sous l'égide du Professeur Sylvestre Djouamon. L'objectif de cette initiative est de partager son expertise
                 en littérature orale, en politiques publiques, ainsi qu'en communication. Ce site vise à promouvoir les savoirs
@@ -46,15 +46,15 @@ include "../includes/header.php";
                         <p class="text-xs text-gray-400 mt-1">Une plateforme au service du savoir</p>
                     </div>
                 </div>
-                <p class="text-gray-600 dark:text-dark-400 leading-relaxed mb-4 text-sm">
+                <p class="text-gray-600 dark:text-dark-400 leading-relaxed mb-4 text-sm sbr-justify">
                     <strong class="text-primary">Joie Enseignante</strong> est une plateforme pédagogique dédiée aux enseignants et aux étudiants.
                     Notre mission est de faciliter le partage de connaissances et de ressources éducatives de qualité.
                 </p>
-                <p class="text-gray-600 dark:text-dark-400 leading-relaxed mb-4 text-sm">
+                <p class="text-gray-600 dark:text-dark-400 leading-relaxed mb-4 text-sm sbr-justify">
                     Nous croyons que l'éducation est la clé du développement et que chaque apprenant mérite
                     d'avoir accès à des contenus pédagogiques riches et variés.
                 </p>
-                <p class="text-gray-600 dark:text-dark-400 leading-relaxed text-sm">
+                <p class="text-gray-600 dark:text-dark-400 leading-relaxed text-sm sbr-justify">
                     Que vous soyez enseignant souhaitant partager vos cours ou étudiant à la recherche de
                     ressources pour approfondir vos connaissances, notre plateforme est conçue pour vous.
                 </p>

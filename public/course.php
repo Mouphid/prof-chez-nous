@@ -117,7 +117,7 @@ $page_description = mb_substr(trim((string)$course['description']), 0, 160);
         <div class="lg:col-span-2 space-y-8">
             <section>
                 <h2 class="text-sm font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2"><i class="ph ph-info text-primary-500"></i> Description</h2>
-                <p class="text-gray-600 dark:text-dark-400 leading-relaxed"><?= nl2br(htmlspecialchars($course['description'])) ?></p>
+                <p class="text-gray-600 dark:text-dark-400 leading-relaxed sbr-justify"><?= nl2br(htmlspecialchars($course['description'])) ?></p>
             </section>
 
             <!-- ═══ MODE D'EMPLOI : COMMENT SUIVRE CE COURS ═══ -->
