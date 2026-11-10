@@ -32,7 +32,6 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
 
 include "../includes/header.php";
 ?>
-    <?php if ($is_default_page || $page === 1): ?>
     <!-- ═══ HERO SECTION ═══ -->
     <section class="relative min-h-[85vh] flex items-center overflow-hidden" id="hero-slider">
         <?php foreach ($hero_slides as $i => $src): ?>
@@ -94,7 +93,6 @@ include "../includes/header.php";
         setInterval(function(){ goTo((current + 1) % slides.length); }, interval);
     })();
     </script>
-    <?php endif; ?>
 
 
     <!-- ═══ INTRODUCTION ═══ -->
@@ -154,7 +152,6 @@ include "../includes/header.php";
         </div>
     </section>
 
-    <?php if ($is_default_page || $page === 1): ?>
     <!-- ═══ FEATURES ═══ -->
     <section class="bg-white dark:bg-dark-50 py-16 sm:py-24 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
@@ -189,7 +186,6 @@ include "../includes/header.php";
             </div>
         </div>
     </section>
-    <?php endif; ?>
 
     <!-- ═══ ARTICLES ═══ -->
     <?php
@@ -269,12 +265,12 @@ include "../includes/header.php";
                         <!-- Mobile & tablette (< 1024 px) : uniquement Précédent et Suivant -->
                         <div class="sbr-pager-compact flex lg:hidden items-center justify-center gap-4">
                             <?php if ($page > 1): ?>
-                            <a href="?page=<?= $page - 1 ?>" class="sbr-pager-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-700 dark:text-dark-300 bg-white dark:bg-dark-50 border border-gray-200 dark:border-dark-100 hover:border-primary-400 hover:text-primary-600 transition-all shadow-sm">
+                            <a href="?page=<?= $page - 1 ?>#articles" class="sbr-pager-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-700 dark:text-dark-300 bg-white dark:bg-dark-50 border border-gray-200 dark:border-dark-100 hover:border-primary-400 hover:text-primary-600 transition-all shadow-sm">
                                 <i class="ph ph-caret-left"></i> Précédent
                             </a>
                             <?php endif; ?>
                             <?php if ($page < $total_pages): ?>
-                            <a href="?page=<?= $page + 1 ?>" class="sbr-pager-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-primary-500 hover:bg-primary-600 transition-all shadow-sm">
+                            <a href="?page=<?= $page + 1 ?>#articles" class="sbr-pager-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-primary-500 hover:bg-primary-600 transition-all shadow-sm">
                                 Suivant <i class="ph ph-caret-right"></i>
                             </a>
                             <?php endif; ?>
@@ -283,13 +279,13 @@ include "../includes/header.php";
                         <!-- Ordinateur (≥ 1024 px) : pagination numérotée complète -->
                         <div class="sbr-pager-full hidden lg:flex flex-wrap justify-center items-center gap-2">
                             <?php if ($page > 1): ?>
-                            <a href="?page=<?= $page - 1 ?>" class="px-5 py-2.5 rounded-xl text-sm font-medium text-gray-500 dark:text-dark-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-50 transition-all inline-flex items-center gap-1.5"><i class="ph ph-caret-left"></i> Précédent</a>
+                            <a href="?page=<?= $page - 1 ?>#articles" class="px-5 py-2.5 rounded-xl text-sm font-medium text-gray-500 dark:text-dark-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-50 transition-all inline-flex items-center gap-1.5"><i class="ph ph-caret-left"></i> Précédent</a>
                             <?php endif; ?>
                             <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                            <a href="?page=<?= $i ?>" class="w-10 h-10 flex items-center justify-center rounded-xl text-sm font-medium transition-all <?= $i === $page ? 'bg-primary-500 text-white shadow-md shadow-primary-500/25' : 'text-gray-500 dark:text-dark-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-50' ?>" aria-current="<?= $i === $page ? 'page' : 'false' ?>"><?= $i ?></a>
+                            <a href="?page=<?= $i ?>#articles" class="w-10 h-10 flex items-center justify-center rounded-xl text-sm font-medium transition-all <?= $i === $page ? 'bg-primary-500 text-white shadow-md shadow-primary-500/25' : 'text-gray-500 dark:text-dark-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-50' ?>" aria-current="<?= $i === $page ? 'page' : 'false' ?>"><?= $i ?></a>
                             <?php endfor; ?>
                             <?php if ($page < $total_pages): ?>
-                            <a href="?page=<?= $page + 1 ?>" class="px-5 py-2.5 rounded-xl text-sm font-medium text-gray-500 dark:text-dark-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-50 transition-all inline-flex items-center gap-1.5">Suivant <i class="ph ph-caret-right"></i></a>
+                            <a href="?page=<?= $page + 1 ?>#articles" class="px-5 py-2.5 rounded-xl text-sm font-medium text-gray-500 dark:text-dark-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-50 transition-all inline-flex items-center gap-1.5">Suivant <i class="ph ph-caret-right"></i></a>
                             <?php endif; ?>
                         </div>
                     </nav>
@@ -351,6 +347,44 @@ include "../includes/header.php";
             </aside>
         </div>
     </section>
+    <script>
+    (function(){
+        const section = document.getElementById('articles');
+        if (!section || !window.fetch) return;
+
+        section.addEventListener('click', function(e) {
+            const link = e.target.closest('nav[aria-label="Pagination"] a');
+            if (!link) return;
+            e.preventDefault();
+            const href = link.getAttribute('href');
+            const cleanUrl = href.replace(/#articles$/, '');
+
+            section.style.opacity = '0.55';
+            section.style.transition = 'opacity 0.2s ease';
+
+            fetch(cleanUrl, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(function(r) { return r.text(); })
+                .then(function(html) {
+                    const doc = new DOMParser().parseFromString(html, 'text/html');
+                    const nextSection = doc.getElementById('articles');
+                    if (!nextSection) { window.location.href = href; return; }
+                    section.innerHTML = nextSection.innerHTML;
+                    section.querySelectorAll('[data-reveal]').forEach(function(el) {
+                        el.classList.add('revealed');
+                    });
+                    section.style.opacity = '1';
+                    if (window.history && window.history.pushState) {
+                        window.history.pushState({}, '', cleanUrl);
+                    }
+                    const top = section.getBoundingClientRect().top + window.scrollY - 88;
+                    window.scrollTo({ top: top, behavior: 'smooth' });
+                })
+                .catch(function() {
+                    window.location.href = href;
+                });
+        });
+    })();
+    </script>
 
 
     <?php include "../includes/newsletter-section.php"; ?>
