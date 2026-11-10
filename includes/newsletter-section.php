@@ -31,14 +31,9 @@
                             S'abonner <i class="ph ph-arrow-right"></i>
                         </button>
                     </div>
-                    <label class="flex items-start gap-2.5 text-left text-xs text-primary-100/90 mt-4 cursor-pointer">
-                        <input type="checkbox" name="consent" value="1" required
-                            class="mt-0.5 h-4 w-4 rounded border-white/40 bg-white/10 text-accent-500 focus:ring-accent-400 focus:ring-offset-0">
-                        <span>
-                            J'accepte de recevoir la lettre pédagogique et j'ai lu la
-                            <a href="confidentialite.php" class="underline decoration-white/40 hover:decoration-white font-semibold text-white transition">politique de confidentialité</a>.
-                        </span>
-                    </label>
+                    <p class="text-xs text-primary-100/80 mt-4">
+                        En vous abonnant, vous acceptez de recevoir nos actualités pédagogiques. Désinscription en un clic à tout moment.
+                    </p>
                 </form>
             </div>
         </div>

@@ -33,12 +33,6 @@ if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
-if (empty($_POST['consent'])) {
-    flash('error', 'Merci de cocher la case de consentement avant de vous inscrire.');
-    header("Location: $back");
-    exit;
-}
-
 try {
     $stmt = $pdo->prepare("SELECT id_subscriber, unsubscribe_token FROM newsletter_subscribers WHERE email = ? LIMIT 1");
     $stmt->execute([$email]);

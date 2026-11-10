@@ -71,19 +71,19 @@ include "../includes/header.php";
                 <ul class="space-y-3">
                     <li class="flex items-start gap-3 text-sm text-gray-700 dark:text-dark-400">
                         <span class="w-8 h-8 rounded-lg bg-accent-100 flex items-center justify-center text-accent-600 flex-shrink-0 mt-0.5"><i class="ph ph-check-circle"></i></span>
-                        <div class="flex-1"><strong class="text-gray-900 dark:text-white">Accessibilité</strong><p class="text-xs text-gray-500 dark:text-dark-300 mt-0.5 sbr-justify">Rendre l'éducation accessible à tous, partout et à tout moment.</p></div>
+                        <div class="flex-1"><strong class="text-gray-900 dark:text-white">Accessibilité</strong><p class="text-xs text-gray-500 dark:text-dark-300 mt-0.5">Rendre l'éducation accessible à tous, partout et à tout moment.</p></div>
                     </li>
                     <li class="flex items-start gap-3 text-sm text-gray-700 dark:text-dark-400">
                         <span class="w-8 h-8 rounded-lg bg-accent-100 flex items-center justify-center text-accent-600 flex-shrink-0 mt-0.5"><i class="ph ph-check-circle"></i></span>
-                        <div class="flex-1"><strong class="text-gray-900 dark:text-white">Qualité</strong><p class="text-xs text-gray-500 dark:text-dark-300 mt-0.5 sbr-justify">Proposer des ressources pédagogiques fiables et bien structurées.</p></div>
+                        <div class="flex-1"><strong class="text-gray-900 dark:text-white">Qualité</strong><p class="text-xs text-gray-500 dark:text-dark-300 mt-0.5">Proposer des ressources pédagogiques fiables et bien structurées.</p></div>
                     </li>
                     <li class="flex items-start gap-3 text-sm text-gray-700 dark:text-dark-400">
                         <span class="w-8 h-8 rounded-lg bg-accent-100 flex items-center justify-center text-accent-600 flex-shrink-0 mt-0.5"><i class="ph ph-check-circle"></i></span>
-                        <div class="flex-1"><strong class="text-gray-900 dark:text-white">Partage</strong><p class="text-xs text-gray-500 dark:text-dark-300 mt-0.5 sbr-justify">Créer une communauté d'apprentissage où savoir rime avec partage.</p></div>
+                        <div class="flex-1"><strong class="text-gray-900 dark:text-white">Partage</strong><p class="text-xs text-gray-500 dark:text-dark-300 mt-0.5">Créer une communauté d'apprentissage où savoir rime avec partage.</p></div>
                     </li>
                     <li class="flex items-start gap-3 text-sm text-gray-700 dark:text-dark-400">
                         <span class="w-8 h-8 rounded-lg bg-accent-100 flex items-center justify-center text-accent-600 flex-shrink-0 mt-0.5"><i class="ph ph-check-circle"></i></span>
-                        <div class="flex-1"><strong class="text-gray-900 dark:text-white">Innovation</strong><p class="text-xs text-gray-500 dark:text-dark-300 mt-0.5 sbr-justify">Utiliser les technologies modernes pour améliorer l'expérience d'apprentissage.</p></div>
+                        <div class="flex-1"><strong class="text-gray-900 dark:text-white">Innovation</strong><p class="text-xs text-gray-500 dark:text-dark-300 mt-0.5">Utiliser les technologies modernes pour améliorer l'expérience d'apprentissage.</p></div>
                     </li>
                 </ul>
             </div>

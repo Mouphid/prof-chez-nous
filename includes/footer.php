@@ -72,6 +72,28 @@
     <!-- Bouton retour en haut -->
     <button id="backToTop" class="sbr-topbtn" aria-label="Retour en haut" title="Retour en haut"><i class="ph ph-arrow-up"></i></button>
 
+    <!-- Pop-up de consentement (cookies & utilisation des données) -->
+    <div id="cookieConsentPopup" class="sbr-cookie-popup" role="dialog" aria-live="polite" aria-label="Consentement à l'utilisation des cookies et des données" aria-hidden="true">
+        <div class="sbr-cookie-card">
+            <div class="sbr-cookie-head">
+                <span class="sbr-cookie-icon" aria-hidden="true"><i class="ph ph-shield-check"></i></span>
+                <div class="sbr-cookie-body">
+                    <p class="sbr-cookie-title">Cookies &amp; confidentialité des données</p>
+                    <p class="sbr-cookie-text">
+                        Nous utilisons des cookies et traitons vos données pour assurer le bon fonctionnement du site, améliorer votre expérience et vous envoyer nos actualités pédagogiques si vous vous abonnez à la lettre d'information. Consultez notre
+                        <a href="<?= $__pub_base ?>confidentialite.php" class="sbr-cookie-link">politique de confidentialité</a>.
+                    </p>
+                </div>
+            </div>
+            <div class="sbr-cookie-actions">
+                <button type="button" id="cookieDeclineBtn" class="sbr-cookie-btn-secondary">Refuser</button>
+                <button type="button" id="cookieAcceptBtn" class="sbr-cookie-btn-primary">
+                    <i class="ph ph-check-circle"></i> J'accepte et je continue
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
     (function(){
         const toggle = document.getElementById('darkModeToggle');
@@ -81,6 +103,33 @@
                 html.classList.toggle('dark');
                 localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
             });
+        }
+
+        /* Pop-up de consentement aux cookies et données (apparaît après ~1,2 s) */
+        const cookiePopup = document.getElementById('cookieConsentPopup');
+        const acceptBtn   = document.getElementById('cookieAcceptBtn');
+        const declineBtn  = document.getElementById('cookieDeclineBtn');
+        const CLE_CONSENT = 'je_cookie_consent_v1';
+
+        if (cookiePopup && !localStorage.getItem(CLE_CONSENT)) {
+            window.setTimeout(function() {
+                cookiePopup.classList.add('is-visible');
+                cookiePopup.setAttribute('aria-hidden', 'false');
+            }, 1200);
+
+            function fermerConsentement(choix) {
+                try {
+                    localStorage.setItem(CLE_CONSENT, JSON.stringify({
+                        status: choix,
+                        date: new Date().toISOString()
+                    }));
+                } catch (e) {}
+                cookiePopup.classList.remove('is-visible');
+                cookiePopup.setAttribute('aria-hidden', 'true');
+            }
+
+            if (acceptBtn)  acceptBtn.addEventListener('click',  function() { fermerConsentement('accepted'); });
+            if (declineBtn) declineBtn.addEventListener('click', function() { fermerConsentement('declined'); });
         }
         const topBtn = document.getElementById('backToTop');
         if (topBtn) {

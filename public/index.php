@@ -183,7 +183,7 @@ include "../includes/header.php";
                         <i class="ph <?= $feat[0] ?> text-xl"></i>
                     </div>
                     <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-2"><?= $feat[1] ?></h3>
-                    <p class="text-sm text-gray-600 dark:text-dark-300 leading-relaxed sbr-justify"><?= $feat[2] ?></p>
+                    <p class="text-sm text-gray-600 dark:text-dark-300 leading-relaxed"><?= $feat[2] ?></p>
                 </div>
                 <?php endforeach; ?>
             </div>
@@ -265,16 +265,33 @@ include "../includes/header.php";
                     </div>
 
                     <?php if ($total_pages > 1): ?>
-                    <nav class="flex flex-wrap justify-center items-center gap-2 mt-12" aria-label="Pagination">
-                        <?php if ($page > 1): ?>
-                        <a href="?page=<?= $page - 1 ?>" class="px-5 py-2.5 rounded-xl text-sm font-medium text-gray-500 dark:text-dark-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-50 transition-all inline-flex items-center gap-1.5"><i class="ph ph-caret-left"></i> Précédent</a>
-                        <?php endif; ?>
-                        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                        <a href="?page=<?= $i ?>" class="w-10 h-10 flex items-center justify-center rounded-xl text-sm font-medium transition-all <?= $i === $page ? 'bg-primary-500 text-white shadow-md shadow-primary-500/25' : 'text-gray-500 dark:text-dark-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-50' ?>" aria-current="<?= $i === $page ? 'page' : 'false' ?>"><?= $i ?></a>
-                        <?php endfor; ?>
-                        <?php if ($page < $total_pages): ?>
-                        <a href="?page=<?= $page + 1 ?>" class="px-5 py-2.5 rounded-xl text-sm font-medium text-gray-500 dark:text-dark-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-50 transition-all inline-flex items-center gap-1.5">Suivant <i class="ph ph-caret-right"></i></a>
-                        <?php endif; ?>
+                    <nav class="mt-12" aria-label="Pagination">
+                        <!-- Mobile & tablette (< 1024 px) : uniquement Précédent et Suivant -->
+                        <div class="sbr-pager-compact flex lg:hidden items-center justify-center gap-4">
+                            <?php if ($page > 1): ?>
+                            <a href="?page=<?= $page - 1 ?>" class="sbr-pager-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-700 dark:text-dark-300 bg-white dark:bg-dark-50 border border-gray-200 dark:border-dark-100 hover:border-primary-400 hover:text-primary-600 transition-all shadow-sm">
+                                <i class="ph ph-caret-left"></i> Précédent
+                            </a>
+                            <?php endif; ?>
+                            <?php if ($page < $total_pages): ?>
+                            <a href="?page=<?= $page + 1 ?>" class="sbr-pager-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-primary-500 hover:bg-primary-600 transition-all shadow-sm">
+                                Suivant <i class="ph ph-caret-right"></i>
+                            </a>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Ordinateur (≥ 1024 px) : pagination numérotée complète -->
+                        <div class="sbr-pager-full hidden lg:flex flex-wrap justify-center items-center gap-2">
+                            <?php if ($page > 1): ?>
+                            <a href="?page=<?= $page - 1 ?>" class="px-5 py-2.5 rounded-xl text-sm font-medium text-gray-500 dark:text-dark-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-50 transition-all inline-flex items-center gap-1.5"><i class="ph ph-caret-left"></i> Précédent</a>
+                            <?php endif; ?>
+                            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                            <a href="?page=<?= $i ?>" class="w-10 h-10 flex items-center justify-center rounded-xl text-sm font-medium transition-all <?= $i === $page ? 'bg-primary-500 text-white shadow-md shadow-primary-500/25' : 'text-gray-500 dark:text-dark-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-50' ?>" aria-current="<?= $i === $page ? 'page' : 'false' ?>"><?= $i ?></a>
+                            <?php endfor; ?>
+                            <?php if ($page < $total_pages): ?>
+                            <a href="?page=<?= $page + 1 ?>" class="px-5 py-2.5 rounded-xl text-sm font-medium text-gray-500 dark:text-dark-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-50 transition-all inline-flex items-center gap-1.5">Suivant <i class="ph ph-caret-right"></i></a>
+                            <?php endif; ?>
+                        </div>
                     </nav>
                     <?php endif; ?>
                 <?php else: ?>
@@ -307,7 +324,7 @@ include "../includes/header.php";
                 <!-- Récents : les derniers articles publiés, sans doublon avec la liste de la page -->
                 <?php
                 $shown_ids = array_map(function ($p) { return (int)$p['id_post']; }, $posts);
-                $recent_sql = "SELECT id_post, title FROM posts WHERE (status = 'published' OR (status = 'scheduled' AND published_at <= NOW()))";
+                $recent_sql = "SELECT id_post, title, created_at FROM posts WHERE (status = 'published' OR (status = 'scheduled' AND published_at <= NOW()))";
                 if ($shown_ids) {
                     $recent_sql .= " AND id_post NOT IN (" . implode(',', $shown_ids) . ")";
                 }
@@ -316,13 +333,16 @@ include "../includes/header.php";
                 if ($recent_rows):
                 ?>
                 <div class="bg-white dark:bg-dark-50 rounded-2xl border border-gray-100 dark:border-dark-100 p-6 <?= REVEAL ?>">
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
                         <i class="ph ph-clock text-primary-500"></i> Récents
                     </h3>
-                    <ul class="space-y-1">
+                    <ul class="sbr-recent-list">
                         <?php foreach ($recent_rows as $r): ?>
-                        <li>
-                            <a href="post.php?id=<?= (int)$r['id_post'] ?>" class="text-sm text-gray-500 dark:text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 transition-all block py-2 px-3 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-900/20 line-clamp-2"><?= htmlspecialchars($r['title']) ?></a>
+                        <li class="sbr-recent-item">
+                            <a href="post.php?id=<?= (int)$r['id_post'] ?>" class="sbr-recent-link group">
+                                <span class="sbr-recent-title line-clamp-2"><?= htmlspecialchars($r['title']) ?></span>
+                                <span class="sbr-recent-date"><i class="ph ph-calendar-blank"></i> <?= format_date($r['created_at']) ?></span>
+                            </a>
                         </li>
                         <?php endforeach; ?>
                     </ul>
