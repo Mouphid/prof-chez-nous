@@ -7,113 +7,107 @@ $page_title = "Politique de confidentialité - Joie Enseignante";
 include "../includes/header.php";
 ?>
 
-<div class="relative overflow-hidden bg-cover bg-center py-16" style="background-image: url('<?= BASE_URL ?>img/bg/banner-confidentialite.jpg');">
-    <div class="absolute inset-0 bg-white/75"></div>
-    <div class="relative z-10 text-center">
-        <h1 class="text-3xl font-bold text-gray-900"><i class="ph ph-shield-check text-primary"></i> Politique de confidentialité</h1>
-        <p class="text-gray-500 mt-2">Protection de vos données personnelles</p>
-    </div>
-</div>
+<section id="main-content" class="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    <div class="bg-white dark:bg-dark-50 rounded-2xl border border-gray-100 dark:border-dark-100 p-6 sm:p-10 lg:p-12">
+        <header class="border-b border-gray-100 dark:border-dark-100 pb-6 mb-8">
+            <span class="text-xs font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-widest block mb-2">Protection des données</span>
+            <h1 class="text-3xl sm:text-4xl font-display font-extrabold text-gray-900 dark:text-white">Politique de confidentialité</h1>
+            <p class="text-sm text-gray-500 dark:text-dark-300 mt-2">Traitement des données personnelles et utilisation des cookies sur <?= htmlspecialchars(SITE_NAME) ?>.</p>
+        </header>
 
-<div id="main-content" class="max-w-3xl mx-auto px-4 py-12">
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8 sm:p-12 prose prose-gray max-w-none">
-        <p class="text-sm text-gray-500 mb-8">Dernière mise à jour : 7 novembre 2026</p>
+        <div class="space-y-8 text-gray-600 dark:text-dark-300 leading-relaxed sbr-justify">
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">1. Principe</h2>
+                <p>
+                    <strong class="text-gray-900 dark:text-white"><?= htmlspecialchars(SITE_NAME) ?></strong> respecte votre vie privée. Les visiteurs peuvent consulter le site sans créer de compte. Nous ne collectons que les informations strictement nécessaires au fonctionnement du service.
+                </p>
+            </div>
 
-        <h2 class="text-xl font-bold text-gray-900">1. Principe</h2>
-        <p class="text-gray-600 leading-relaxed">
-            <strong class="text-primary"><?= htmlspecialchars(SITE_NAME) ?></strong> respecte votre vie privée.
-            Les visiteurs peuvent consulter le site sans créer de compte.
-            Nous ne collectons que les informations nécessaires au fonctionnement du service.
-        </p>
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">2. Données collectées</h2>
+                <p class="mb-2">Selon votre utilisation du site, nous pouvons collecter :</p>
+                <ul class="list-disc pl-6 space-y-1.5">
+                    <li><strong class="text-gray-900 dark:text-white">Achat d'un contenu :</strong> nom, adresse e-mail, contenu acheté, montant et date ;</li>
+                    <li><strong class="text-gray-900 dark:text-white">Newsletter :</strong> adresse e-mail et date d'inscription, lorsque vous vous abonnez volontairement ;</li>
+                    <li><strong class="text-gray-900 dark:text-white">Contact :</strong> nom, adresse e-mail et message que vous nous envoyez ;</li>
+                    <li><strong class="text-gray-900 dark:text-white">Commentaires :</strong> nom affiché et contenu du commentaire ;</li>
+                    <li><strong class="text-gray-900 dark:text-white">Données techniques :</strong> pages consultées, adresse IP et type de navigateur, pour la sécurité et les statistiques de lecture.</li>
+                </ul>
+            </div>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8">2. Données collectées</h2>
-        <p class="text-gray-600 leading-relaxed">
-            Selon votre utilisation du site, nous pouvons collecter :
-        </p>
-        <ul class="text-gray-600 leading-relaxed list-disc pl-6 space-y-1">
-            <li><strong>Achat d'un contenu :</strong> nom, adresse e-mail, contenu acheté, montant et date ;</li>
-            <li><strong>Newsletter :</strong> adresse e-mail, si vous vous inscrivez volontairement ;</li>
-            <li><strong>Contact :</strong> nom, adresse e-mail et message que vous nous envoyez ;</li>
-            <li><strong>Commentaires :</strong> nom affiché et contenu du commentaire ;</li>
-            <li><strong>Données techniques :</strong> pages consultées, adresse IP et type de navigateur,
-                pour la sécurité et les statistiques de lecture.</li>
-        </ul>
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">3. Paiement</h2>
+                <p>
+                    Les paiements sont traités par un prestataire sécurisé (<strong class="text-gray-900 dark:text-white">Kkiapay</strong> ou <strong class="text-gray-900 dark:text-white">FedaPay</strong>). Les informations de carte bancaire ou de compte mobile money sont transmises directement au prestataire et ne sont <strong class="text-gray-900 dark:text-white">jamais stockées</strong> sur nos serveurs. Nous recevons uniquement la confirmation du paiement et un identifiant de transaction.
+                </p>
+            </div>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8">3. Paiement</h2>
-        <p class="text-gray-600 leading-relaxed">
-            Les paiements sont traités par un prestataire sécurisé (<strong>Kkiapay</strong> ou <strong>FedaPay</strong>).
-            Les informations de carte bancaire ou de compte mobile money sont transmises directement
-            au prestataire et ne sont <strong>jamais stockées</strong> sur nos serveurs.
-            Nous recevons uniquement la confirmation du paiement et un identifiant de transaction.
-        </p>
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">4. Utilisation des données</h2>
+                <p class="mb-2">Vos données servent uniquement à :</p>
+                <ul class="list-disc pl-6 space-y-1.5">
+                    <li>traiter votre commande et vous envoyer votre lien d'accès ;</li>
+                    <li>répondre à vos messages et demandes d'assistance ;</li>
+                    <li>vous envoyer la lettre pédagogique si vous y êtes abonné ;</li>
+                    <li>assurer la sécurité du site et prévenir les abus ;</li>
+                    <li>établir des statistiques anonymes de consultation.</li>
+                </ul>
+            </div>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8">4. Utilisation des données</h2>
-        <p class="text-gray-600 leading-relaxed">
-            Vos données servent à :
-        </p>
-        <ul class="text-gray-600 leading-relaxed list-disc pl-6 space-y-1">
-            <li>traiter votre commande et vous envoyer le lien d'accès ;</li>
-            <li>répondre à vos messages et demandes d'assistance ;</li>
-            <li>envoyer la newsletter si vous y êtes inscrit ;</li>
-            <li>assurer la sécurité du site et prévenir les abus ;</li>
-            <li>établir des statistiques anonymes de consultation.</li>
-        </ul>
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">5. Partage des données</h2>
+                <p class="mb-2">Vos données personnelles ne sont jamais vendues. Elles peuvent être transmises uniquement :</p>
+                <ul class="list-disc pl-6 space-y-1.5">
+                    <li>au prestataire de paiement, pour encaisser la commande ;</li>
+                    <li>à l'hébergeur technique du site (OVHcloud) ;</li>
+                    <li>aux autorités compétentes, en cas d'obligation légale.</li>
+                </ul>
+            </div>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8">5. Partage des données</h2>
-        <p class="text-gray-600 leading-relaxed">
-            Vos données personnelles ne sont jamais vendues.
-            Elles peuvent être transmises uniquement :
-        </p>
-        <ul class="text-gray-600 leading-relaxed list-disc pl-6 space-y-1">
-            <li>au prestataire de paiement, pour encaisser la commande ;</li>
-            <li>à l'hébergeur, pour le stockage technique du site ;</li>
-            <li>aux autorités, en cas d'obligation légale.</li>
-        </ul>
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">6. Durée de conservation</h2>
+                <p>
+                    Les informations de commande sont conservées le temps nécessaire à la gestion des achats et aux obligations comptables. Les abonnés à la newsletter restent enregistrés jusqu'à leur désinscription (accessible en un clic dans chaque e-mail). Les messages de contact sont conservés le temps de leur traitement.
+                </p>
+            </div>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8">6. Durée de conservation</h2>
-        <p class="text-gray-600 leading-relaxed">
-            Les informations de commande sont conservées le temps nécessaire à la gestion des achats
-            et aux obligations comptables. Les abonnés à la newsletter restent enregistrés
-            jusqu'à leur désinscription. Les messages de contact sont conservés le temps du traitement.
-        </p>
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">7. Vos droits</h2>
+                <p>
+                    Conformément à la réglementation applicable, vous disposez d'un droit d'accès, de rectification, d'effacement et de portabilité de vos données. Pour exercer ces droits, écrivez à <a href="mailto:<?= htmlspecialchars(SITE_EMAIL) ?>" class="text-primary hover:underline"><?= htmlspecialchars(SITE_EMAIL) ?></a>. Une réponse vous sera apportée dans les meilleurs délais.
+                </p>
+            </div>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8">7. Vos droits</h2>
-        <p class="text-gray-600 leading-relaxed">
-            Conformément à la réglementation applicable, vous disposez d'un droit d'accès,
-            de rectification, d'effacement et de portabilité de vos données.
-            Pour exercer ces droits, écrivez à
-            <a href="mailto:<?= htmlspecialchars(SITE_EMAIL) ?>" class="text-primary hover:underline"><?= htmlspecialchars(SITE_EMAIL) ?></a>.
-            Une réponse vous sera apportée dans les meilleurs délais.
-        </p>
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">8. Cookies</h2>
+                <p>
+                    Le site utilise des <strong class="text-gray-900 dark:text-white">cookies techniques et de préférence</strong> nécessaires à son bon fonctionnement (session de navigation, choix du thème clair/sombre, mémorisation de votre choix de consentement et sécurité des formulaires). Aucun cookie publicitaire tiers n'est utilisé.
+                </p>
+            </div>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8">8. Cookies</h2>
-        <p class="text-gray-600 leading-relaxed">
-            Le site utilise uniquement des <strong>cookies de session</strong> nécessaires à son fonctionnement
-            (connexion à l'administration, protection des formulaires).
-            Aucun cookie publicitaire ni de traçage tiers n'est utilisé.
-        </p>
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">9. Sécurité</h2>
+                <p>
+                    Nous mettons en œuvre des mesures techniques et organisationnelles pour protéger vos données contre tout accès non autorisé, modification, divulgation ou destruction (connexion sécurisée HTTPS, mots de passe chiffrés, accès restreint à l'administration).
+                </p>
+            </div>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8">9. Sécurité</h2>
-        <p class="text-gray-600 leading-relaxed">
-            Nous mettons en œuvre des mesures techniques et organisationnelles pour protéger vos données
-            contre tout accès non autorisé, modification, divulgation ou destruction
-            (connexion sécurisée HTTPS, mots de passe chiffrés, accès limité à l'administration).
-        </p>
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">10. Contact</h2>
+                <p>
+                    Pour toute question sur vos données personnelles : <a href="mailto:<?= htmlspecialchars(SITE_EMAIL) ?>" class="text-primary hover:underline"><?= htmlspecialchars(SITE_EMAIL) ?></a><br>
+                    Adresse : <?= htmlspecialchars(SITE_ADDRESS) ?>
+                </p>
+            </div>
+        </div>
 
-        <h2 class="text-xl font-bold text-gray-900 mt-8">10. Contact</h2>
-        <p class="text-gray-600 leading-relaxed">
-            Pour toute question sur vos données personnelles :
-            <a href="mailto:<?= htmlspecialchars(SITE_EMAIL) ?>" class="text-primary hover:underline"><?= htmlspecialchars(SITE_EMAIL) ?></a><br>
-            Adresse : <?= htmlspecialchars(SITE_ADDRESS) ?>
-        </p>
-
-        <p class="text-sm text-gray-500 mt-10">
+        <footer class="border-t border-gray-100 dark:border-dark-100 pt-6 mt-10 text-sm text-gray-500 dark:text-dark-300">
             Voir aussi :
-            <a href="mentions-legales.php" class="text-primary hover:underline">Mentions légales</a> ·
-            <a href="conditions-utilisation.php" class="text-primary hover:underline">Conditions d'utilisation</a> ·
-            <a href="conditions-vente.php" class="text-primary hover:underline">Conditions de vente</a>
-        </p>
+            <a href="mentions-legales.php" class="text-primary hover:underline font-medium">Mentions légales</a> ·
+            <a href="conditions-utilisation.php" class="text-primary hover:underline font-medium">Conditions d'utilisation</a> ·
+            <a href="conditions-vente.php" class="text-primary hover:underline font-medium">Conditions de vente</a>
+        </footer>
     </div>
-</div>
+</section>
 
 <?php include "../includes/footer.php"; ?>
