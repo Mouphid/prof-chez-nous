@@ -7,7 +7,6 @@
  * 1 heure est envoyé. Le message affiché reste toujours le même, pour ne
  * pas révéler si une adresse existe ou non.
  */
-session_start();
 require_once "../config/config.php";
 require_once "../includes/functions.php";
 

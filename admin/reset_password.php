@@ -6,7 +6,6 @@
  * SHA-256 est stockée en base, avec une expiration d'une heure. Le jeton est
  * effacé après usage : il ne peut donc pas servir deux fois.
  */
-session_start();
 require_once "../config/config.php";
 require_once "../includes/functions.php";
 

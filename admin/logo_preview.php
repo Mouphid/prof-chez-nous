@@ -4,7 +4,6 @@
  * Accessible uniquement à l'administrateur connecté.
  * Sert à choisir la bonne variante sur fond clair, sombre et bleu nuit.
  */
-session_start();
 require_once "../config/config.php";
 require_once "../includes/functions.php";
 

@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once "../config/config.php";
 
 $_SESSION = [];
 if (ini_get("session.use_cookies")) {
