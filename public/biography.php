@@ -145,7 +145,7 @@ include "../includes/header.php";
                 </div>
             </div>
             <p class="text-sm text-gray-600 dark:text-dark-400 leading-relaxed sbr-justify">
-                Journaliste et directeur de publication du magazine <strong class="text-gray-900 dark:text-white">Afrique Identité</strong>,
+                Journaliste et Directeur de publication du magazine <strong class="text-gray-900 dark:text-white">Afrique Identité</strong>,
                 membre actif de l'Association des journalistes scientifiques du Bénin et coordonnateur du projet
                 <strong class="text-gray-900 dark:text-white">École Avenir</strong>.
             </p>
