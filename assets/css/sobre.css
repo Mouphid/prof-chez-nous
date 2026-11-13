@@ -2489,3 +2489,82 @@ html:not(.dark) main section.bg-white .group.bg-white:hover {
     background: #1e293b;
     color: #fff;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   PAGES LÉGALES : ENCADRÉ D'AVERTISSEMENT, SOMMAIRE ET ANCRES
+   ═══════════════════════════════════════════════════════════ */
+.sbr-legal-note {
+    border: 1px solid #f2d6a2;
+    background-color: #fffaf0;
+    border-radius: 0.85rem;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2.5rem;
+}
+.sbr-legal-note p {
+    margin: 0;
+    color: #7a4a00;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.75;
+    letter-spacing: 0.015em;
+    text-transform: uppercase;
+    text-align: left;
+}
+.sbr-legal-note p + p {
+    margin-top: 1rem;
+}
+.dark .sbr-legal-note {
+    border-color: rgba(245, 158, 11, 0.34);
+    background-color: rgba(245, 158, 11, 0.10);
+}
+.dark .sbr-legal-note p {
+    color: #fcd34d;
+}
+
+.sbr-legal-toc {
+    border: 1px solid #dbe5f0;
+    background-color: #f8fafc;
+    border-radius: 0.85rem;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 3rem;
+}
+.sbr-legal-toc h2 {
+    margin: 0 0 1rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #16293d;
+}
+.sbr-legal-toc ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem 1.5rem;
+}
+@media (min-width: 640px) {
+    .sbr-legal-toc ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+    .sbr-legal-toc ul { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.sbr-legal-toc a {
+    color: #1e4e79;
+    font-size: 0.875rem;
+    text-decoration: none;
+}
+.sbr-legal-toc a:hover {
+    text-decoration: underline;
+}
+.dark .sbr-legal-toc {
+    border-color: #334155;
+    background-color: #0f172a;
+}
+.dark .sbr-legal-toc h2 { color: #ffffff; }
+.dark .sbr-legal-toc a { color: #a8c3dd; }
+
+/* Décalage d'ancrage pour que les titres ne passent pas sous la barre fixe */
+.sbr-anchor {
+    scroll-margin-top: 6.5rem;
+}

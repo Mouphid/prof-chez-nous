@@ -354,7 +354,7 @@ function cdn_head() {
     <link rel="apple-touch-icon" href="<?= $a ?>img/apple-touch-icon.png">
     <link href="<?= $a ?>assets/css/tailwind.css" rel="stylesheet">
     <style>:root{--font-sans:'Inter',ui-sans-serif,system-ui,sans-serif;--font-display:'Inter',ui-sans-serif,system-ui,sans-serif}</style>
-    <link href="<?= $a ?>assets/css/sobre.css?v=20261110a" rel="stylesheet">
+    <link href="<?= $a ?>assets/css/sobre.css?v=20261113a" rel="stylesheet">
     <link href="<?= $a ?>assets/phosphor/phosphor.css" rel="stylesheet">
     <link href="<?= $a ?>assets/fonts/inter/index.css" rel="stylesheet">
     <script>
